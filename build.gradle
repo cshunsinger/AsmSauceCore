@@ -20,6 +20,16 @@ repositories {
     maven { url "https://repo.maven.apache.org/maven2" }
 }
 
+test {
+    jvmArgs '--enable-preview'
+    useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ["-parameters"]
+}
+
 jacoco {
     toolVersion = "0.8.6"
 }
