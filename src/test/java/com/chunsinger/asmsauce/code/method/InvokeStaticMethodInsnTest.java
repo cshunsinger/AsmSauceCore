@@ -187,7 +187,7 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
             .withMethod(method(publicOnly(), name("abs"), parameters(int.class), type(int.class),
                 returnValue(
                     invokeStatic(type(Math.class), name("abs"), parameters(int.class), type(int.class),
-                        localVar(1)
+                        getVar(1)
                     )
                 )
             ));
@@ -206,7 +206,7 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("abs"), parameters(int.class), type(int.class),
                 returnValue(
-                    invokeStatic(Math.class, "abs", localVar(1))
+                    invokeStatic(Math.class, "abs", getVar(1))
                 )
             ));
 
@@ -220,7 +220,7 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                thisInstance().invoke("someUnknownMethod"),
+                this_().invoke("someUnknownMethod"),
                 returnVoid()
             ));
 

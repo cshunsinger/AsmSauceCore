@@ -129,12 +129,12 @@ class FieldNodeTest extends BaseUnitTest {
             .withField(field(privateOnly().withFinal(), type(ThisClass.class), name("self")))
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                thisInstance().assignField("self", thisInstance()), //this.self = this;
+                this_().assignField("self", this_()), //this.self = this;
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("getSelf"), noParameters(), type(SelfContainerInterface.class),
                 returnValue(
-                    thisInstance().getField("self")
+                    this_().getField("self")
                 )
             ));
 

@@ -97,7 +97,7 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("getStringValue"), noParameters(), type(String.class),
                 returnValue(
-                    getStaticField(type(TestStaticFieldClass.class), name("ACCESSIBLE_STRING"), type(String.class))
+                    getStatic(type(TestStaticFieldClass.class), name("ACCESSIBLE_STRING"), type(String.class))
                 )
             ));
 
@@ -114,7 +114,7 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("getStringValue"), noParameters(), type(String.class),
                 returnValue(
-                    getStaticField(MoreStaticFieldsInterface.class, "OUTSIDE_STRING")
+                    getStatic(MoreStaticFieldsInterface.class, "OUTSIDE_STRING")
                 )
             ));
 

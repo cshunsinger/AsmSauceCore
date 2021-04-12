@@ -27,10 +27,10 @@ public class BooleanConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("caseString"), parameters(p("inputString", String.class), p("lowercase", boolean.class)), type(String.class),
-                iff(localVar("lowercase").isTrue()).then(
-                    returnValue(localVar("inputString").invoke("toLowerCase"))
+                if_(getVar("lowercase").isTrue()).then(
+                    returnValue(getVar("inputString").invoke("toLowerCase"))
                 ),
-                returnValue(localVar("inputString"))
+                returnValue(getVar("inputString"))
             ));
 
         TestWithBooleansType instance = builder.buildInstance();
@@ -46,10 +46,10 @@ public class BooleanConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("caseString"), parameters(p("inputString", String.class), p("uppercase", boolean.class)), type(String.class),
-                iff(localVar("uppercase").isFalse()).then(
-                    returnValue(localVar("inputString"))
+                if_(getVar("uppercase").isFalse()).then(
+                    returnValue(getVar("inputString"))
                 ),
-                returnValue(localVar("inputString").invoke("toUpperCase"))
+                returnValue(getVar("inputString").invoke("toUpperCase"))
             ));
 
         TestWithBooleansType instance = builder.buildInstance();

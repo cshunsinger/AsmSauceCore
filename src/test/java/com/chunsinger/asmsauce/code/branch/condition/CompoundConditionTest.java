@@ -29,38 +29,38 @@ public class CompoundConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("anyNull"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class)), type(boolean.class),
-                iff(localVar("first").isNull()
-                    .or(localVar("second").isNull())
-                    .or(localVar("third").isNull())).then(
-                        returnValue(stackTrue())
+                if_(getVar("first").isNull()
+                    .or(getVar("second").isNull())
+                    .or(getVar("third").isNull())).then(
+                        returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("allNull"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class)), type(boolean.class),
-                iff(localVar("first").isNull()
-                    .and(localVar("second").isNull())
-                    .and(localVar("third").isNull())).then(
-                        returnValue(stackTrue())
+                if_(getVar("first").isNull()
+                    .and(getVar("second").isNull())
+                    .and(getVar("third").isNull())).then(
+                        returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("atLeastTwoNull"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class)), type(boolean.class),
-                iff(localVar("first").isNull().and(localVar("second").isNull()).and(localVar("third").isNull())
-                    .or(localVar("first").isNull().and(localVar("second").isNull()))
-                    .or(localVar("first").isNull().and(localVar("third").isNull()))
-                    .or(localVar("second").isNull().and(localVar("third").isNull()))
+                if_(getVar("first").isNull().and(getVar("second").isNull()).and(getVar("third").isNull())
+                    .or(getVar("first").isNull().and(getVar("second").isNull()))
+                    .or(getVar("first").isNull().and(getVar("third").isNull()))
+                    .or(getVar("second").isNull().and(getVar("third").isNull()))
                 ).then(
-                        returnValue(stackTrue())
+                        returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("atLeastOneNullPerPair"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class), p("fourth", Object.class)), type(boolean.class),
-                iff(localVar("first").isNull().or(localVar("second").isNull())
-                    .and(localVar("third").isNull().or(localVar("fourth").isNull()))
+                if_(getVar("first").isNull().or(getVar("second").isNull())
+                    .and(getVar("third").isNull().or(getVar("fourth").isNull()))
                 ).then(
-                    returnValue(stackTrue())
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ));
 
         TestCompoundConditionsType instance = builder.buildInstance();
@@ -178,18 +178,18 @@ public class CompoundConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("allNotNull"), methodParameters, type(boolean.class),
-                iff(localVar("first").isNotNull().and(localVar("second").isNotNull())
-                    .and(localVar("third").isNotNull().and(localVar("fourth").isNotNull()))).then(
-                        returnValue(stackTrue())
+                if_(getVar("first").isNotNull().and(getVar("second").isNotNull())
+                    .and(getVar("third").isNotNull().and(getVar("fourth").isNotNull()))).then(
+                        returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("anyNotNull"), methodParameters, type(boolean.class),
-                iff(localVar("first").isNotNull().or(localVar("second").isNotNull())
-                    .or(localVar("third").isNotNull().or(localVar("fourth").isNotNull()))).then(
-                        returnValue(stackTrue())
+                if_(getVar("first").isNotNull().or(getVar("second").isNotNull())
+                    .or(getVar("third").isNotNull().or(getVar("fourth").isNotNull()))).then(
+                        returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ));
 
         TestNestedCompoundsType instance = builder.buildInstance();
@@ -277,12 +277,12 @@ public class CompoundConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("bothNull"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
-                iff(not(
-                    localVar("first").isNotNull().or(localVar("second").isNotNull())
+                if_(not(
+                    getVar("first").isNotNull().or(getVar("second").isNotNull())
                 )).then(
-                    returnValue(stackTrue())
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ));
 
         TestInvertedCompoundConditionType instance = builder.buildInstance();

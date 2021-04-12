@@ -1,5 +1,6 @@
 package com.chunsinger.asmsauce;
 
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class AsmClassBuilderTest extends BaseUnitTest {
         Constructor<AsmTestBaseType> baseConstructor = AsmTestBaseType.class.getConstructor(String.class);
 
         asmClassBuilder.withConstructor(constructor(publicOnly(), parameters(String.class), //public AsmTestBaseType(String str1)
-            superConstructor(baseConstructor, localVar(1)), //super(str1);
+            superConstructor(baseConstructor, getVar(1)), //super(str1);
             returnVoid() //return;
         ));
 
@@ -65,11 +66,11 @@ public class AsmClassBuilderTest extends BaseUnitTest {
 
         asmClassBuilder
             .withConstructor(constructor(publicOnly(), parameters(String.class), //public AsmTestBaseType(String str1)
-                superConstructor(baseConstructor, localVar(1)), //super(str1);
+                superConstructor(baseConstructor, getVar(1)), //super(str1);
                 returnVoid() //return;
             ))
             .withConstructor(constructor(publicOnly(), noParameters(), //public AsmTestBaseType()
-                thisConstructor(parameters(String.class), stackObject("Look ma! No hands!!")), //this("Look ma! No hands!!");
+                thisConstructor(parameters(String.class), CodeBuilders.literalObj("Look ma! No hands!!")), //this("Look ma! No hands!!");
                 returnVoid() //return;
             ));
 
@@ -87,15 +88,15 @@ public class AsmClassBuilderTest extends BaseUnitTest {
 
         asmClassBuilder
             .withConstructor(constructor(publicOnly(), parameters(String.class), //public AsmTestBaseType(String str1)
-                superConstructor(AsmTestBaseType.class, parameters(String.class), localVar(1)),  //super(str1);
+                superConstructor(AsmTestBaseType.class, parameters(String.class), getVar(1)),  //super(str1);
                 returnVoid()                                                                               //return;
             ))
             .withMethod(method(publicOnly(), name("getBaseString"), noParameters(), type(String.class), //public String getBaseString()
                 returnValue( //return this.baseString.concat(this.baseString)
-                    thisInstance()
+                    this_()
                         .getField(type(AsmTestBaseType.class), name("baseString"), type(String.class))
                         .invoke(String.class, MethodUtils.getAccessibleMethod(String.class, "concat", String.class),
-                            thisInstance().getField(type(AsmTestBaseType.class), name("baseString"), type(String.class))
+                            this_().getField(type(AsmTestBaseType.class), name("baseString"), type(String.class))
                         )
                 )
             ));
@@ -119,42 +120,42 @@ public class AsmClassBuilderTest extends BaseUnitTest {
             .withField(field(privateOnly(), type(int.class), name("secondOperand")))
             .withConstructor(constructor(publicOnly(), noParameters(), //public Constructor()
                 thisConstructor(parameters(int.class, int.class), //this(0, 0);
-                    stackValue(0),
-                    stackValue(0)
+                    literal(0),
+                    literal(0)
                 ),
                 returnVoid() //return;
             ))
             .withConstructor(constructor(publicOnly(), parameters(int.class, int.class), //public Constructor(int first, int second)
                 superConstructor(Object.class, noParameters()), //super();
-                thisInstance() //this.firstOperand = first;
+                this_() //this.firstOperand = first;
                     .assignField(type(ThisClass.class), name("firstOperand"), type(int.class),
-                        localVar(1)
+                        getVar(1)
                     ),
-                thisInstance() //this.secondOperand = second;
+                this_() //this.secondOperand = second;
                     .assignField(type(ThisClass.class), name("secondOperand"), type(int.class),
-                        localVar(2)
+                        getVar(2)
                     ),
                 returnVoid() //return;
             ))
             .withMethod(method(publicOnly(), name("setFirstOperand"), parameters(int.class), //public void setFirstOperand(int i)
-                thisInstance() //this.firstOperand = i;
+                this_() //this.firstOperand = i;
                     .assignField(type(ThisClass.class), name("firstOperand"), type(int.class),
-                        localVar(1)
+                        getVar(1)
                     ),
                 returnVoid() //return;
             ))
             .withMethod(method(publicOnly(), name("setSecondOperand"), parameters(int.class), //public void setSecondOperand(int i)
-                thisInstance() //this.secondOperand = i;
+                this_() //this.secondOperand = i;
                     .assignField(type(ThisClass.class), name("secondOperand"), type(int.class),
-                        localVar(1)
+                        getVar(1)
                     ),
                 returnVoid() //return;
             ))
             .withMethod(method(publicOnly(), name("getSum"), noParameters(), type(int.class),
                 returnValue( //return this.firstOperand + this.secondOperand;
-                    thisInstance()
+                    this_()
                         .getField(type(ThisClass.class), name("firstOperand"), type(int.class))
-                        .add(thisInstance()
+                        .add(this_()
                             .getField(type(ThisClass.class), name("secondOperand"), type(int.class))
                         )
                 )
@@ -188,7 +189,7 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     public void throwExceptionWhenNoConstructorFoundForParameters() {
         AsmClassBuilder<AsmTestBaseType> builder = new AsmClassBuilder<>(AsmTestBaseType.class)
             .withConstructor(constructor(publicOnly(), noParameters(), //public NewAsmTestBaseType()
-                superConstructor(AsmTestBaseType.class, parameters(String.class), stackObject("Str")), //super("Str");
+                superConstructor(AsmTestBaseType.class, parameters(String.class), CodeBuilders.literalObj("Str")), //super("Str");
                 returnVoid() //return;
             ));
 
@@ -213,12 +214,12 @@ public class AsmClassBuilderTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("printText"), parameters(String.class),
-                getStaticField(type(System.class), name("out"), type(PrintStream.class))
+                getStatic(type(System.class), name("out"), type(PrintStream.class))
                     .invoke(PrintStream.class, printlnMethod,
-                        localVar(1)
+                        getVar(1)
                     ),
-                setStaticField(type(StaticsTestType.class), name("LAST_PRINTED"), type(String.class),
-                    localVar(1)
+                setStatic(type(StaticsTestType.class), name("LAST_PRINTED"), type(String.class),
+                    getVar(1)
                 ),
                 returnVoid()
             ));

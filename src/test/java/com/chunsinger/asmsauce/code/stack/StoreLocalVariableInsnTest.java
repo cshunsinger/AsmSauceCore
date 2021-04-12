@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static aj.org.objectweb.asm.Opcodes.*;
 import static com.chunsinger.asmsauce.DefinitionBuilders.type;
-import static com.chunsinger.asmsauce.code.CodeBuilders.storeLocal;
+import static com.chunsinger.asmsauce.code.CodeBuilders.setVar;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -122,7 +122,7 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
         doAnswer(i -> context.pushStack(type(valueClass))).when(mockCodeBuilder).build(context);
 
-        StoreLocalVariableInsn insn = storeLocal(localName, mockCodeBuilder);
+        StoreLocalVariableInsn insn = setVar(localName, mockCodeBuilder);
         insn.build(context);
 
         verify(mockMethodVisitor).visitVarInsn(opcode, 0);

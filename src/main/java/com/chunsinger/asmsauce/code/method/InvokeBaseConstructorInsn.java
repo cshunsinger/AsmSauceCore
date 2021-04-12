@@ -8,7 +8,7 @@ import com.chunsinger.asmsauce.definitions.*;
 import java.lang.reflect.Constructor;
 
 import static com.chunsinger.asmsauce.DefinitionBuilders.*;
-import static com.chunsinger.asmsauce.code.CodeBuilders.thisInstance;
+import static com.chunsinger.asmsauce.code.CodeBuilders.this_;
 import static com.chunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
 public class InvokeBaseConstructorInsn extends InvocationInsn {
@@ -44,7 +44,7 @@ public class InvokeBaseConstructorInsn extends InvocationInsn {
     @Override
     public void build(MethodBuildingContext context) {
         //Stack "this" onto the stack
-        thisInstance().build(context);
+        this_().build(context);
 
         //Generate bytecode to load the parameters, and then generate bytecode to invoke the constructor
         super.build(context);

@@ -2,6 +2,7 @@ package com.chunsinger.asmsauce.definitions;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
 import com.chunsinger.asmsauce.ThisClass;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ public class FieldDefinitionTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                setStaticField(ThisClass.class, "myImaginaryField", stackObject("My Test String")),
+                setStatic(ThisClass.class, "myImaginaryField", CodeBuilders.literalObj("My Test String")),
                 returnVoid()
             ));
 
@@ -41,12 +42,12 @@ public class FieldDefinitionTest extends BaseUnitTest {
             .withField(field(privateOnly(), type(String.class), name("stringValue")))
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(FieldTestType.class, noParameters()),
-                thisInstance().assignField("stringValue", stackObject("My Test String")),
+                this_().assignField("stringValue", CodeBuilders.literalObj("My Test String")),
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("getStringValue"), noParameters(), type(String.class),
                 returnValue(
-                    thisInstance().getField("stringValue")
+                    this_().getField("stringValue")
                 )
             ));
 

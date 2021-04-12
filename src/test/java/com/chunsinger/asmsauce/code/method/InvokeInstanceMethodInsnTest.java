@@ -118,20 +118,20 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
             ))
             //private static double squared(double d) {...}
             .withMethod(method(privateStatic(), name("squared"), parameters(double.class), type(double.class),
-                returnValue(localVar(0).mul(localVar(0))) //return d * d;
+                returnValue(getVar(0).mul(getVar(0))) //return d * d;
             ))
             //public double distance(double aX, double aY, double bX, double bY) {...}
             .withMethod(method(publicOnly(), name("distance"), parameters(double.class, double.class, double.class, double.class), type(double.class),
                 //double bXMinusAX = bX - aX; (local var 9)
-                storeLocal(localVar(5).sub(localVar(1))),
+                setVar(getVar(5).sub(getVar(1))),
                 //double bYMinusAY = bY - aY; (local var 11)
-                storeLocal(localVar(7).sub(localVar(3))),
+                setVar(getVar(7).sub(getVar(3))),
                 //return Math.sqrt(TestBaseClassImpl.squared(bXMinusAX) + TestBaseClassImpl.squared(bYMinusAY))
                 returnValue(invokeStatic(Math.class, name("sqrt"), parameters(double.class), type(double.class),
                     invokeStatic(ThisClass.class, name("squared"), parameters(double.class), type(double.class),
-                        localVar(9)
+                        getVar(9)
                     ).add(invokeStatic(ThisClass.class, name("squared"), parameters(double.class), type(double.class),
-                        localVar(11))
+                        getVar(11))
                     )
                 ))
             ));
@@ -167,8 +167,8 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("receive"), parameters(TestInterfaceType.class),
-                thisInstance().assignField("testString", //super.testString = value.getTestString();
-                    localVar(1).invoke("getTestString")
+                this_().assignField("testString", //super.testString = value.getTestString();
+                    getVar(1).invoke("getTestString")
                 ),
                 returnVoid()
             ));

@@ -25,27 +25,27 @@ import static com.chunsinger.asmsauce.modifiers.AccessModifiers.publicStatic;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CodeBuilders {
-    public static StackLocalVariableInsn thisInstance() {
-        return localVar(0);
+    public static StackLocalVariableInsn this_() {
+        return getVar(0);
     }
 
-    public static StackLocalVariableInsn localVar(int localIndex) {
+    public static StackLocalVariableInsn getVar(int localIndex) {
         return new StackLocalVariableInsn(localIndex);
     }
 
-    public static StackLocalVariableInsn localVar(String localName) {
+    public static StackLocalVariableInsn getVar(String localName) {
         return new StackLocalVariableInsn(localName);
     }
 
-    public static StoreLocalVariableInsn storeLocal(Integer localIndex, CodeInsnBuilderLike valueBuilder) {
+    public static StoreLocalVariableInsn setVar(Integer localIndex, CodeInsnBuilderLike valueBuilder) {
         return new StoreLocalVariableInsn(localIndex, valueBuilder);
     }
 
-    public static StoreLocalVariableInsn storeLocal(CodeInsnBuilderLike valueBuilder) {
-        return storeLocal((Integer)null, valueBuilder);
+    public static StoreLocalVariableInsn setVar(CodeInsnBuilderLike valueBuilder) {
+        return setVar((Integer)null, valueBuilder);
     }
 
-    public static StoreLocalVariableInsn storeLocal(String localName, CodeInsnBuilderLike valueBuilder) {
+    public static StoreLocalVariableInsn setVar(String localName, CodeInsnBuilderLike valueBuilder) {
         return new StoreLocalVariableInsn(localName, valueBuilder);
     }
 
@@ -66,51 +66,51 @@ public class CodeBuilders {
     }
 
     public static StackObjectLiteralInsn stackNull() {
-        return stackObject(null);
+        return literalObj(null);
     }
 
-    public static StackObjectLiteralInsn stackObject(Object obj) {
+    public static StackObjectLiteralInsn literalObj(Object obj) {
         return new StackObjectLiteralInsn(obj);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(byte b) {
+    public static StackPrimitiveLiteralInsn literal(byte b) {
         return new StackPrimitiveLiteralInsn(b);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(short s) {
+    public static StackPrimitiveLiteralInsn literal(short s) {
         return new StackPrimitiveLiteralInsn(s);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(char c) {
+    public static StackPrimitiveLiteralInsn literal(char c) {
         return new StackPrimitiveLiteralInsn(c);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(int i) {
+    public static StackPrimitiveLiteralInsn literal(int i) {
         return new StackPrimitiveLiteralInsn(i);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(long l) {
+    public static StackPrimitiveLiteralInsn literal(long l) {
         return new StackPrimitiveLiteralInsn(l);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(float f) {
+    public static StackPrimitiveLiteralInsn literal(float f) {
         return new StackPrimitiveLiteralInsn(f);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(double d) {
+    public static StackPrimitiveLiteralInsn literal(double d) {
         return new StackPrimitiveLiteralInsn(d);
     }
 
-    public static StackPrimitiveLiteralInsn stackValue(boolean b) {
+    public static StackPrimitiveLiteralInsn literal(boolean b) {
         return new StackPrimitiveLiteralInsn(b);
     }
 
-    public static StackPrimitiveLiteralInsn stackTrue() {
-        return stackValue(true);
+    public static StackPrimitiveLiteralInsn true_() {
+        return literal(true);
     }
 
-    public static StackPrimitiveLiteralInsn stackFalse() {
-        return stackValue(false);
+    public static StackPrimitiveLiteralInsn false_() {
+        return literal(false);
     }
 
     public static ReturnInsn returnVoid() {
@@ -145,37 +145,37 @@ public class CodeBuilders {
         return invokeStatic(type(typeClass), name, parameters, parameterBuilders);
     }
 
-    public static GetStaticFieldInsn getStaticField(TypeDefinition<?> owner, NameDefinition name, TypeDefinition<?> fieldType) {
+    public static GetStaticFieldInsn getStatic(TypeDefinition<?> owner, NameDefinition name, TypeDefinition<?> fieldType) {
         return new GetStaticFieldInsn(new CompleteFieldDefinition(
             publicStatic(), //Access is irrelevant here, other than that this be static
             owner, name, fieldType
         ));
     }
 
-    public static GetStaticFieldInsn getStaticField(TypeDefinition<?> owner, NameDefinition name) {
+    public static GetStaticFieldInsn getStatic(TypeDefinition<?> owner, NameDefinition name) {
         return new GetStaticFieldInsn(new FieldDefinition(privateStatic(), owner, name, null));
     }
 
-    public static GetStaticFieldInsn getStaticField(Class<?> ownerClass, String fieldName) {
-        return getStaticField(type(ownerClass), name(fieldName));
+    public static GetStaticFieldInsn getStatic(Class<?> ownerClass, String fieldName) {
+        return getStatic(type(ownerClass), name(fieldName));
     }
 
-    public static AssignStaticFieldInsn setStaticField(TypeDefinition<?> owner, NameDefinition name, TypeDefinition<?> fieldType, CodeInsnBuilderLike valueBuilder) {
+    public static AssignStaticFieldInsn setStatic(TypeDefinition<?> owner, NameDefinition name, TypeDefinition<?> fieldType, CodeInsnBuilderLike valueBuilder) {
         return new AssignStaticFieldInsn(new CompleteFieldDefinition(
             publicStatic(),
             owner, name, fieldType
         ), valueBuilder);
     }
 
-    public static AssignStaticFieldInsn setStaticField(TypeDefinition<?> owner, NameDefinition name, CodeInsnBuilderLike valueBuilder) {
+    public static AssignStaticFieldInsn setStatic(TypeDefinition<?> owner, NameDefinition name, CodeInsnBuilderLike valueBuilder) {
         return new AssignStaticFieldInsn(new FieldDefinition(
             publicStatic(),
             owner, name, null
         ), valueBuilder);
     }
 
-    public static AssignStaticFieldInsn setStaticField(Class<?> owner, String name, CodeInsnBuilderLike valueBuilder) {
-        return setStaticField(type(owner), name(name), valueBuilder);
+    public static AssignStaticFieldInsn setStatic(Class<?> owner, String name, CodeInsnBuilderLike valueBuilder) {
+        return setStatic(type(owner), name(name), valueBuilder);
     }
 
     public static ExplicitConversionInsn cast(TypeDefinition<?> toType, CodeInsnBuilderLike valueBuilder) {
@@ -206,7 +206,7 @@ public class CodeBuilders {
         return new CodeBlock(builders);
     }
 
-    public static IfBranch.IfBuilder iff(Condition condition) {
+    public static IfBranch.IfBuilder if_(Condition condition) {
         return new IfBranch.IfBuilder(condition);
     }
 

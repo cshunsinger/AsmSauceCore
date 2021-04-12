@@ -1,6 +1,7 @@
 package com.chunsinger.asmsauce.code.method;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                instantiate(TestType.class, stackObject("Test String")),
+                instantiate(TestType.class, CodeBuilders.literalObj("Test String")),
                 returnVoid()
             ));
 
@@ -68,7 +69,7 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                instantiate(TestType.class, parameters(String.class), stackObject("Test String")),
+                instantiate(TestType.class, parameters(String.class), CodeBuilders.literalObj("Test String")),
                 returnVoid()
             ));
 
@@ -83,7 +84,7 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                instantiate(TestType.class, stackObject("Test String"), stackObject("Test String 2")),
+                instantiate(TestType.class, CodeBuilders.literalObj("Test String"), CodeBuilders.literalObj("Test String 2")),
                 returnVoid()
             ));
 
@@ -100,7 +101,7 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                instantiate(TestType.class, parameters(String.class, String.class), stackObject("Test String"), stackObject("Test String 2")),
+                instantiate(TestType.class, parameters(String.class, String.class), CodeBuilders.literalObj("Test String"), CodeBuilders.literalObj("Test String 2")),
                 returnVoid()
             ));
 
@@ -120,8 +121,8 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("createTestType"), parameters(p("myInt", int.class)), type(TestType.class),
-                storeLocal("testType", instantiate(TestType.class, localVar("myInt"))),
-                returnValue(localVar("testType"))
+                setVar("testType", instantiate(TestType.class, getVar("myInt"))),
+                returnValue(getVar("testType"))
             ));
 
         TestBase instance = builder.buildInstance();
@@ -142,8 +143,8 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("createTestType"), parameters(p("myInt", int.class)), type(TestType.class),
-                storeLocal("testType", instantiate(TestType.class, parameters(int.class), localVar("myInt"))),
-                returnValue(localVar("testType"))
+                setVar("testType", instantiate(TestType.class, parameters(int.class), getVar("myInt"))),
+                returnValue(getVar("testType"))
             ));
 
         TestBase instance = builder.buildInstance();

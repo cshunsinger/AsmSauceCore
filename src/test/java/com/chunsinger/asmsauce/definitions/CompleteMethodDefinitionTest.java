@@ -2,6 +2,7 @@ package com.chunsinger.asmsauce.definitions;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
 import com.chunsinger.asmsauce.ThisClass;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.modifiers.AccessModifiers;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class CompleteMethodDefinitionTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("createAnotherOne"), noParameters(), type(ThisClass.class),
                 returnValue(
-                    instantiate(ThisClass.class, parameters(String.class), stackObject("Some String"))
+                    instantiate(ThisClass.class, parameters(String.class), CodeBuilders.literalObj("Some String"))
                 )
             ));
 
@@ -75,7 +76,7 @@ class CompleteMethodDefinitionTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("createAnotherOne"), noParameters(), type(AccessModifiers.class),
                 returnValue(
-                    instantiate(AccessModifiers.class, parameters(int.class), stackValue(123))
+                    instantiate(AccessModifiers.class, parameters(int.class), literal(123))
                 )
             ));
 

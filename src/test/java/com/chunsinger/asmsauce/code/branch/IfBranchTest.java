@@ -39,9 +39,9 @@ public class IfBranchTest extends BaseUnitTest {
     }
 
     private static Stream<Arguments> illegalArgumentException_badConstructorParameters_testCases() {
-        Condition testCondition = stackValue(1).eq(stackValue(1));
+        Condition testCondition = literal(1).eq(literal(1));
         CodeInsnBuilderLike[] testBody = new CodeInsnBuilderLike[1];
-        testBody[0] = stackValue(1);
+        testBody[0] = literal(1);
 
         return Stream.of(
             Arguments.of(null, new Label(), testBody, "Condition cannot be null."),
@@ -62,10 +62,10 @@ public class IfBranchTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("abs"), parameters(p("value", int.class)), type(int.class),
-                iff(localVar("value").lt(stackValue(0))).then(
-                    returnValue(localVar("value").mul(stackValue(-1)))
+                if_(getVar("value").lt(literal(0))).then(
+                    returnValue(getVar("value").mul(literal(-1)))
                 ),
-                returnValue(localVar("value"))
+                returnValue(getVar("value"))
             ));
 
         TestType instance = builder.buildInstance();

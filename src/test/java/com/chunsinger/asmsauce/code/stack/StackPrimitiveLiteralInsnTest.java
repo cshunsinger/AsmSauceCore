@@ -23,55 +23,55 @@ class StackPrimitiveLiteralInsnTest extends BaseUnitTest {
 
     @Test
     public void stackPrimitiveByte() {
-        StackPrimitiveLiteralInsn insn = stackValue((byte)nextInt());
+        StackPrimitiveLiteralInsn insn = literal((byte)nextInt());
         testBuild(insn, byte.class);
     }
 
     @Test
     public void stackPrimitiveShort() {
-        StackPrimitiveLiteralInsn insn = stackValue((short)nextInt());
+        StackPrimitiveLiteralInsn insn = literal((short)nextInt());
         testBuild(insn, short.class);
     }
 
     @Test
     public void stackPrimitiveChar() {
-        StackPrimitiveLiteralInsn insn = stackValue((char)nextInt());
+        StackPrimitiveLiteralInsn insn = literal((char)nextInt());
         testBuild(insn, char.class);
     }
 
     @Test
     public void stackPrimitiveInt() {
-        StackPrimitiveLiteralInsn insn = stackValue(nextInt());
+        StackPrimitiveLiteralInsn insn = literal(nextInt());
         testBuild(insn, int.class);
     }
 
     @Test
     public void stackPrimitiveLong() {
-        StackPrimitiveLiteralInsn insn = stackValue(nextLong());
+        StackPrimitiveLiteralInsn insn = literal(nextLong());
         testBuild(insn, long.class);
     }
 
     @Test
     public void stackPrimitiveFloat() {
-        StackPrimitiveLiteralInsn insn = stackValue(nextFloat());
+        StackPrimitiveLiteralInsn insn = literal(nextFloat());
         testBuild(insn, float.class);
     }
 
     @Test
     public void stackPrimitiveDouble() {
-        StackPrimitiveLiteralInsn insn = stackValue(nextDouble());
+        StackPrimitiveLiteralInsn insn = literal(nextDouble());
         testBuild(insn, double.class);
     }
 
     @Test
     public void stackPrimitiveBooleanTrue() {
-        StackPrimitiveLiteralInsn insn = stackTrue();
+        StackPrimitiveLiteralInsn insn = true_();
         testBooleanBuild(insn, true);
     }
 
     @Test
     public void stackPrimitiveBooleanFalse() {
-        StackPrimitiveLiteralInsn insn = stackFalse();
+        StackPrimitiveLiteralInsn insn = false_();
         testBooleanBuild(insn, false);
     }
 

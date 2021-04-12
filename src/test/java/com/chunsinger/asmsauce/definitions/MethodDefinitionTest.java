@@ -2,6 +2,7 @@ package com.chunsinger.asmsauce.definitions;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
 import com.chunsinger.asmsauce.ThisClass;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
@@ -39,7 +40,7 @@ public class MethodDefinitionTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                instantiate(ThisClass.class, stackValue(123), stackValue(123)),
+                instantiate(ThisClass.class, literal(123), literal(123)),
                 returnVoid()
             ));
 
@@ -52,7 +53,7 @@ public class MethodDefinitionTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                thisInstance().invoke("myOwnMethod"),
+                this_().invoke("myOwnMethod"),
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("myOwnMethod"), parameters(int.class),
@@ -68,7 +69,7 @@ public class MethodDefinitionTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                thisInstance().invoke("myOwnMethod", thisInstance()),
+                this_().invoke("myOwnMethod", this_()),
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("myOwnMethod"), parameters(int.class),
@@ -84,7 +85,7 @@ public class MethodDefinitionTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                thisInstance().invoke("myOwnMethod", stackObject("My String Value")),
+                this_().invoke("myOwnMethod", CodeBuilders.literalObj("My String Value")),
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("myOwnMethod"), parameters(int.class),
@@ -100,7 +101,7 @@ public class MethodDefinitionTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                cast(int.class, stackValue(1)).invoke("someMethod"),
+                cast(int.class, literal(1)).invoke("someMethod"),
                 returnVoid()
             ));
 
@@ -121,12 +122,12 @@ public class MethodDefinitionTest extends BaseUnitTest {
             ))
             .withMethod(method(privateOnly(), name("generateString"), parameters(String.class), type(String.class),
                 returnValue(
-                    stackObject("My Test String").invoke("concat", localVar(1))
+                    CodeBuilders.literalObj("My Test String").invoke("concat", getVar(1))
                 )
             ))
             .withMethod(method(publicOnly(), name("createString"), noParameters(), type(String.class),
                 returnValue(
-                    thisInstance().invoke("generateString", stackObject("!"))
+                    this_().invoke("generateString", CodeBuilders.literalObj("!"))
                 )
             ));
 
@@ -139,14 +140,14 @@ public class MethodDefinitionTest extends BaseUnitTest {
         AsmClassBuilder<MethodTestingType> builder = new AsmClassBuilder<>(MethodTestingType.class)
             .withMethod(method(privateOnly(), name("innerPrintln"), parameters(MethodTestingType.class),
                 //System.out.println(param1.toString())
-                getStaticField(System.class, "out").invoke("println",
-                    localVar(1).invoke("toString")
+                getStatic(System.class, "out").invoke("println",
+                    getVar(1).invoke("toString")
                 ),
                 returnVoid()
             ))
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(MethodTestingType.class, noParameters()),
-                thisInstance().invoke("innerPrintln", thisInstance()), //this.innerPrintln(this);
+                this_().invoke("innerPrintln", this_()), //this.innerPrintln(this);
                 returnVoid()
             ));
 

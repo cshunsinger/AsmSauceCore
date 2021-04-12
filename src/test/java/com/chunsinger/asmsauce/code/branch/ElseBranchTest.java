@@ -1,6 +1,7 @@
 package com.chunsinger.asmsauce.code.branch;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.code.CodeInsnBuilderLike;
 import com.chunsinger.asmsauce.code.branch.condition.Condition;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
@@ -58,18 +59,18 @@ public class ElseBranchTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("testIfElse"), parameters(p("branchName", String.class)),
-                iff(stackObject("if").invoke("equals", localVar("branchName")).isTrue()).then(
-                    thisInstance().assignField("ifExecuted", stackTrue()),
-                    thisInstance().assignField("elseIfExecuted", stackFalse())
+                if_(CodeBuilders.literalObj("if").invoke("equals", getVar("branchName")).isTrue()).then(
+                    this_().assignField("ifExecuted", true_()),
+                    this_().assignField("elseIfExecuted", false_())
                 )
                 .elseDo(
-                    iff(stackObject("elseIf").invoke("equals", localVar("branchName")).isTrue()).then(
-                        thisInstance().assignField("ifExecuted", stackFalse()),
-                        thisInstance().assignField("elseIfExecuted", stackTrue())
+                    if_(CodeBuilders.literalObj("elseIf").invoke("equals", getVar("branchName")).isTrue()).then(
+                        this_().assignField("ifExecuted", false_()),
+                        this_().assignField("elseIfExecuted", true_())
                     )
                     .elseDo(
-                        thisInstance().assignField("ifExecuted", stackFalse()),
-                        thisInstance().assignField("elseIfExecuted", stackFalse())
+                        this_().assignField("ifExecuted", false_()),
+                        this_().assignField("elseIfExecuted", false_())
                     )
                 ),
 

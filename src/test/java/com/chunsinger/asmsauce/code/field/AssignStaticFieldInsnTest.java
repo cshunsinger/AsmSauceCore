@@ -80,8 +80,8 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(type(Object.class), noParameters()),
-                setStaticField(type(int[].class), name("length"), type(int.class),
-                    stackValue(123)
+                setStatic(type(int[].class), name("length"), type(int.class),
+                    literal(123)
                 ),
                 returnVoid()
             ));
@@ -99,8 +99,8 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
         AsmClassBuilder<TestStaticFieldsModifiable> builder = new AsmClassBuilder<>(TestStaticFieldsModifiable.class)
             .withConstructor(constructor(publicOnly(), parameters(String.class),
                 superConstructor(type(TestStaticFieldsModifiable.class), noParameters()),
-                setStaticField(type(TestStaticFieldsModifiable.class), name("MODIFIABLE_STRING"), type(String.class),
-                    localVar(1)
+                setStatic(type(TestStaticFieldsModifiable.class), name("MODIFIABLE_STRING"), type(String.class),
+                    getVar(1)
                 ),
                 returnVoid()
             ));
@@ -115,8 +115,8 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
         AsmClassBuilder<TestStaticFieldsModifiable> builder = new AsmClassBuilder<>(TestStaticFieldsModifiable.class)
             .withConstructor(constructor(publicOnly(), parameters(String.class),
                 superConstructor(type(TestStaticFieldsModifiable.class), noParameters()),
-                setStaticField(TestStaticFieldsModifiable.class, "MODIFIABLE_STRING",
-                    localVar(1)
+                setStatic(TestStaticFieldsModifiable.class, "MODIFIABLE_STRING",
+                    getVar(1)
                 ),
                 returnVoid()
             ));

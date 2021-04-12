@@ -1,6 +1,7 @@
 package com.chunsinger.asmsauce.code.branch.condition;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.code.CodeInsnBuilderLike;
 import com.chunsinger.asmsauce.code.branch.Op;
 import com.chunsinger.asmsauce.definitions.ParametersDefinition;
@@ -131,67 +132,67 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("equals"), methodParameters, type(boolean.class),
-                iff(localVar("first").eq(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("notEquals"), methodParameters, type(boolean.class),
-                iff(localVar("first").ne(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").ne(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("greaterThanOrEquals"), methodParameters, type(boolean.class),
-                iff(localVar("first").ge(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").ge(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("lessThanOrEquals"), methodParameters, type(boolean.class),
-                iff(localVar("first").le(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").le(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("greaterThan"), methodParameters, type(boolean.class),
-                iff(localVar("first").gt(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").gt(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("lessThan"), methodParameters, type(boolean.class),
-                iff(localVar("first").lt(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").lt(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("refEqualsPrim"), parameters(p("first", parameterWrapperType), p("second", parameterPrimitiveType)), type(boolean.class),
-                iff(localVar("first").isNotNull()).then(
-                    getStaticField(System.class, "out").invoke("println",
-                        stackObject("first: ").invoke("concat",
-                            localVar("first").invoke("toString")
+                if_(getVar("first").isNotNull()).then(
+                    getStatic(System.class, "out").invoke("println",
+                        CodeBuilders.literalObj("first: ").invoke("concat",
+                            getVar("first").invoke("toString")
                         )
                     )
                 ),
-                iff(localVar("first").isNull()).then(
-                    getStaticField(System.class, "out").invoke("println",
-                        stackObject("first: null")
+                if_(getVar("first").isNull()).then(
+                    getStatic(System.class, "out").invoke("println",
+                        CodeBuilders.literalObj("first: null")
                     )
                 ),
-                getStaticField(System.class, "out").invoke("println",
-                    stackObject("second: ").invoke("concat",
+                getStatic(System.class, "out").invoke("println",
+                    CodeBuilders.literalObj("second: ").invoke("concat",
                         invokeStatic(String.class, "valueOf",
                             parameterPrimitiveType == byte.class || parameterPrimitiveType == short.class ?
-                                cast(int.class, localVar("second")) :
-                                localVar("second")
+                                cast(int.class, getVar("second")) :
+                                getVar("second")
                         )
                     )
                 ),
-                iff(localVar("first").eq(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .buildInstance();
 
@@ -266,16 +267,16 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("equals"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
-                iff(localVar("first").eq(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ))
             .withMethod(method(publicOnly(), name("notEquals"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
-                iff(localVar("first").ne(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getVar("first").ne(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ));
 
         TestReferenceComparisonsType instance = builder.buildInstance();
@@ -312,10 +313,10 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("invalidComparison"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
-                iff(new DoubleOperandCondition(localVar("first"), localVar("second"), operation)).then(
-                    returnValue(stackTrue())
+                if_(new DoubleOperandCondition(getVar("first"), getVar("second"), operation)).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -332,10 +333,10 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("invalidComparison"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
-                iff(getStaticField(System.class, "out").invoke("println", localVar("first").invoke("toString")).eq(localVar("second"))).then(
-                    returnValue(stackTrue())
+                if_(getStatic(System.class, "out").invoke("println", getVar("first").invoke("toString")).eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                returnValue(stackFalse())
+                returnValue(false_())
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -352,8 +353,8 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
         "LT,NOT_LT"
     })
     public void testInvertingDoubleOperandConditions(Op operation, Op inverseOperation) {
-        CodeInsnBuilderLike operand1 = stackValue(123);
-        CodeInsnBuilderLike operand2 = stackValue(456);
+        CodeInsnBuilderLike operand1 = literal(123);
+        CodeInsnBuilderLike operand2 = literal(456);
 
         //Test condition to be inverted
         DoubleOperandCondition originalCondition = new DoubleOperandCondition(operand1, operand2, operation);

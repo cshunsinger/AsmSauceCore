@@ -3,6 +3,7 @@ package com.chunsinger.asmsauce.code.math;
 import com.chunsinger.asmsauce.AsmClassBuilder;
 import com.chunsinger.asmsauce.MethodBuildingContext;
 import com.chunsinger.asmsauce.ThisClass;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.code.CodeInsnBuilderLike;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import org.junit.jupiter.api.Test;
@@ -68,152 +69,152 @@ class MathOperationInsnTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("add"), parameters(byte.class, byte.class), type(byte.class), //public byte add(byte a, byte b)
                 returnValue( //return a + b;
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("add"), parameters(short.class, short.class), type(short.class), //public short add(short a, short b)
                 returnValue( //return a + b;
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("add"), parameters(int.class, int.class), type(int.class), //public int add(int a, int b)
                 returnValue( //return a + b;
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("add"), parameters(long.class, long.class), type(long.class), //public long add(long a, long b)
                 returnValue( //return a + b;
-                    localVar(1).add(localVar(3))
+                    getVar(1).add(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("add"), parameters(float.class, float.class), type(float.class), //public float add(float a, float b)
                 returnValue( //return a + b;
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("add"), parameters(double.class, double.class), type(double.class), //public double add(double a, double b)
                 returnValue( //return a + b;
-                    localVar(1).add(localVar(3))
+                    getVar(1).add(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("sub"), parameters(byte.class, byte.class), type(byte.class), //public byte sub(byte a, byte b)
                 returnValue( //return a + b;
-                    localVar(1).sub(localVar(2))
+                    getVar(1).sub(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("sub"), parameters(short.class, short.class), type(short.class), //public short sub(short a, short b)
                 returnValue( //return a + b;
-                    localVar(1).sub(localVar(2))
+                    getVar(1).sub(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("sub"), parameters(int.class, int.class), type(int.class), //public int sub(int a, int b)
                 returnValue( //return a + b;
-                    localVar(1).sub(localVar(2))
+                    getVar(1).sub(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("sub"), parameters(long.class, long.class), type(long.class), //public long sub(long a, long b)
                 returnValue( //return a + b;
-                    localVar(1).sub(localVar(3))
+                    getVar(1).sub(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("sub"), parameters(float.class, float.class), type(float.class), //public float sub(float a, float b)
                 returnValue( //return a + b;
-                    localVar(1).sub(localVar(2))
+                    getVar(1).sub(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("sub"), parameters(double.class, double.class), type(double.class), //public double sub(double a, double b)
                 returnValue( //return a + b;
-                    localVar(1).sub(localVar(3))
+                    getVar(1).sub(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("mul"), parameters(byte.class, byte.class), type(byte.class), //public byte mul(byte a, byte b)
                 returnValue( //return a + b;
-                    localVar(1).mul(localVar(2))
+                    getVar(1).mul(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mul"), parameters(short.class, short.class), type(short.class), //public short mul(short a, short b)
                 returnValue( //return a + b;
-                    localVar(1).mul(localVar(2))
+                    getVar(1).mul(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mul"), parameters(int.class, int.class), type(int.class), //public int mul(int a, int b)
                 returnValue( //return a + b;
-                    localVar(1).mul(localVar(2))
+                    getVar(1).mul(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mul"), parameters(long.class, long.class), type(long.class), //public long mul(long a, long b)
                 returnValue( //return a + b;
-                    localVar(1).mul(localVar(3))
+                    getVar(1).mul(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("mul"), parameters(float.class, float.class), type(float.class), //public float mul(float a, float b)
                 returnValue( //return a + b;
-                    localVar(1).mul(localVar(2))
+                    getVar(1).mul(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mul"), parameters(double.class, double.class), type(double.class), //public double mul(double a, double b)
                 returnValue( //return a + b;
-                    localVar(1).mul(localVar(3))
+                    getVar(1).mul(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("div"), parameters(byte.class, byte.class), type(byte.class), //public byte div(byte a, byte b)
                 returnValue( //return a + b;
-                    localVar(1).div(localVar(2))
+                    getVar(1).div(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("div"), parameters(short.class, short.class), type(short.class), //public short div(short a, short b)
                 returnValue( //return a + b;
-                    localVar(1).div(localVar(2))
+                    getVar(1).div(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("div"), parameters(int.class, int.class), type(int.class), //public int div(int a, int b)
                 returnValue( //return a + b;
-                    localVar(1).div(localVar(2))
+                    getVar(1).div(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("div"), parameters(long.class, long.class), type(long.class), //public long div(long a, long b)
                 returnValue( //return a + b;
-                    localVar(1).div(localVar(3))
+                    getVar(1).div(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("div"), parameters(float.class, float.class), type(float.class), //public float div(float a, float b)
                 returnValue( //return a + b;
-                    localVar(1).div(localVar(2))
+                    getVar(1).div(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("div"), parameters(double.class, double.class), type(double.class), //public double div(double a, double b)
                 returnValue( //return a + b;
-                    localVar(1).div(localVar(3))
+                    getVar(1).div(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("mod"), parameters(byte.class, byte.class), type(byte.class), //public byte mod(byte a, byte b)
                 returnValue( //return a + b;
-                    localVar(1).mod(localVar(2))
+                    getVar(1).mod(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mod"), parameters(short.class, short.class), type(short.class), //public short mod(short a, short b)
                 returnValue( //return a + b;
-                    localVar(1).mod(localVar(2))
+                    getVar(1).mod(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mod"), parameters(int.class, int.class), type(int.class), //public int mod(int a, int b)
                 returnValue( //return a + b;
-                    localVar(1).mod(localVar(2))
+                    getVar(1).mod(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mod"), parameters(long.class, long.class), type(long.class), //public long mod(long a, long b)
                 returnValue( //return a + b;
-                    localVar(1).mod(localVar(3))
+                    getVar(1).mod(getVar(3))
                 )
             ))
             .withMethod(method(publicOnly(), name("mod"), parameters(float.class, float.class), type(float.class), //public float mod(float a, float b)
                 returnValue( //return a + b;
-                    localVar(1).mod(localVar(2))
+                    getVar(1).mod(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("mod"), parameters(double.class, double.class), type(double.class), //public double mod(double a, double b)
                 returnValue( //return a + b;
-                    localVar(1).mod(localVar(3))
+                    getVar(1).mod(getVar(3))
                 )
             ));
         TestMaths testMathsImpl = mathsBuilder.buildInstance();
@@ -271,22 +272,22 @@ class MathOperationInsnTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(Integer.class, Integer.class), type(int.class),
                 returnValue(
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(int.class, Integer.class), type(int.class),
                 returnValue(
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(float.class, float.class), type(Float.class),
                 returnValue(
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ))
             .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(Double.class, Double.class), type(Double.class),
                 returnValue(
-                    localVar(1).add(localVar(2))
+                    getVar(1).add(getVar(2))
                 )
             ));
         TestInterestingMaths mathsImpl = mathsBuilder.buildInstance();
@@ -316,7 +317,7 @@ class MathOperationInsnTest extends BaseUnitTest {
             ))
             .withMethod(method(publicOnly(), name("add"), parameters(float.class, float.class), type(float.class),
                 returnValue(
-                    stackObject("SomeString").add(stackValue(1234))
+                    CodeBuilders.literalObj("SomeString").add(literal(1234))
                 )
             ));
 
@@ -342,8 +343,8 @@ class MathOperationInsnTest extends BaseUnitTest {
                 returnValue(
                     //return MathsInterfaceImpl.consumeFloat(123f) + 123f; //consumeFloat is a void method
                     invokeStatic(ThisClass.class, name("consumeFloat"), parameters(float.class), voidType(),
-                        stackValue(123f)
-                    ).add(stackValue(123f))
+                        literal(123f)
+                    ).add(literal(123f))
                 )
             ));
 

@@ -1,6 +1,7 @@
 package com.chunsinger.asmsauce.code.branch.condition;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 
@@ -28,13 +29,13 @@ public class NullConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("generateString"), parameters(p("value", Object.class), p("defaultString", String.class)), type(String.class),
-                iff(localVar("value").isNotNull()).then(
-                    returnValue(localVar("value").invoke("toString"))
+                if_(getVar("value").isNotNull()).then(
+                    returnValue(getVar("value").invoke("toString"))
                 ),
-                iff(not(localVar("defaultString").isNull())).then(
-                    returnValue(localVar("defaultString"))
+                if_(not(getVar("defaultString").isNull())).then(
+                    returnValue(getVar("defaultString"))
                 ),
-                returnValue(stackObject("null"))
+                returnValue(CodeBuilders.literalObj("null"))
             ));
 
         TestType instance = builder.buildInstance();
@@ -55,8 +56,8 @@ public class NullConditionTest extends BaseUnitTest {
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("generateString"), parameters(p("value", Object.class), p("defaultString", String.class)), type(String.class),
-                iff(new NullCondition(stackValue(101))).then(
-                    returnValue(localVar("value").invoke("toString"))
+                if_(new NullCondition(literal(101))).then(
+                    returnValue(getVar("value").invoke("toString"))
                 ),
                 returnValue(stackNull())
             ));

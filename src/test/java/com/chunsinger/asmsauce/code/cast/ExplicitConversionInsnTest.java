@@ -1,6 +1,7 @@
 package com.chunsinger.asmsauce.code.cast;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.code.CodeInsnBuilderLike;
 import com.chunsinger.asmsauce.definitions.TypeDefinition;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
@@ -68,7 +69,7 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
                             TestExplicitConversion.class,
                             name("wasteMethod"),
                             parameters(Object.class),
-                            localVar(1)
+                            getVar(1)
                         )
                     ) //super((String)TestExplicitConversion.wasteMethod(obj));
                 ),
@@ -84,9 +85,9 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         AsmClassBuilder<TestExplicitConversion> builder = new AsmClassBuilder<>(TestExplicitConversion.class)
             .withConstructor(constructor(publicOnly(), noParameters(), //public TestExplicitConversionImpl()
                 superConstructor(TestExplicitConversion.class, parameters(String.class),
-                    stackObject("SomeString")
+                    CodeBuilders.literalObj("SomeString")
                 ),
-                storeLocal(cast(int.class, instantiate(Object.class))), //attempt: (int)(new Object()) which is an invalid cast
+                setVar(cast(int.class, instantiate(Object.class))), //attempt: (int)(new Object()) which is an invalid cast
                 returnVoid()
             ));
 
@@ -102,9 +103,9 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         //String can be implicitly cast, so the explicit casting system will fall back on the implicit casting system
         AsmClassBuilder<TestExplicitConversion> builder = new AsmClassBuilder<>(TestExplicitConversion.class)
             .withConstructor(constructor(publicOnly(), parameters(String.class),
-                superConstructor(TestExplicitConversion.class, parameters(String.class), localVar(1)),
-                getStaticField(System.class, "out").invoke("println",
-                    cast(Object.class, localVar(1)
+                superConstructor(TestExplicitConversion.class, parameters(String.class), getVar(1)),
+                getStatic(System.class, "out").invoke("println",
+                    cast(Object.class, getVar(1)
                 )),
                 returnVoid()
             ));
@@ -121,7 +122,7 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         AsmClassBuilder<TestExplicitConversion> builder = new AsmClassBuilder<>(TestExplicitConversion.class)
             .withConstructor(constructor(publicOnly(), parameters(Object.class),
                 superConstructor(TestExplicitConversion.class, parameters(String.class),
-                    cast(String.class, localVar(1))
+                    cast(String.class, getVar(1))
                 ),
                 returnVoid()
             ));
@@ -196,22 +197,22 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
     }
 
     private static Stream<Arguments> successfullyCastingPrimitivesExplicitly_testCases() {
-        Double d = nextDouble();
-        Float f = nextFloat();
-        Long l = nextLong();
-        Integer i = nextInt();
-        Short s = (short)nextInt();
-        Character c = randomAlphabetic(1).charAt(0);
-        Byte b = (byte)nextInt();
+        double d = nextDouble();
+        float f = nextFloat();
+        long l = nextLong();
+        int i = nextInt();
+        short s = (short)nextInt();
+        char c = randomAlphabetic(1).charAt(0);
+        byte b = (byte)nextInt();
 
         return Stream.of(
-            Arguments.of(d, stackValue(d)),
-            Arguments.of(f, stackValue(f)),
-            Arguments.of(l, stackValue(l)),
-            Arguments.of(i, stackValue(i)),
-            Arguments.of(s, stackValue(s)),
-            Arguments.of((int)c, stackValue(c)), //Character does not inherit from Number, so cast it to int to be passed as test parameter
-            Arguments.of(b, stackValue(b))
+            Arguments.of(d, literal(d)),
+            Arguments.of(f, literal(f)),
+            Arguments.of(l, literal(l)),
+            Arguments.of(i, literal(i)),
+            Arguments.of(s, literal(s)),
+            Arguments.of((int)c, literal(c)), //Character does not inherit from Number, so cast it to int to be passed as test parameter
+            Arguments.of(b, literal(b))
         );
     }
 }

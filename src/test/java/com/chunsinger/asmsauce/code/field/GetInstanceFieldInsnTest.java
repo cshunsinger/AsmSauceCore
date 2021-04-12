@@ -2,6 +2,7 @@ package com.chunsinger.asmsauce.code.field;
 
 import com.chunsinger.asmsauce.AsmClassBuilder;
 import com.chunsinger.asmsauce.MethodBuildingContext;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
 import lombok.Getter;
@@ -45,7 +46,7 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
                 invokeStatic(Math.class, name("abs"), parameters(int.class), type(int.class),
-                    stackValue(123)
+                    literal(123)
                 ).getField(type(Object.class), name("fieldName"), type(int.class)),
                 returnVoid()
             ));
@@ -69,7 +70,7 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
         AsmClassBuilder<TestType> builder = new AsmClassBuilder<>(TestType.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(TestType.class, noParameters()),
-                thisInstance().getField("privateString"),
+                this_().getField("privateString"),
                 returnVoid()
             ));
 
@@ -82,7 +83,7 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()),
-                stackObject("Test String").getField("SomeFieldThatDoesNotExist"),
+                CodeBuilders.literalObj("Test String").getField("SomeFieldThatDoesNotExist"),
                 returnVoid()
             ));
 
@@ -95,8 +96,8 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
         AsmClassBuilder<TestType> builder = new AsmClassBuilder<>(TestType.class)
             .withConstructor(constructor(publicOnly(), noParameters(), //constructor() {...}
                 superConstructor(TestType.class, noParameters()), //super();
-                thisInstance().assignField("protectedString", stackObject("Some Test String Value")), //this.protectedString = "Some Test String Value";
-                thisInstance().assignField("otherProtectedString", thisInstance().getField("protectedString")), //this.otherProtectedString = this.protectedString;
+                this_().assignField("protectedString", CodeBuilders.literalObj("Some Test String Value")), //this.protectedString = "Some Test String Value";
+                this_().assignField("otherProtectedString", this_().getField("protectedString")), //this.otherProtectedString = this.protectedString;
                 returnVoid() //return;
             ));
 

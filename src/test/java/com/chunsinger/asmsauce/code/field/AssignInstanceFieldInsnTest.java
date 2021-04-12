@@ -3,6 +3,7 @@ package com.chunsinger.asmsauce.code.field;
 import com.chunsinger.asmsauce.AsmClassBuilder;
 import com.chunsinger.asmsauce.MethodBuildingContext;
 import com.chunsinger.asmsauce.ThisClass;
+import com.chunsinger.asmsauce.code.CodeBuilders;
 import com.chunsinger.asmsauce.code.CodeInsnBuilderLike;
 import com.chunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import com.chunsinger.asmsauce.testing.BaseUnitTest;
@@ -83,9 +84,9 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
                 superConstructor(Object.class, noParameters()), //basic super() call
                 //Invoke a static method that will place a primitive onto the stack as the "instance type"
                 invokeStatic(Math.class, name("abs"), parameters(int.class), type(int.class),
-                    stackValue(1234)
+                    literal(1234)
                 ).assignField(type(Object.class), name("fieldName"), type(int.class),
-                    stackValue(1234) //trying to assign 1234 to a field named "fieldName" on an primitive value, which will result in an exception
+                    literal(1234) //trying to assign 1234 to a field named "fieldName" on an primitive value, which will result in an exception
                 ),
                 returnVoid()
             ));
@@ -100,10 +101,10 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
             .withConstructor(constructor(publicOnly(), noParameters(),
                 superConstructor(Object.class, noParameters()), //basic super() call
                 invokeStatic(Array.class, name("newInstance"), parameters(Class.class, int.class), type(int[].class),
-                    stackObject(int.class),
-                    stackValue(10)
+                    CodeBuilders.literalObj(int.class),
+                    literal(10)
                 ).assignField(type(int[].class), name("length"), type(int.class),
-                    stackValue(123) //Attempting to set the length field of an array which will result in an IllegalArgumentException from the builder
+                    literal(123) //Attempting to set the length field of an array which will result in an IllegalArgumentException from the builder
                 ),
                 returnVoid()
             ));
@@ -124,15 +125,15 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
                 //super();
                 superConstructor(TestBaseType.class, noParameters()),
                 //this.str = strParam;
-                thisInstance().assignField(type(ThisClass.class), name("str"), type(String.class),
-                    localVar(1)
+                this_().assignField(type(ThisClass.class), name("str"), type(String.class),
+                    getVar(1)
                 ),
                 //return;
                 returnVoid()
             ))
             .withMethod(method(publicOnly(), name("getStr"), noParameters(), type(String.class), //public String getStr()
                 returnValue( //return this.str;
-                    thisInstance().getField(type(ThisClass.class), name("str"), type(String.class))
+                    this_().getField(type(ThisClass.class), name("str"), type(String.class))
                 )
             ));
 
