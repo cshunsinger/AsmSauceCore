@@ -1,9 +1,9 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.setVar;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

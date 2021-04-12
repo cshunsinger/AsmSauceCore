@@ -7,8 +7,8 @@ import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilder
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import io.github.cshunsinger.asmsauce.definitions.*;
 
-import static aj.org.objectweb.asm.Opcodes.DUP;
-import static aj.org.objectweb.asm.Opcodes.NEW;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.NEW;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 
 public class InstantiateObjectInsn extends InvocationInsn implements InvokableInstance, ConditionBuilderLike, NullConditionBuilderLike {

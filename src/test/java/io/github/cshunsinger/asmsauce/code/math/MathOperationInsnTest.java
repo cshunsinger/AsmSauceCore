@@ -5,7 +5,7 @@ import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 

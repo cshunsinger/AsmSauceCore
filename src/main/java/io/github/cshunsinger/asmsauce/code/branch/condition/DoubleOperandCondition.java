@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
-import aj.org.objectweb.asm.Label;
+import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
@@ -10,7 +10,7 @@ import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.Getter;
 import org.apache.commons.lang3.ClassUtils;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 
 @Getter
 public class DoubleOperandCondition extends Condition {

@@ -1,7 +1,6 @@
 package io.github.cshunsinger.asmsauce;
 
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.reflect.MethodUtils;

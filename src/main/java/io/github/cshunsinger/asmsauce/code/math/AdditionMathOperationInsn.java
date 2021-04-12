@@ -3,7 +3,7 @@ package io.github.cshunsinger.asmsauce.code.math;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 
 public class AdditionMathOperationInsn extends MathOperationInsn implements MathOperandInstance, ConditionBuilderLike {
     public AdditionMathOperationInsn(CodeInsnBuilderLike operand) {

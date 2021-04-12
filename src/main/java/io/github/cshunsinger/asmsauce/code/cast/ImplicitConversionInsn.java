@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.cast;
 
-import aj.org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
@@ -8,12 +7,13 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.objectweb.asm.MethodVisitor;
 
 import java.lang.reflect.Method;
 import java.util.Stack;
 
-import static aj.org.objectweb.asm.Opcodes.*;
 import static io.github.cshunsinger.asmsauce.util.ReflectionsUtils.generateJvmMethodSignature;
+import static org.objectweb.asm.Opcodes.*;
 
 public class ImplicitConversionInsn extends CodeInsnBuilder {
     private final TypeDefinition<?> toType;

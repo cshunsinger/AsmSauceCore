@@ -7,8 +7,8 @@ import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike
 import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
-import static aj.org.objectweb.asm.Opcodes.ICONST_0;
-import static aj.org.objectweb.asm.Opcodes.ICONST_1;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_1;
 
 public class StackPrimitiveLiteralInsn extends CodeInsnBuilder implements
     MathOperandInstance, ConditionBuilderLike, BooleanConditionBuilderLike {

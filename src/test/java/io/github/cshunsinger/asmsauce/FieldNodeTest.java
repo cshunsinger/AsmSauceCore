@@ -1,9 +1,8 @@
 package io.github.cshunsinger.asmsauce;
 
-import aj.org.objectweb.asm.ClassWriter;
-import aj.org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

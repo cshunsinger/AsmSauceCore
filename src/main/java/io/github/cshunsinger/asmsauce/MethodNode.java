@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.*;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;

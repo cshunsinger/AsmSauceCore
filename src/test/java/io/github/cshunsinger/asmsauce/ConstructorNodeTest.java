@@ -1,11 +1,10 @@
 package io.github.cshunsinger.asmsauce;
 
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static aj.org.objectweb.asm.Opcodes.ACC_FINAL;
-import static aj.org.objectweb.asm.Opcodes.ACC_STATIC;
+import static org.objectweb.asm.Opcodes.ACC_FINAL;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 import static org.hamcrest.MatcherAssert.assertThat;

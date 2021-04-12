@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.definitions.FieldDefinition;

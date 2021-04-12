@@ -1,10 +1,10 @@
 package io.github.cshunsinger.asmsauce;
 
-import aj.org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import io.github.cshunsinger.asmsauce.definitions.ParamDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import lombok.Getter;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.*;
 import java.util.stream.Collectors;

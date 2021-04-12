@@ -4,12 +4,11 @@ import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ClassUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +28,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
-@Slf4j
 public class ExplicitConversionInsnTest extends BaseUnitTest {
     @Getter
     @RequiredArgsConstructor
@@ -167,15 +165,16 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         TestPrimitivesType instance = builder.buildInstance();
 
         //Logging all of the values to make this test case a little easier to read and understand
-        log.info("""
-            Casting test value of type {} to the different primitive types: {}
+        System.out.printf("""
+            Casting test value of type %s to the different primitive types: %s
             Expected/Actual Values:
-                double: {}  /   {}
-                float:  {}  /   {}
-                long:   {}  /   {}
-                short:  {}  /   {}
-                char:   {}  /   {}
-                byte:   {}  /   {}""",
+                double: %s  /   %s
+                float:  %s  /   %s
+                long:   %s  /   %s
+                short:  %s  /   %s
+                char:   %s  /   %s
+                byte:   %s  /   %s
+            """,
             ClassUtils.wrapperToPrimitive(value.getClass()), value,
             value.doubleValue(), instance.getADouble(),
             value.floatValue(), instance.getAFloat(),

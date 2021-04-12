@@ -10,7 +10,7 @@ import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 
 public class ExplicitConversionInsn extends CodeInsnBuilder implements
     InvokableInstance, MathOperandInstance, ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike {

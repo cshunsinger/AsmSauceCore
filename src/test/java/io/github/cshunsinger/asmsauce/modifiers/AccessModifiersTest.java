@@ -2,13 +2,13 @@ package io.github.cshunsinger.asmsauce.modifiers;
 
 import io.github.cshunsinger.asmsauce.ClassBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.stream.Stream;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;

@@ -1,14 +1,14 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static aj.org.objectweb.asm.Opcodes.ICONST_0;
-import static aj.org.objectweb.asm.Opcodes.ICONST_1;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_1;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.RandomUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;

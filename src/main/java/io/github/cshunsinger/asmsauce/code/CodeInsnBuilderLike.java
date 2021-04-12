@@ -2,8 +2,8 @@ package io.github.cshunsinger.asmsauce.code;
 
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 
-import static aj.org.objectweb.asm.Opcodes.POP;
-import static aj.org.objectweb.asm.Opcodes.POP2;
+import static org.objectweb.asm.Opcodes.POP;
+import static org.objectweb.asm.Opcodes.POP2;
 
 public interface CodeInsnBuilderLike {
     void setNext(CodeInsnBuilderLike next);

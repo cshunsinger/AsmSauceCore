@@ -1,14 +1,14 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
-import aj.org.objectweb.asm.Label;
+import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
-import static aj.org.objectweb.asm.Opcodes.IFEQ;
-import static aj.org.objectweb.asm.Opcodes.IFNE;
+import static org.objectweb.asm.Opcodes.IFEQ;
+import static org.objectweb.asm.Opcodes.IFNE;
 
 /**
  * This condition represents a condition in which a single boolean value is supplied. This condition checks if a single

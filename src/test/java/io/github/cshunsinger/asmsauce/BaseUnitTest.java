@@ -1,4 +1,4 @@
-package io.github.cshunsinger.asmsauce.testing;
+package io.github.cshunsinger.asmsauce;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;

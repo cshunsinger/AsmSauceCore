@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce;
 
-import aj.org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.ClassWriter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

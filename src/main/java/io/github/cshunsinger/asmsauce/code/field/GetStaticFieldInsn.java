@@ -11,7 +11,7 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
-import static aj.org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
 
 public class GetStaticFieldInsn extends FieldInsn implements
     InvokableInstance, FieldAccessibleInstance, MathOperandInstance,

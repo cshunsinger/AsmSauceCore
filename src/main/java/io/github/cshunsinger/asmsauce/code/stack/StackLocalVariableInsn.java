@@ -12,7 +12,7 @@ import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 import static java.util.Arrays.asList;
 
 public class StackLocalVariableInsn extends CodeInsnBuilder implements

@@ -1,12 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.cast;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.ClassBuildingContext;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +16,7 @@ import org.mockito.Mock;
 
 import java.util.stream.Stream;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;

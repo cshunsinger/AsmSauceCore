@@ -1,7 +1,7 @@
 package io.github.cshunsinger.asmsauce.code;
 
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 

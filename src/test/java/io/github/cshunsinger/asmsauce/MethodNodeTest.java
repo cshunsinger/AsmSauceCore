@@ -1,7 +1,6 @@
 package io.github.cshunsinger.asmsauce;
 
 import io.github.cshunsinger.asmsauce.definitions.ThrowsDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.MethodNode.method;

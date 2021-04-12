@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 
 public abstract class InvocationInsn extends CodeInsnBuilder {
     protected final List<CodeInsnBuilderLike> parameterBuilders;

@@ -10,7 +10,7 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
-import static aj.org.objectweb.asm.Opcodes.PUTFIELD;
+import static org.objectweb.asm.Opcodes.PUTFIELD;
 
 public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInstance, MathOperandInstance {
     private final CodeInsnBuilderLike valueBuilder;

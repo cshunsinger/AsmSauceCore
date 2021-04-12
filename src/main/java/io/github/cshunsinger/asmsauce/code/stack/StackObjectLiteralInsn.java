@@ -10,7 +10,7 @@ import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
-import static aj.org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
 
 public class StackObjectLiteralInsn extends CodeInsnBuilder implements
     InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance, MathOperandInstance,

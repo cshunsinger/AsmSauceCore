@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce;
 
-import aj.org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.ClassWriter;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import io.github.cshunsinger.asmsauce.util.ReflectionsUtils;
 import lombok.AccessLevel;
@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static aj.org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
-import static aj.org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
-import static aj.org.objectweb.asm.Opcodes.V15;
+import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
+import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
+import static org.objectweb.asm.Opcodes.V15;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static io.github.cshunsinger.asmsauce.util.ReflectionsUtils.jvmClassname;
 import static java.util.Collections.emptyList;

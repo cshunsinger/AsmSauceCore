@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce;
 
-import aj.org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.FieldVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.NameDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;

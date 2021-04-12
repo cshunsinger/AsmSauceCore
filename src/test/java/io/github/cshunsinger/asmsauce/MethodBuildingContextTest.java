@@ -1,8 +1,7 @@
 package io.github.cshunsinger.asmsauce;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;

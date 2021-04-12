@@ -6,7 +6,7 @@ import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import org.apache.commons.lang3.StringUtils;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 
 public class StoreLocalVariableInsn extends CodeInsnBuilder {
     private final Integer localIndex;

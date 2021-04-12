@@ -1,9 +1,9 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

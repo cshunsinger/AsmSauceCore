@@ -2,7 +2,7 @@ package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.definitions.ParametersDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;

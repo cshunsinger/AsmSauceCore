@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
-import aj.org.objectweb.asm.Label;
+import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 
 import java.util.ArrayList;

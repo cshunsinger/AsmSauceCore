@@ -1,11 +1,11 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import aj.org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.ClassBuildingContext;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -15,7 +15,7 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 
-import static aj.org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;

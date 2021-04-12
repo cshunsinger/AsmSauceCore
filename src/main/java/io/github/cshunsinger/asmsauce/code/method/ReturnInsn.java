@@ -6,7 +6,7 @@ import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
-import static aj.org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.*;
 
 public class ReturnInsn extends CodeInsnBuilder {
     private final CodeInsnBuilderLike returnValueBuilder;

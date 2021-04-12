@@ -7,7 +7,7 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
-import static aj.org.objectweb.asm.Opcodes.PUTSTATIC;
+import static org.objectweb.asm.Opcodes.PUTSTATIC;
 
 public class AssignStaticFieldInsn extends AssignInstanceFieldInsn {
     public AssignStaticFieldInsn(FieldDefinition fieldDefinition, CodeInsnBuilderLike valueBuilder) {

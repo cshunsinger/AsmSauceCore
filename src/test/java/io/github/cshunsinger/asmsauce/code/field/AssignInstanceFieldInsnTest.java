@@ -6,7 +6,7 @@ import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
-import io.github.cshunsinger.asmsauce.testing.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
