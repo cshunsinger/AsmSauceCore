@@ -3,14 +3,18 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven'
+    id 'signing'
+    id 'java-library'
     id 'maven-publish'
     id 'jacoco'
     id "org.owasp.dependencycheck" version "6.1.5"
 }
 
-group = 'com.chunsinger.asmsauce'
+group = 'io.github.cshunsinger'
 version = '0.1-SNAPSHOT'
 description = """A Java library which provides a high-level api for dynamically writing new classes at runtime, loading them, and using them."""
+
+boolean isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
 
 repositories {
     mavenLocal()
@@ -19,7 +23,6 @@ repositories {
 }
 
 test {
-    jvmArgs '--enable-preview'
     useJUnitPlatform()
 }
 
@@ -38,12 +41,6 @@ jacocoTestReport {
         csv.enabled false
         html.enabled true
     }
-}
-
-if (project.hasProperty('build_version')) {
-    project.version = project.build_version
-} else {
-    project.version = 'dev'
 }
 
 def junit_jupiter = '5.7.0'
@@ -72,4 +69,59 @@ task getProjectDescription {
     doLast {
         println project.description
     }
+}
+
+publishing {
+    publications {
+        create("AsmSauce", MavenPublication.class) {
+            artifactId = 'asmsauce-core'
+            from(components['java'])
+            pom {
+                name.set(rootProject.name)
+                description.set(project.description)
+                url.set("https://github.com/cshunsinger/AsmSauceCore")
+                inceptionYear.set("2021")
+
+                developers {
+                    developer {
+                        name.set("Clayton Hunsinger")
+                        email.set("c@rishall.com")
+                    }
+                }
+
+                licenses {
+                    license {
+                        name.set("GNU General Public License v3.0")
+                        url.set("https://github.com/cshunsinger/AsmSauceCore/blob/master/LICENSE")
+                        distribution.set("repo")
+                    }
+                }
+
+                scm {
+                    url.set("https://github.com/cshunsinger/AsmSauceCore")
+                    connection.set("scm:git:git@github.com:cshunsinger/AsmSauceCore.git")
+                    developerConnection.set("scm:git:ssh:git@github.com:cshunsinger/AsmSauceCore.git")
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "SonatypeOSS"
+            credentials {
+                username = project.hasProperty("sonatypeUsername") ? (project.property("sonatypeUsername") as String) : "N/A"
+                password = project.hasProperty("sonatypePassword") ? (project.property("sonatypePassword") as String) : "N/A"
+            }
+
+            String releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            String snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isReleaseVersion ? releasesRepoUrl : snapshotsRepoUrl
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign(publishing.publications["AsmSauce"])
 }
