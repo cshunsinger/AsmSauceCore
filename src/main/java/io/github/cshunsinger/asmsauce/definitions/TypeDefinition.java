@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static io.github.cshunsinger.asmsauce.util.ReflectionsUtils.jvmClassname;
-import static io.github.cshunsinger.asmsauce.util.ReflectionsUtils.jvmTypeDefinition;
+import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmClassname;
+import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmTypeDefinition;
 
 @ToString
 @RequiredArgsConstructor

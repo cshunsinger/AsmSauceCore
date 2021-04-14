@@ -11,10 +11,15 @@ import static org.objectweb.asm.Opcodes.DUP;
 import static org.objectweb.asm.Opcodes.NEW;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 
+/**
+ * Code builder which generates the bytecode to invoke a constructor and instantiate a new object of a given type.
+ */
 public class InstantiateObjectInsn extends InvocationInsn implements InvokableInstance, ConditionBuilderLike, NullConditionBuilderLike {
     /**
      * Minimum required information to write bytecode to construct a new object is the type being
      * instantiated, and the code builders to build up the parameters for calling the constructor.
+     * @param instantiatedType The type of object being instantiated.
+     * @param paramBuilders The code builders for stacking the parameters to pass to the constructor being invoked.
      */
     public InstantiateObjectInsn(TypeDefinition<?> instantiatedType, CodeInsnBuilderLike... paramBuilders) {
         super(new MethodDefinition<>(
@@ -37,6 +42,9 @@ public class InstantiateObjectInsn extends InvocationInsn implements InvokableIn
      * use context to derive certain data. This means knowing the type of object being instantiated,
      * and the types of all of the parameters that will be passed to the constructor and the code
      * builders to stack those parameters.
+     * @param instantiatedType The type of object being instantiated.
+     * @param parameters The parameters defined in the constructor to be called.
+     * @param paramBuilders The code builders for stacking the parameters to pass to the constructor being invoked.
      */
     public InstantiateObjectInsn(TypeDefinition<?> instantiatedType, ParametersDefinition parameters, CodeInsnBuilderLike... paramBuilders) {
         super(new CompleteMethodDefinition<>(

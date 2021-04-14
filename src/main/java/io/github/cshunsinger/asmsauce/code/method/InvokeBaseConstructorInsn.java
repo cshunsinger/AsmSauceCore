@@ -10,7 +10,17 @@ import java.lang.reflect.Constructor;
 
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
+/**
+ * Creates code builder to invoke another constructor at the beginning of a defined constructor.
+ * This is used for the this() or super() call built at the beginning of a constructor.
+ */
 public class InvokeBaseConstructorInsn extends InvocationInsn {
+    /**
+     * Invoke base constructor.
+     * @param constructor The constructor to call.
+     * @param paramStackBuilders The code builders which stack the values to be passed to the constructor as parameters.
+     * @throws IllegalArgumentException If constructor is null.
+     */
     @SuppressWarnings("unchecked")
     public InvokeBaseConstructorInsn(Constructor<?> constructor, CodeInsnBuilderLike... paramStackBuilders) {
         //Only need to use throwIfNull for first parameter. After that, constructor is verified as non-null if no exception was thrown
@@ -29,6 +39,13 @@ public class InvokeBaseConstructorInsn extends InvocationInsn {
             return c;
     }
 
+    /**
+     * Invoke base constructor.
+     * @param owner The owner of the constructor.
+     * @param parameters The parameters of the constructor.
+     * @param throwsDefinition The throws definition of the constructor.
+     * @param paramStackBuilders The code builders which stack the values to be passed to the constructor as parameters.
+     */
     public InvokeBaseConstructorInsn(TypeDefinition<?> owner, ParametersDefinition parameters, ThrowsDefinition throwsDefinition, CodeInsnBuilderLike... paramStackBuilders) {
         super(new CompleteMethodDefinition<>(
             owner,

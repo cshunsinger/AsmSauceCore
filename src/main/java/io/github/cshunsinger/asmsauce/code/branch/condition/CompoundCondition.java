@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Condition representing multiple conditions being combined using and/or.
+ */
 public class CompoundCondition extends Condition {
     private final List<Condition> conditions;
     private final boolean and;

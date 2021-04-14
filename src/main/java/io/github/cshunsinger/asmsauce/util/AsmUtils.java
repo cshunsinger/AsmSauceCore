@@ -11,8 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * This class contains some utility methods commonly used throughout the AsmSauce library.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ReflectionsUtils {
+public class AsmUtils {
     private static final Map<Class<?>, String> TYPE_MAPPINGS = new HashMap<>();
     static {
         TYPE_MAPPINGS.put(byte.class, "B");
@@ -27,7 +30,12 @@ public class ReflectionsUtils {
     }
 
     /**
-     * Generates the JVM bytecode representation of a method signature for a given method.
+     * Generates the JVM runtime representation of a method signature for a method.
+     *
+     * @param method The method to generate a JVM signature for.
+     * @return A string representation of the JVM signature for the given method.
+     * @see #generateJvmMethodSignature(List, Class) {@link #generateJvmMethodSignature(List, Class)} provides more
+     * details about the JVM method signatures being generated.
      */
     public static String generateJvmMethodSignature(Method method) {
         return generateJvmMethodSignature(method.getParameters(), method.getReturnType());
@@ -35,7 +43,13 @@ public class ReflectionsUtils {
 
     /**
      * Generates a classname favored by the JVM.
-     * Basically gets the fully qualified classname of the given class, and replaces all periods with forward slashes.
+     * The JVM uses class names, which are the fully qualified name of a class, but with forward slashes instead of
+     * periods.
+     * For example:
+     * Object (java.lang.Object) is represented as java/lang/Object in the JVM.
+     *
+     * @param clazz The class to create a jvm class name from.
+     * @return A string, which is the fully-qualified jvm class name of the class.
      */
     public static String jvmClassname(final Class<?> clazz) {
         return clazz.getName().replace('.', '/');
@@ -47,6 +61,10 @@ public class ReflectionsUtils {
      * For example, byte and int are B and I respectively.
      * For non-primitive classes, the definition is LjvmClassname;.
      * For array types, the definition is the same EXCEPT you add a [ to the front.
+     *
+     * @param clazz The class to produce a jvm type definition for.
+     * @return A string, which is the JVM type representation of the given class.
+     * @see #jvmClassname(Class) {@link #jvmClassname(Class)}, a method to generate a jvm class name for a type.
      */
     public static String jvmTypeDefinition(final Class<?> clazz) {
         if(clazz.isArray()) {
@@ -64,6 +82,20 @@ public class ReflectionsUtils {
         return generateJvmMethodSignature(parameterTypes, returnType);
     }
 
+    /**
+     * Generates the JVM runtime representation of a method signature for a method having a given list of parameter types
+     * and a given return type.
+     * A JVM method signature is two parenthesis '()' containing all of the parameter types of the method, followed by
+     * the return type of the method. A void method that takes zero parameters looks like this: ()V
+     *
+     * Math.min(int a, int b) looks like this: (II)I
+     *
+     * String.valueOf(Object obj) looks like this: (Ljava/lang/Object;)Ljava/lang/String;
+     *
+     * @param parameterTypes A list of classes representing the list of parameter types for a method.
+     * @param returnType A class representing the return type of a method.
+     * @return A string, which is the signature of a method with the given parameter and return types.
+     */
     public static String generateJvmMethodSignature(final List<Class<?>> parameterTypes, final Class<?> returnType) {
         final StringBuilder builder = new StringBuilder("(");
         for(final Class<?> paramType: parameterTypes) {

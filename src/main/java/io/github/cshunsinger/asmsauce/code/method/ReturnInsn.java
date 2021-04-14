@@ -8,13 +8,24 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Code builder which builds the bytecode to return from a method. Can return void or return a value.
+ */
 public class ReturnInsn extends CodeInsnBuilder {
     private final CodeInsnBuilderLike returnValueBuilder;
 
+    /**
+     * Defines a return code builder which returns nothing. Used for void methods.
+     */
     public ReturnInsn() {
         this(null);
     }
 
+    /**
+     * Defines a return code builder which returns a value stacked by the provided code builder.
+     * @param returnValueBuilder The code builder which stacks the value to be returned. If null, then a 'void' return
+     *                           bytecode instruction will be generated instead.
+     */
     public ReturnInsn(CodeInsnBuilderLike returnValueBuilder) {
         this.returnValueBuilder = returnValueBuilder != null ? returnValueBuilder.getFirstInStack() : null;
     }

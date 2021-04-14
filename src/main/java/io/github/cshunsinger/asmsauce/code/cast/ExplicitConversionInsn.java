@@ -12,11 +12,24 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Code builder which explicitly converts from one Java type to another.
+ * This code builder will perform any valid cast, and tries to throw it's own exceptions to warn about possible
+ * ClassCastExceptions that could be thrown by the jvm.
+ * @see ImplicitConversionInsn {@link ImplicitConversionInsn} For implicit conversions.
+ */
 public class ExplicitConversionInsn extends CodeInsnBuilder implements
     InvokableInstance, MathOperandInstance, ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike {
     private final TypeDefinition<?> toType;
     private final CodeInsnBuilderLike valueBuilder;
 
+    /**
+     * Creates an explicit conversion. Converts the value stacked by the provided value builder to the desired type.
+     * @param toType The type to convert to.
+     * @param valueBuilder The code builder to stack the value to be converted.
+     * @throws IllegalArgumentException If toType is null or void.
+     * @throws IllegalArgumentException If the valueBuilder is null.
+     */
     public ExplicitConversionInsn(TypeDefinition<?> toType, CodeInsnBuilderLike valueBuilder) {
         if(toType == null)
             throw new IllegalArgumentException("toType cannot be null.");

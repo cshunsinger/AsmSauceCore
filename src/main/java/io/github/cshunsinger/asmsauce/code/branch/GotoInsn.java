@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 
 import static org.objectweb.asm.Opcodes.GOTO;
 
+/**
+ * Simple code builder which creates bytecode to jump to any arbitrary label.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class GotoInsn extends CodeInsnBuilder {
     private final Label label;

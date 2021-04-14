@@ -16,6 +16,11 @@ description = """A Java library which provides a high-level api for dynamically 
 
 boolean isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 repositories {
     mavenLocal()
     mavenCentral()

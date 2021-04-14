@@ -14,10 +14,19 @@ import java.util.stream.Collectors;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * This abstract type represents any code builder which calls a method or constructor.
+ */
 public abstract class InvocationInsn extends CodeInsnBuilder {
     protected final List<CodeInsnBuilderLike> parameterBuilders;
     protected MethodDefinition<?, ?> method;
 
+    /**
+     * Defines an invocation code builder which calls a method using values stacked by a set of code builders.
+     * @param method The method being invoked. Can define a normal method or constructor.
+     * @param parameterBuilders The code builders to stack the parameters to pass to the method call.
+     * @throws IllegalArgumentException If the number of code builders is not equal to the number of method parameters.
+     */
     protected InvocationInsn(MethodDefinition<?, ?> method, CodeInsnBuilderLike[] parameterBuilders) {
         //Make sure the number of code builders is correct for the number of parameters of the instance method.
         if(method.getParameters() != null) {

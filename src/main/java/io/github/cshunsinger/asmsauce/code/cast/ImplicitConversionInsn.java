@@ -12,12 +12,24 @@ import org.objectweb.asm.MethodVisitor;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
-import static io.github.cshunsinger.asmsauce.util.ReflectionsUtils.generateJvmMethodSignature;
+import static io.github.cshunsinger.asmsauce.util.AsmUtils.generateJvmMethodSignature;
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Code builder for building bytecode for implicit type conversions. This code builder only supports implicit type
+ * conversions and will throw if a type cannot be implicitly converted into another type.
+ * These implicit conversions include casting primitives, auto boxing, and auto unboxing.
+ * @see ExplicitConversionInsn {@link ExplicitConversionInsn} For explicit type conversion bytecode generation.
+ */
 public class ImplicitConversionInsn extends CodeInsnBuilder {
     private final TypeDefinition<?> toType;
 
+    /**
+     * Creates an implicit conversion instruction to convert the element on the top of the jvm stack to a desired type.
+     * @param toType The type to convert to.
+     * @throws IllegalArgumentException If toType is null.
+     *
+     */
     public ImplicitConversionInsn(TypeDefinition<?> toType) {
         if(toType == null)
             throw new IllegalArgumentException("toType cannot be null.");
@@ -61,6 +73,12 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
         }
     }
 
+    /**
+     * Determines whether or not an implicit cast is allowed from one type to another.
+     * @param from The type to convert from.
+     * @param to The type to convert to.
+     * @return Returns true if 'from' can be converted to 'to' implicitly. Otherwise returns false.
+     */
     public static boolean implicitCastAllowed(Class<?> from, Class<?> to) {
         return ClassUtils.isAssignable(from, to)
             || (from == ThisClass.class)

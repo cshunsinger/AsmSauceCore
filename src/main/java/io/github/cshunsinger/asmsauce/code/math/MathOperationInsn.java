@@ -8,9 +8,18 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.apache.commons.lang3.ClassUtils;
 
+/**
+ * Code builder for math operations.
+ */
 public abstract class MathOperationInsn extends CodeInsnBuilder {
     private final CodeInsnBuilderLike operandBuilder;
 
+    /**
+     * Creates a new math operation code builder which will perform a math operation.
+     * The element already on the top of the jvm stack will be the first operand. The value stacked by the provided
+     * operand code builder will be the second operand.
+     * @param operand The code builder to stack the second operand to use for the math operation.
+     */
     public MathOperationInsn(CodeInsnBuilderLike operand) {
         if(operand == null)
             throw new IllegalArgumentException("Operand code builder cannot be null.");
@@ -79,8 +88,27 @@ public abstract class MathOperationInsn extends CodeInsnBuilder {
             return intOperator();
     }
 
+    /**
+     * Gets the opcode to use for an operation involving ints.
+     * @return The opcode for operating on int operands.
+     */
     protected abstract int intOperator();
+
+    /**
+     * Gets the opcode to use for an operation involving longs.
+     * @return The opcode for operating on long operands.
+     */
     protected abstract int longOperator();
+
+    /**
+     * Gets the opcode to use for an operation involving floats.
+     * @return The opcode for operating on float operands.
+     */
     protected abstract int floatOperator();
+
+    /**
+     * Gets the opcode to use for an operation involving doubles.
+     * @return The opcode for operating on double operands.
+     */
     protected abstract int doubleOperator();
 }

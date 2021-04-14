@@ -2,7 +2,7 @@ package io.github.cshunsinger.asmsauce;
 
 import org.objectweb.asm.ClassWriter;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
-import io.github.cshunsinger.asmsauce.util.ReflectionsUtils;
+import io.github.cshunsinger.asmsauce.util.AsmUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,10 +17,18 @@ import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 import static org.objectweb.asm.Opcodes.V15;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
-import static io.github.cshunsinger.asmsauce.util.ReflectionsUtils.jvmClassname;
+import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmClassname;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
+/**
+ * This class is the entrypoint to generating a new class at runtime. This class builder contains all of the
+ * nodes representing parts of the class being generated.
+ *
+ * This class also kicks off all of the low-level bytecode generation, and caches the generated class.
+ *
+ * @param <T> The generic type to represent one of the base types of the new class being generated.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AsmClassBuilder<T> {
     private static final DynamicClassLoader DYNAMIC_CLASS_LOADER = new DynamicClassLoader();
@@ -149,7 +157,7 @@ public class AsmClassBuilder<T> {
         //Create jvm names out of all of the interfaces this class is supposed to implement
         String[] interfaceJvmNames = interfaces == null || interfaces.isEmpty() ?
             null :
-            interfaces.stream().map(ReflectionsUtils::jvmClassname).toArray(String[]::new);
+            interfaces.stream().map(AsmUtils::jvmClassname).toArray(String[]::new);
 
         //Name of the newly generated class
         String newJvmClassname = jvmClassname(instanceType) + randomAlphanumeric(16); //TODO: Allow new class name to be passed in via constructor instead

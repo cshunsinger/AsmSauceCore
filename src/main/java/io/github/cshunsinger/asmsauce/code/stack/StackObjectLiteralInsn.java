@@ -12,18 +12,31 @@ import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 
+/**
+ * Bytecode builder instruction for stacking a literal String, Class, or null onto the jvm stack.
+ */
 public class StackObjectLiteralInsn extends CodeInsnBuilder implements
     InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance, MathOperandInstance,
     ConditionBuilderLike, NullConditionBuilderLike {
     private final Class<?> objClass;
     private final Object objValue;
 
+    /**
+     * Creates an instance that will stack a literal reference value (String, Class, or null) onto the jvm stack during runtime.
+     * @param objValue The literal value to stack.
+     */
     public StackObjectLiteralInsn(Object objValue) {
         this(objValue != null ? objValue.getClass() : null, objValue);
     }
 
+    /**
+     * Creates an instance that will stack a literal reference value (String, Class, or null) onto the jvm stack during runtime.
+     * @param objClass The type of literal value to stack.
+     * @param objValue The literal value to stack.
+     */
     public StackObjectLiteralInsn(Class<?> objClass, Object objValue) {
         Class<?> objectType = objClass == null ? Object.class : objClass;
+
         this.objClass = objectType == boolean.class ? Boolean.class : objectType;
         this.objValue = objValue;
     }

@@ -12,6 +12,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Represents a method being build on a new class.
+ * This class defines the method header (or its definition) as well as the method body which is represented as a list
+ * of instruction objects.
+ */
 public class MethodNode {
     @Getter
     protected final CompleteMethodDefinition<?, ?> definition;
@@ -56,7 +61,7 @@ public class MethodNode {
         MethodBuildingContext methodContext = new MethodBuildingContext(methodVisitor, updatedMethodDefinition, context, methodParameters);
 
         methodVisitor.visitCode();
-        methodBody.stream().filter(Objects::nonNull).forEach(codeBuilder -> codeBuilder.getFirstInStack().buildBytecode(methodContext));
+        methodBody.stream().filter(Objects::nonNull).forEach(codeBuilder -> codeBuilder.getFirstInStack().buildClean(methodContext));
         methodVisitor.visitMaxs(-1, -1); //COMPUTE_MAXS is enabled
         methodVisitor.visitEnd();
     }

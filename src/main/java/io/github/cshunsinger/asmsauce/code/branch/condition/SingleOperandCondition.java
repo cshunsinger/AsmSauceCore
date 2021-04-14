@@ -5,6 +5,9 @@ import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 
+/**
+ * Represents a condition involving only one operand. For example: null checks, boolean checks.
+ */
 public abstract class SingleOperandCondition extends Condition {
     protected final CodeInsnBuilderLike operandBuilder;
 

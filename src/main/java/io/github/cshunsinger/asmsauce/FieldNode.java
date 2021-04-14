@@ -10,15 +10,36 @@ import org.apache.commons.lang3.ClassUtils;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Represents a field in a class being generated.
+ */
 public class FieldNode {
     @Getter
     private CompleteFieldDefinition fieldDefinition;
     private final Object initialValue;
 
+    /**
+     * Creates a new field node from a field definition.
+     * @param fieldDefinition The field definition to define the field node from.
+     */
     public FieldNode(CompleteFieldDefinition fieldDefinition) {
         this(fieldDefinition, null);
     }
 
+    /**
+     * Creates a new field node from a field definition, which will be assigned to an initial value.
+     * The field definition should define a static field if a non-null value is passed for initialValue.
+     *
+     * For a static field, the allowed types for the initial field value are:
+     * int/Integer, float/Float, long/Long, double/Double, java.lang.String
+     *
+     * @param fieldDefinition The field definition to create this field node from.
+     * @param initialValue The initial value to set the field to. This parameter should be null if fieldDefinition does not define a static field.
+     * @throws IllegalArgumentException If fieldDefinition is null.
+     * @throws IllegalArgumentException If fieldDefinition defines a non-static field, and initialValue is not null.
+     * @throws IllegalArgumentException If fieldDefinition defines a static field, but initialValue is not one of the allowed types.
+     * @throws IllegalArgumentException If fieldDefinition defines a static field, but the type of initialValue is not assignable to the field type.
+     */
     public FieldNode(CompleteFieldDefinition fieldDefinition, Object initialValue) {
         if(fieldDefinition == null)
             throw new IllegalArgumentException("Field definition cannot be null.");
@@ -56,6 +77,12 @@ public class FieldNode {
         this.initialValue = initialValue;
     }
 
+    /**
+     * Called by the class builder {@link AsmClassBuilder} to build this field onto the class being generated.
+     * @param context The class building context.
+     * @see AsmClassBuilder {@link AsmClassBuilder}
+     * @see ClassBuildingContext {@link ClassBuildingContext}
+     */
     public void build(ClassBuildingContext context) {
         TypeDefinition<ThisClass> updatedOwnerType = TypeDefinition.fromCustomJvmName(context.getJvmTypeName());
         TypeDefinition<?> updatedFieldType = fieldDefinition.getFieldType().getType() == ThisClass.class ?
@@ -83,6 +110,13 @@ public class FieldNode {
         fieldVisitor.visitEnd();
     }
 
+    /**
+     * Creates a field node with the specified modifiers, type, name, and no initial value.
+     * @param accessModifiers The field modifiers.
+     * @param type The field type.
+     * @param name The field name.
+     * @return A new field node.
+     */
     public static FieldNode field(AccessModifiers accessModifiers,
                                   TypeDefinition<?> type,
                                   NameDefinition name) {
@@ -90,6 +124,13 @@ public class FieldNode {
         return new FieldNode(fd);
     }
 
+    /**
+     * Creates a static int field with the specified modifiers, name, and initial int-value.
+     * @param accessModifiers The field modifiers. The static flag will be automatically added if not already set.
+     * @param name The field name.
+     * @param initialValue The initial int-value of the field.
+     * @return A new field node for a static int field with the given initial value.
+     */
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   int initialValue) {
@@ -97,6 +138,13 @@ public class FieldNode {
         return new FieldNode(fd, initialValue);
     }
 
+    /**
+     * Creates a static long field with the specified modifiers, name, and initial long-value.
+     * @param accessModifiers The field modifiers. The static flag will be automatically added if not already set.
+     * @param name The field name.
+     * @param initialValue The initial long-value of the field.
+     * @return A new field node for a static long field with the given initial value.
+     */
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   long initialValue) {
@@ -104,6 +152,13 @@ public class FieldNode {
         return new FieldNode(fd, initialValue);
     }
 
+    /**
+     * Creates a static float field with the specified modifiers, name, and initial float-value.
+     * @param accessModifiers The field modifiers. The static flag will be automatically added if not already set.
+     * @param name The field name.
+     * @param initialValue The initial float-value of the field.
+     * @return A new field node for a static float field with the given initial value.
+     */
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   float initialValue) {
@@ -111,6 +166,13 @@ public class FieldNode {
         return new FieldNode(fd, initialValue);
     }
 
+    /**
+     * Creates a static double field with the specified modifiers, name, and initial double-value.
+     * @param accessModifiers The field modifiers. The static flag will be automatically added if not already set.
+     * @param name The field name.
+     * @param initialValue The initial double-value of the field.
+     * @return A new field node for a static double field with the given initial value.
+     */
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   double initialValue) {
@@ -118,6 +180,13 @@ public class FieldNode {
         return new FieldNode(fd, initialValue);
     }
 
+    /**
+     * Creates a static String field with the specified modifiers, name, and initial String-value.
+     * @param accessModifiers The field modifiers. The static flag will be automatically added if not already set.
+     * @param name The field name.
+     * @param initialValue The initial String-value of the field.
+     * @return A new field node for a static String field with the given initial value.
+     */
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   String initialValue) {

@@ -26,8 +26,8 @@ class CodeBlockTest extends BaseUnitTest {
         codeBlock.build(context);
 
         verify(mockCodeBuilder1).getFirstInStack();
-        verify(mockCodeBuilder1).buildBytecode(context);
+        verify(mockCodeBuilder1).buildClean(context);
         verify(mockCodeBuilder2).getFirstInStack();
-        verify(mockCodeBuilder2).buildBytecode(context);
+        verify(mockCodeBuilder2).buildClean(context);
     }
 }

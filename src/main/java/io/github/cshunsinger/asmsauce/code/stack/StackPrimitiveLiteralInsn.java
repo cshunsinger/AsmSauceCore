@@ -10,6 +10,9 @@ import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import static org.objectweb.asm.Opcodes.ICONST_0;
 import static org.objectweb.asm.Opcodes.ICONST_1;
 
+/**
+ * Asm bytecode builder instruction which builds bytecode to stack a literal primitive value onto the jvm stack.
+ */
 public class StackPrimitiveLiteralInsn extends CodeInsnBuilder implements
     MathOperandInstance, ConditionBuilderLike, BooleanConditionBuilderLike {
     private static final int B_PRIM = 0;
@@ -32,41 +35,73 @@ public class StackPrimitiveLiteralInsn extends CodeInsnBuilder implements
 
     private final int primitiveType;
 
+    /**
+     * Stack a literal byte.
+     * @param b The byte value to stack.
+     */
     public StackPrimitiveLiteralInsn(byte b) {
         this.b = b;
         this.primitiveType = B_PRIM;
     }
 
+    /**
+     * Stack a literal short.
+     * @param s The short value to stack.
+     */
     public StackPrimitiveLiteralInsn(short s) {
         this.s = s;
         this.primitiveType = S_PRIM;
     }
 
+    /**
+     * Stack a literal char.
+     * @param c The char value to stack.
+     */
     public StackPrimitiveLiteralInsn(char c) {
         this.c = c;
         this.primitiveType = C_PRIM;
     }
 
+    /**
+     * Stack a literal int.
+     * @param i The int value to stack.
+     */
     public StackPrimitiveLiteralInsn(int i) {
         this.i = i;
         this.primitiveType = I_PRIM;
     }
 
+    /**
+     * Stack a literal long.
+     * @param l The long value to stack.
+     */
     public StackPrimitiveLiteralInsn(long l) {
         this.l = l;
         this.primitiveType = L_PRIM;
     }
 
+    /**
+     * Stack a literal float.
+     * @param f The float value to stack.
+     */
     public StackPrimitiveLiteralInsn(float f) {
         this.f = f;
         this.primitiveType = F_PRIM;
     }
 
+    /**
+     * Stack a literal double.
+     * @param d The double value to stack.
+     */
     public StackPrimitiveLiteralInsn(double d) {
         this.d = d;
         this.primitiveType = D_PRIM;
     }
 
+    /**
+     * Stack a literal boolean.
+     * @param b The boolean value to stack.
+     */
     public StackPrimitiveLiteralInsn(boolean b) {
         this.bool = b;
         this.primitiveType = BOOL_PRIM;

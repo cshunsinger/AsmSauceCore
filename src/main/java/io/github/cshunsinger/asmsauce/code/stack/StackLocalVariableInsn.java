@@ -15,12 +15,20 @@ import org.apache.commons.lang3.StringUtils;
 import static org.objectweb.asm.Opcodes.*;
 import static java.util.Arrays.asList;
 
+/**
+ * Asm bytecode builder instruction which generates bytecode to place a local variable onto the jvm stack.
+ */
 public class StackLocalVariableInsn extends CodeInsnBuilder implements
     InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance, MathOperandInstance,
     ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike {
     private final int localIndex;
     private final String localName;
 
+    /**
+     * Stack a local variable by it's index. Useful for unnamed local variables.
+     * @param localIndex The zero-based index of the local variable to stack.
+     * @throws IllegalArgumentException If localIndex is negative.
+     */
     public StackLocalVariableInsn(int localIndex) {
         if(localIndex < 0)
             throw new IllegalArgumentException("localIndex cannot be negative.");
@@ -28,6 +36,11 @@ public class StackLocalVariableInsn extends CodeInsnBuilder implements
         this.localName = null;
     }
 
+    /**
+     * Stack a named local variable. Useful for easily referencing named local variables.
+     * @param localName The name of the local variable to stack.
+     * @throws IllegalArgumentException If localName is null or empty/blank.
+     */
     public StackLocalVariableInsn(String localName) {
         if(StringUtils.trimToNull(localName) == null)
             throw new IllegalArgumentException("localName cannot be null or empty.");

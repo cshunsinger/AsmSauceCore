@@ -5,7 +5,14 @@ import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Code builder for subtracting one operand from another.
+ */
 public class SubtractionMathOperationInsn extends MathOperationInsn implements MathOperandInstance, ConditionBuilderLike {
+    /**
+     * New subtraction operation.
+     * @param operand The code builder to stack the second operand.
+     */
     public SubtractionMathOperationInsn(CodeInsnBuilderLike operand) {
         super(operand);
     }

@@ -18,9 +18,19 @@ import java.lang.reflect.Method;
 
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
+/**
+ * Code builder for invoking an instance method on the instance at the top of the stack, with parameters.
+ */
 public class InvokeInstanceMethodInsn extends InvocationInsn implements
     InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance,
     ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike {
+
+    /**
+     * Invoke instance method.
+     * @param thisType The instance type which owns the method to call.
+     * @param method The method to call.
+     * @param codeBuilders The code builders to stack the values to pass as parameters to the method.
+     */
     @SuppressWarnings("unchecked")
     public InvokeInstanceMethodInsn(TypeDefinition<?> thisType, Method method, CodeInsnBuilderLike... codeBuilders) {
         super(new CompleteMethodDefinition<>(
@@ -33,6 +43,11 @@ public class InvokeInstanceMethodInsn extends InvocationInsn implements
         ), codeBuilders);
     }
 
+    /**
+     * Invoke instance method.
+     * @param methodName The name of the instance method to call.
+     * @param codeBuilders The code builders to stack the values to pass as parameters to the method.
+     */
     public InvokeInstanceMethodInsn(NameDefinition methodName, CodeInsnBuilderLike... codeBuilders) {
         super(new MethodDefinition<>(null, null, methodName, null, null, null), codeBuilders);
     }
