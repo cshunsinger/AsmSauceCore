@@ -6,6 +6,15 @@ package io.github.cshunsinger.asmsauce;
  */
 public class DynamicClassLoader extends ClassLoader {
     /**
+     * Creates a new dynamic class loader which can load new classes from a byte array. This class loader
+     * requires a parent class loader for proper class visibility.
+     * @param parent A parent class loader.
+     */
+    public DynamicClassLoader(ClassLoader parent) {
+        super(parent);
+    }
+
+    /**
      * Publicly exposes the ability to define and load a Java class from a byte array.
      * @param name The jvm classname of the class being loaded from a byte array.
      * @param data A byte array containing all of the data making up a class.

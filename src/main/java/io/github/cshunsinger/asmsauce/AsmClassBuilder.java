@@ -31,8 +31,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AsmClassBuilder<T> {
-    private static final DynamicClassLoader DYNAMIC_CLASS_LOADER = new DynamicClassLoader();
-
+    private final DynamicClassLoader dynamicClassLoader;
     private final ClassWriter classWriter;
     private final Class<T> instanceType;
     private final List<Class<?>> interfaces;
@@ -55,6 +54,16 @@ public class AsmClassBuilder<T> {
     }
 
     /**
+     * Constructs a new class builder in which the instance type and super type are the same, no interfaces are implemented,
+     * and the resulting class has public access.
+     * @param parentClassLoader Specify the parent class loader to use for loading the new class when it is generated.
+     * @param instanceType The type that the newly generated class will inherit and belong to.
+     */
+    public AsmClassBuilder(ClassLoader parentClassLoader, Class<T> instanceType) {
+        this(parentClassLoader, instanceType, emptyList(), publicOnly());
+    }
+
+    /**
      * Constructs a new class builder which will generate a new class under the specified instance type.
      * The built class will also inherit the instance type, and the class will contain the specified modifiers.
      * The built class will not implement any interfaces.
@@ -63,6 +72,18 @@ public class AsmClassBuilder<T> {
      */
     public AsmClassBuilder(Class<T> instanceType, AccessModifiers classModifiers) {
         this(instanceType, null, classModifiers);
+    }
+
+    /**
+     * Constructs a new class builder which will generate a new class under the specified instance type.
+     * The built class will also inherit the instance type, and the class will contain the specified modifiers.
+     * The built class will not implement any interfaces.
+     * @param parentClassLoader Specify the parent class loader to use for loading the new class when it is generated.
+     * @param instanceType The type to inherit and the type to refer to the new class under.
+     * @param classModifiers The modifiers for the built class.
+     */
+    public AsmClassBuilder(ClassLoader parentClassLoader, Class<T> instanceType, AccessModifiers classModifiers) {
+        this(parentClassLoader, instanceType, null, classModifiers);
     }
 
     /**
@@ -80,6 +101,20 @@ public class AsmClassBuilder<T> {
 
     /**
      * Constructs a new class builder which will generate a new class under the specified instance type.
+     * The built class will also inherit the instance type.
+     * The built class will contain the specified modifiers.
+     * The built class will implement the listed interfaces.
+     * @param parentClassLoader Specify the parent class loader to use for loading the new class when it is generated.
+     * @param instanceType The class that will be inherited by the generated class.
+     * @param interfaces A list of zero or more interfaces that will be implemented by the generated class.
+     * @param classModifiers The access modifiers for the new class.
+     */
+    public AsmClassBuilder(ClassLoader parentClassLoader, Class<T> instanceType, List<Class<?>> interfaces, AccessModifiers classModifiers) {
+        this(parentClassLoader, instanceType, instanceType, interfaces, classModifiers);
+    }
+
+    /**
+     * Constructs a new class builder which will generate a new class under the specified instance type.
      * The built class will inherit from the specified superclass.
      * The built class will implement any interfaces that are specified.
      * The built class will contain the specified access modifiers.
@@ -92,6 +127,30 @@ public class AsmClassBuilder<T> {
      */
     public AsmClassBuilder(Class<T> instanceType, Class<?> superclass, List<Class<?>> interfaces, AccessModifiers classModifiers) {
         this(
+            AsmClassBuilder.class.getClassLoader(),
+            instanceType,
+            superclass,
+            interfaces,
+            classModifiers
+        );
+    }
+
+    /**
+     * Constructs a new class builder which will generate a new class under the specified instance type.
+     * The built class will inherit from the specified superclass.
+     * The built class will implement any interfaces that are specified.
+     * The built class will contain the specified access modifiers.
+     * This class builder will use instanceType for generic purposes. For example, if you specify 3 interfaces and
+     * a superclass, which type should this builder use as a reference? That is what the instance type is used for here.
+     * @param parentClassLoader Specify the parent class loader to use for loading the new class when it is generated.
+     * @param instanceType The reference type for the generated class. The superclass, or at least 1 interface must be assignable to the instance type.
+     * @param superclass The class that the generated class will inherit.
+     * @param interfaces The interfaces that will be implemented by the generated class. Can be empty or null.
+     * @param classModifiers The access modifiers to apply to the generated class.
+     */
+    public AsmClassBuilder(ClassLoader parentClassLoader, Class<T> instanceType, Class<?> superclass, List<Class<?>> interfaces, AccessModifiers classModifiers) {
+        this(
+            new DynamicClassLoader(parentClassLoader),
             new ClassWriter(COMPUTE_FRAMES | COMPUTE_MAXS),
             instanceType,
             interfaces,
@@ -174,7 +233,7 @@ public class AsmClassBuilder<T> {
             interfaces.stream().map(AsmUtils::jvmClassname).toArray(String[]::new);
 
         //Name of the newly generated class
-        String newJvmClassname = jvmClassname(instanceType) + randomAlphanumeric(16); //TODO: Allow new class name to be passed in via constructor instead
+        String newJvmClassname = jvmClassname(instanceType) + randomAlphanumeric(16);
 
         //Start the new class
         classWriter.visit(
@@ -209,6 +268,6 @@ public class AsmClassBuilder<T> {
         classWriter.visitEnd();
 
         //Construct the class
-        builtClass = (Class<? extends T>)DYNAMIC_CLASS_LOADER.defineClass(newJvmClassname.replace('/', '.'), classWriter.toByteArray());
+        builtClass = (Class<? extends T>)dynamicClassLoader.defineClass(newJvmClassname.replace('/', '.'), classWriter.toByteArray());
     }
 }
