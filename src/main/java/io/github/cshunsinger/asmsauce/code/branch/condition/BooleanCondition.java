@@ -15,6 +15,12 @@ import static org.objectweb.asm.Opcodes.IFNE;
  * value is true or false.
  */
 public class BooleanCondition extends SingleOperandCondition {
+    /**
+     * Creates a Boolean truth condition from a single boolean operand. This condition will test for the operand
+     * being true.
+     * @param operandBuilder The operand builder which stacks the boolean value. This code builder should stack
+     *                       a single boolean or Boolean value.
+     */
     public BooleanCondition(CodeInsnBuilderLike operandBuilder) {
         this(operandBuilder, Op.EQ);
     }

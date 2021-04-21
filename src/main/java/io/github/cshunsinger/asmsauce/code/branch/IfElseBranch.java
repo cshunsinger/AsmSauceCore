@@ -14,7 +14,13 @@ import java.util.stream.Stream;
  * jumping to an end label.
  */
 public class IfElseBranch extends CodeInsnBuilder {
+    /**
+     * The code builders making up the body if this branch.
+     */
     protected final List<CodeInsnBuilderLike> body;
+    /**
+     * The label at the end of this branch body.
+     */
     protected final Label endLabel;
 
     /**

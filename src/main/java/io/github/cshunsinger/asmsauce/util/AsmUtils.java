@@ -34,8 +34,7 @@ public class AsmUtils {
      *
      * @param method The method to generate a JVM signature for.
      * @return A string representation of the JVM signature for the given method.
-     * @see #generateJvmMethodSignature(List, Class) {@link #generateJvmMethodSignature(List, Class)} provides more
-     * details about the JVM method signatures being generated.
+     * @see #generateJvmMethodSignature(List, Class)
      */
     public static String generateJvmMethodSignature(Method method) {
         return generateJvmMethodSignature(method.getParameters(), method.getReturnType());
@@ -59,12 +58,11 @@ public class AsmUtils {
      * Produces a JVM type definition for a given class type.
      * Primitive types have type references that are one letter long.
      * For example, byte and int are B and I respectively.
-     * For non-primitive classes, the definition is LjvmClassname;.
-     * For array types, the definition is the same EXCEPT you add a [ to the front.
-     *
+     * For non-primitive classes, the definition is LjvmClassname;
+     * For array types, the definition is the same EXCEPT you add a [ to the front. Such as [LjvmClassname;
      * @param clazz The class to produce a jvm type definition for.
      * @return A string, which is the JVM type representation of the given class.
-     * @see #jvmClassname(Class) {@link #jvmClassname(Class)}, a method to generate a jvm class name for a type.
+     * @see #jvmClassname(Class)
      */
     public static String jvmTypeDefinition(final Class<?> clazz) {
         if(clazz.isArray()) {

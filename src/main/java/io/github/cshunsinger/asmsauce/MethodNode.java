@@ -13,15 +13,26 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Represents a method being build on a new class.
+ * Represents a method being built on a new class.
  * This class defines the method header (or its definition) as well as the method body which is represented as a list
  * of instruction objects.
  */
 public class MethodNode {
+    /**
+     * @return The definition of this method being generated.
+     */
     @Getter
     protected final CompleteMethodDefinition<?, ?> definition;
+    /**
+     * The code builders which make up the code body of this method being generated.
+     */
     protected final List<CodeInsnBuilderLike> methodBody;
 
+    /**
+     * Creates a new method node which defines and implements a method to generate.
+     * @param definition The definition of the method to generate.
+     * @param methodBody The code builders whose bytecode makes up this method's implementation.
+     */
     protected MethodNode(CompleteMethodDefinition<?, ?> definition, CodeInsnBuilderLike... methodBody) {
         if(definition == null)
             throw new IllegalArgumentException("Method definition cannot be null.");
@@ -33,6 +44,11 @@ public class MethodNode {
         this.methodBody = methodBodyList;
     }
 
+    /**
+     * Defines this method as part of a class being generated and generates the bytecode which makes up the body
+     * of this method being generated.
+     * @param context The class building context which contains the details about the class being generated with this method.
+     */
     public void build(ClassBuildingContext context) {
         CompleteMethodDefinition<?, ?> updatedMethodDefinition = new CompleteMethodDefinition<>(
             TypeDefinition.fromCustomJvmName(context.getJvmTypeName()),
@@ -66,6 +82,18 @@ public class MethodNode {
         methodVisitor.visitEnd();
     }
 
+    /**
+     * Creates a method for a class being generated. The generated method will have a "void" return type and will not
+     * have a "throws" clause.
+     * @param modifiers The access modifiers of this method.
+     * @param name The name of this method.
+     * @param parameters The set of parameters of this method.
+     * @param methodBody The code builders which make up the body of this method.
+     * @return A new MethodNode, which defines a method header and its code body.
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, ThrowsDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, TypeDefinition, ThrowsDefinition, CodeInsnBuilderLike...)
+     */
     public static MethodNode method(AccessModifiers modifiers,
                                     NameDefinition name,
                                     ParametersDefinition parameters,
@@ -73,6 +101,19 @@ public class MethodNode {
         return method(modifiers, name, parameters, DefinitionBuilders.voidType(), methodBody);
     }
 
+    /**
+     * Creates a method for a class being generated. The generated method will have the specified return type, and will
+     * not have a "throws" clause.
+     * @param modifiers The access modifiers of this method.
+     * @param name The name of this method.
+     * @param parameters The set of parameters of this method.
+     * @param returnType The type of value or object to be returned by this method.
+     * @param methodBody The code builders which make up the body of this method.
+     * @return A new MethodNode, which defines a method header and its code body.
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, ThrowsDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, TypeDefinition, ThrowsDefinition, CodeInsnBuilderLike...)
+     */
     public static MethodNode method(AccessModifiers modifiers,
                                     NameDefinition name,
                                     ParametersDefinition parameters,
@@ -81,6 +122,19 @@ public class MethodNode {
         return method(modifiers, name, parameters, returnType, DefinitionBuilders.noThrows(), methodBody);
     }
 
+    /**
+     * Creates a method for a class being generated. The generated method will have a 'void' return type, and will have
+     * a "throws" clause.
+     * @param modifiers The access modifiers of this method.
+     * @param name The name of this method.
+     * @param parameters The set of parameters of this method.
+     * @param throwing The throws clause of this method.
+     * @param methodBody The code builders which make up the body of this method.
+     * @return A new MethodNode, which defines a method header and its code body.
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, TypeDefinition, ThrowsDefinition, CodeInsnBuilderLike...)
+     */
     public static MethodNode method(AccessModifiers modifiers,
                                     NameDefinition name,
                                     ParametersDefinition parameters,
@@ -89,6 +143,20 @@ public class MethodNode {
         return method(modifiers, name, parameters, DefinitionBuilders.voidType(), throwing, methodBody);
     }
 
+    /**
+     * Creates a method for a class being generated. The generated method will have a return type, and will have a
+     * "throws" clause.
+     * @param modifiers The access modifiers of this method.
+     * @param name The name of this method.
+     * @param parameters The set of parameters of this method.
+     * @param returnType The type of value or object to be returned by this method.
+     * @param throwing The throws clause of this method.
+     * @param methodBody The code builders which make up the body of this method.
+     * @return A new MethodNode, which defines a method header and its code body.
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, ThrowsDefinition, CodeInsnBuilderLike...)
+     * @see #method(AccessModifiers, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
+     */
     public static MethodNode method(AccessModifiers modifiers,
                                     NameDefinition name,
                                     ParametersDefinition parameters,

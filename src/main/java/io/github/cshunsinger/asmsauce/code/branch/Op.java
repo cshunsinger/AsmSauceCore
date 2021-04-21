@@ -62,21 +62,23 @@ public enum Op {
     NOT_LT(IFLT, IF_ICMPLT, null, null);
 
     /**
-     * The opcode used when comparing a single primitive operand to zero.
+     * @return The opcode used when comparing a single primitive operand to zero.
      */
     private final int singlePrimitiveOpcode;
     /**
-     * The opcode used when comparing two primitive operands with each other.
+     * @return The opcode used when comparing two primitive operands with each other.
      */
     private final int doublePrimitiveOpcode;
     /**
      * For ops which are valid for reference types, this is the opcode for checking if a reference is null.
      * For ops which do not work for reference types, this will be null.
+     * @return The opcode used for checking if a reference is null or nonnull.
      */
     private final Integer nullCheckOpcode;
     /**
      * For ops which are valid for reference types, this is the opcode for comparing equality between two references.
      * For ops which do not work for reference types, this will be null.
+     * @return The copcode used for checking for equality or inequality among reference types.
      */
     private final Integer referenceOpcode;
 }

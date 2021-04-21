@@ -2,9 +2,17 @@ package io.github.cshunsinger.asmsauce.definitions;
 
 import java.util.List;
 
+/**
+ * This class represents the "throws" clause of a method. This definition contains a list of exception types which
+ * can potentially be thrown by a method.
+ */
 public class ThrowsDefinition {
     private final List<TypeDefinition<? extends Exception>> exceptionTypes;
 
+    /**
+     * Creates a throws definition containing a set of zero or more exception types that can be thrown by a method.
+     * @param exceptionTypes The exception types to declare in this throws definition.
+     */
     @SafeVarargs
     public ThrowsDefinition(TypeDefinition<? extends Exception>... exceptionTypes) {
         this.exceptionTypes = List.of(exceptionTypes);

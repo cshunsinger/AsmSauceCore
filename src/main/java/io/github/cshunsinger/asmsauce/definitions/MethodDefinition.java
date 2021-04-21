@@ -16,15 +16,51 @@ import java.util.Optional;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
+/**
+ * This class defines a method and contains all of its metadata. The data to define a method in this class may be
+ * "incomplete" and more information might be required in order for bytecode to be generated.
+ * @param <O> The type which owns this method being defined.
+ * @param <R> The return type of the defined method.
+ */
 @Getter
 public class MethodDefinition<O, R> {
+    /**
+     * @return The type which owns this defined method.
+     */
     protected final TypeDefinition<O> owner;
+    /**
+     * @return The access modifiers of this defined method.
+     */
     protected final AccessModifiers modifiers;
+    /**
+     * @return The name of this defined method.
+     */
     protected final NameDefinition name;
+    /**
+     * @return The set of parameters of this defined method.
+     */
     protected final ParametersDefinition parameters;
+    /**
+     * @return The return type of this defined method.
+     */
     protected final TypeDefinition<R> returnType;
+    /**
+     * @return The definition of exceptions thrown by this method.
+     */
     protected final ThrowsDefinition throwing;
 
+    /**
+     * Creates a new method definition.
+     * @param owner The owner of the method.
+     * @param modifiers The method modifier flags.
+     * @param name The method name.
+     * @param parameters The parameters list of the method.
+     * @param returnType The method return type.
+     * @param throwing The types thrown by the method.
+     * @throws IllegalArgumentException If owner is void, primitive, or an array type, since none of those types can have methods.
+     * @throws IllegalArgumentException If name is null.
+     * @throws IllegalArgumentException If owner is null and the modifiers indicate this method is a static method.
+     */
     public MethodDefinition(TypeDefinition<O> owner,
                             AccessModifiers modifiers,
                             NameDefinition name,
@@ -52,6 +88,11 @@ public class MethodDefinition<O, R> {
         this.throwing = throwing;
     }
 
+    /**
+     * Generates the jvm method signature of this method.
+     * @return The jvm method signature of this method as a String.
+     * @throws IllegalStateException If parameters or returnType have not been defined for this method.
+     */
     public String jvmMethodSignature() {
         if(parameters == null)
             throw new IllegalStateException("Cannot build jvm method signature without defined parameters.");
@@ -65,6 +106,16 @@ public class MethodDefinition<O, R> {
         return builder.toString();
     }
 
+    /**
+     * A method definition is considered "incomplete" by default, and is usually created when some method details are
+     * meant to be implied during bytecode generation in the code builders.
+     * This method reads from the method building context and other info to provide a completed method definition.
+     * @param buildingContext The method building context.
+     * @param numParameters The number of parameters this method should have.
+     * @return A completed method definition which has all of the details filled in about this method.
+     * @throws IllegalStateException If not method can be found which has the parameter types and owner type compatible
+     *                               with the types currently loaded on the stack, and the same number of parameters.
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public CompleteMethodDefinition<?, ?> completeDefinition(MethodBuildingContext buildingContext, int numParameters) {
         //Get the parameter types based on what exists on the stack currently
@@ -146,14 +197,30 @@ public class MethodDefinition<O, R> {
             return completedOpt.get();
     }
 
-    protected Optional<Method> attemptFindMethod(Class<?> ownerClass, List<TypeDefinition<?>> params) {
-        Class<?>[] paramClasses = params.stream().map(TypeDefinition::getType).toArray(Class[]::new);
+    /**
+     * Attempts to find a method in a class, which can be invoked using the specified parameter types.
+     * @param ownerClass The class to search in for a method.
+     * @param paramTypes The parameter types.
+     * @return Returns a method from the specified ownerClass if one can be found whose parameter types are all assignable
+     * from the given paramTypes and whose parameter count matches the number of provided paramTypes.
+     * Returns an empty Optional if no method can be found matching the supplied param types.
+     */
+    protected Optional<Method> attemptFindMethod(Class<?> ownerClass, List<TypeDefinition<?>> paramTypes) {
+        Class<?>[] paramClasses = paramTypes.stream().map(TypeDefinition::getType).toArray(Class[]::new);
         Method method = MethodUtils.getMatchingMethod(ownerClass, this.getName().getName(), paramClasses);
         return Optional.ofNullable(method);
     }
 
-    protected Optional<Constructor<?>> attemptFindConstructor(Class<?> ownerClass, List<TypeDefinition<?>> params) {
-        Class<?>[] paramClasses = params.stream().map(TypeDefinition::getType).toArray(Class[]::new);
+    /**
+     * Attempts to find a constructor in a class, which can be invoked using the specified parameter types.
+     * @param ownerClass The class to search in for a constructor.
+     * @param paramTypes The parameter types.
+     * @return Returns a constructor from the specified ownerClass if one can be found whose parameter types are all
+     * assignable from the given paramTypes and whose parameter count matches the number of provided paramTypes.
+     * Returns an empty Optional if no constructor can be found matching the supplied param types.
+     */
+    protected Optional<Constructor<?>> attemptFindConstructor(Class<?> ownerClass, List<TypeDefinition<?>> paramTypes) {
+        Class<?>[] paramClasses = paramTypes.stream().map(TypeDefinition::getType).toArray(Class[]::new);
         Constructor<?> constructor = ConstructorUtils.getMatchingAccessibleConstructor(ownerClass, paramClasses);
         return Optional.ofNullable(constructor);
     }
@@ -161,8 +228,12 @@ public class MethodDefinition<O, R> {
     /**
      * Attempts to find a method defined within the class being built that matches the required method by name,
      * static flag, parameter count, and parameter types.
+     * @param classContext Class building context, which contains information about the other methods that exist in this class being built.
+     * @param paramTypes The parameter types.
+     * @return Returns a MethodNode from the class currently being built if one is found whose parameters match the supplied
+     * paramTypes. Otherwise an empty Optional is returned.
      */
-    protected Optional<MethodNode> attemptFindMethod(ClassBuildingContext classContext, List<TypeDefinition<?>> params) {
+    protected Optional<MethodNode> attemptFindMethod(ClassBuildingContext classContext, List<TypeDefinition<?>> paramTypes) {
         return classContext.getMethods()
             .stream()
             .filter(node -> {
@@ -172,30 +243,37 @@ public class MethodDefinition<O, R> {
                     return false;
 
                 //If number of parameters does not match then the method does not match
-                List<TypeDefinition<?>> paramTypes = def.getParameters().getParamTypes();
-                if(paramTypes.size() != params.size())
+                List<TypeDefinition<?>> types = def.getParameters().getParamTypes();
+                if(types.size() != paramTypes.size())
                     return false;
 
                 //Check that the actual param types are all assignable to the required param types
-                return doParametersMatch(classContext, paramTypes, params);
+                return doParametersMatch(classContext, types, paramTypes);
             })
             .findFirst();
     }
 
-    protected Optional<ConstructorNode> attemptFindConstructor(ClassBuildingContext classContext, List<TypeDefinition<?>> params) {
+    /**
+     * Attempts to find a constructor defined within the class being built that matches by parameter types.
+     * @param classContext The class building context.
+     * @param paramTypes The parameter types.
+     * @return Returns a ConstructorNode from the class currently being built if one is found whose parameters match the
+     * supplied paramTypes. Otherwise an empty Optional is returned.
+     */
+    protected Optional<ConstructorNode> attemptFindConstructor(ClassBuildingContext classContext, List<TypeDefinition<?>> paramTypes) {
         return classContext.getConstructors()
             .stream()
             .filter(node -> {
                 MethodDefinition<?, ?> constructorDef = node.getDefinition();
 
                 //If number of parameters does not match then the constructor does not match
-                if(params.size() != constructorDef.getParameters().count())
+                if(paramTypes.size() != constructorDef.getParameters().count())
                     return false;
 
                 //Check that the actual param types are all assignable to the required param types
                 List<TypeDefinition<?>> requiredTypes = constructorDef.getParameters().getParamTypes();
 
-                return doParametersMatch(classContext, requiredTypes, params);
+                return doParametersMatch(classContext, requiredTypes, paramTypes);
             })
             .findFirst();
     }
@@ -232,18 +310,37 @@ public class MethodDefinition<O, R> {
         return true;
     }
 
+    /**
+     * Validates a method owner by throwing an exception if that method owner type is invalid.
+     * This validation method is intended to validate a resolved method owner during the class building process.
+     * @param ownerType The method owner type to validate.
+     * @throws IllegalStateException If the specified owner type is void, primitive, or an array.
+     */
     protected static void validateMethodOwner(TypeDefinition<?> ownerType) {
         String message = validateMethodOwnerType(ownerType);
         if(message != null)
             throw new IllegalStateException(message);
     }
 
+    /**
+     * Validates a method owner type argument by throwing an exception if that method owner type is invalid.
+     * This validation method is intended to be used to validate arguments.
+     * @param ownerType The method owner type to validate.
+     * @throws IllegalArgumentException If the specified owner type is void, primitive, or an array.
+     */
     protected static void validateMethodOwnerArgument(TypeDefinition<?> ownerType) {
         String message = validateMethodOwnerType(ownerType);
         if(message != null)
             throw new IllegalArgumentException(message);
     }
 
+    /**
+     * Determines if a given type definition is capable of being a method owner, and provides a reason why the given
+     * type cannot be a method owner.
+     * @param ownerType The type to validate as a method owner.
+     * @return Returns null if ownerType is capable of owning a method. Otherwise, a String is returned detailing the
+     * reason why the ownerType cannot contain a method.
+     */
     protected static String validateMethodOwnerType(TypeDefinition<?> ownerType) {
         if(ownerType.isVoid())
             return "Method owner type cannot be void.";
@@ -255,6 +352,13 @@ public class MethodDefinition<O, R> {
             return null;
     }
 
+    /**
+     * Produces a message when a method is not found in a class matching the given parameter types.
+     * @param methodName The name of the method that could not be found.
+     * @param methodOwnerName The name of the method owner that did not contain the desired method.
+     * @param paramTypes The list of parameter types that may have failed to match on a method.
+     * @return A string message which details the method that was not found and the list of expected parameter types.
+     */
     protected static String getMethodNotFoundMessage(String methodName, String methodOwnerName, List<TypeDefinition<?>> paramTypes) {
         String parametersText = createParametersString(paramTypes);
         return """
@@ -262,6 +366,12 @@ public class MethodDefinition<O, R> {
             %s""".formatted(methodName, methodOwnerName, parametersText);
     }
 
+    /**
+     * Produces a message when a constructor is not found in a class matching the given parameter types.
+     * @param constructorOwnerName The name of the constructor owner that did not contain the desired constructor.
+     * @param paramTypes The list of parameter types that may have failed to match on a constructor.
+     * @return A string message which details the constructor that was not found and the list of expected parameter types.
+     */
     protected static String getConstructorNotFoundMessage(String constructorOwnerName, List<TypeDefinition<?>> paramTypes) {
         String parametersText = createParametersString(paramTypes);
         return """

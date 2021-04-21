@@ -8,11 +8,19 @@ import org.apache.commons.lang3.StringUtils;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * This class is a code builder which generates the bytecode to store a value into a local variable.
+ */
 public class StoreLocalVariableInsn extends CodeInsnBuilder {
     private final Integer localIndex;
     private final String localName;
     private final CodeInsnBuilderLike valueBuilder;
 
+    /**
+     * Store the value stacked by the given code builder into a variable at a specific index.
+     * @param localIndex The index of the local variable to set.
+     * @param valueBuilder The code builder which will stack the value to be assigned to the local variable.
+     */
     public StoreLocalVariableInsn(Integer localIndex, CodeInsnBuilderLike valueBuilder) {
         this(null, localIndex, valueBuilder);
 
@@ -20,6 +28,11 @@ public class StoreLocalVariableInsn extends CodeInsnBuilder {
             throw new IllegalArgumentException("localIndex cannot be negative. Must be null or positive.");
     }
 
+    /**
+     * Store the value stacked by the given code builder into a named local variable or parameter.
+     * @param localName The name of the parameter/local variable to assign to.
+     * @param valueBuilder The code builder which will stack the value to be assigned to the local variable.
+     */
     public StoreLocalVariableInsn(String localName, CodeInsnBuilderLike valueBuilder) {
         this(localName, null, valueBuilder);
 

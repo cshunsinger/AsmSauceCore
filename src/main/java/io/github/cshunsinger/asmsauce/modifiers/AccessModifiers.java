@@ -14,6 +14,9 @@ import static org.objectweb.asm.Opcodes.*;
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccessModifiers {
+    /**
+     * @return The underlying jvm modifier flags.
+     */
     private final int jvmModifiers;
 
     /**
@@ -227,7 +230,9 @@ public class AccessModifiers {
      * @param buildingContext Class building context strictly used when accessorClass is ThisClass.class.
      * @param accessorClass The class that wants to access a field or method.
      * @param declaringClass The class that supposedly contains the field or method.
+     * @param otherAccess The access modifiers of the member of the "declaringClass" being tested.
      * @return True if `accessorClass` is allowed to access a member with X access level inside of `declaringClass`. Or else false.
+     * @throws IllegalArgumentException If the provided class building context is null and accessorClass is ThisClass.class.
      */
     public static boolean isAccessible(ClassBuildingContext buildingContext, Class<?> accessorClass, Class<?> declaringClass, AccessModifiers otherAccess) {
         if(accessorClass == ThisClass.class && buildingContext == null)

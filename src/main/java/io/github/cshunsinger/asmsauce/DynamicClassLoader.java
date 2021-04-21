@@ -5,6 +5,12 @@ package io.github.cshunsinger.asmsauce;
  * define a class from a byte array at runtime.
  */
 public class DynamicClassLoader extends ClassLoader {
+    /**
+     * Publicly exposes the ability to define and load a Java class from a byte array.
+     * @param name The jvm classname of the class being loaded from a byte array.
+     * @param data A byte array containing all of the data making up a class.
+     * @return A class instance representing the class which was just loaded from the provided byte array.
+     */
     public Class<?> defineClass(String name, byte[] data) {
         return defineClass(name, data, 0, data.length);
     }

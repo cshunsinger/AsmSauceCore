@@ -14,6 +14,13 @@ public class CompoundCondition extends Condition {
     private final List<Condition> conditions;
     private final boolean and;
 
+    /**
+     * Creates a new CompoundCondition from two single conditions which are joined by AND or OR.
+     * @param firstCondition The first condition to join.
+     * @param secondCondition The second condition to join.
+     * @param and Boolean representing if this compound condition is an AND condition. If true, this will be an AND
+     *            condition. If false, this will be an OR condition.
+     */
     public CompoundCondition(Condition firstCondition,
                              Condition secondCondition,
                              boolean and) {

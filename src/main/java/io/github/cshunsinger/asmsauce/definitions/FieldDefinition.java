@@ -14,13 +14,37 @@ import java.util.Optional;
 
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
+/**
+ * Represents a defined field. This field definition may potentially be considered "incomplete" as it may lack some of
+ * the details required for a complete definition.
+ */
 @Getter
 public class FieldDefinition {
+    /**
+     * @return The access modifier flags for this defined field.
+     */
     protected final AccessModifiers accessModifiers;
+    /**
+     * @return The owner type of this defined field.
+     */
     protected final TypeDefinition<?> fieldOwner;
+    /**
+     * @return The name of this defined field.
+     */
     protected final NameDefinition fieldName;
+    /**
+     * @return The type of this defined field.
+     */
     protected final TypeDefinition<?> fieldType;
 
+    /**
+     * Defines a field by its metadata.
+     * @param accessModifiers The access modifiers of the field.
+     * @param fieldOwner The type that owns the field.
+     * @param fieldName The name of the field.
+     * @param fieldType The type of the field.
+     * @throws IllegalArgumentException If the field name is null.
+     */
     public FieldDefinition(AccessModifiers accessModifiers, TypeDefinition<?> fieldOwner, NameDefinition fieldName, TypeDefinition<?> fieldType) {
         if(fieldName == null)
             throw new IllegalArgumentException("Field name cannot be null.");
@@ -31,6 +55,15 @@ public class FieldDefinition {
         this.fieldType = fieldType;
     }
 
+    /**
+     * Generates a completed field definition using the existing information in this "incomplete" field definition, and
+     * using the class building context and other reflections information to fill in the missing details.
+     * This method attempts to complete this field definition when the field might exist in the generated class itself,
+     * in one of the parent types of this class, or in one of the interface types of this class.
+     * @param buildingContext The class building context containing the details about this class being generated.
+     * @return A completed field definition which can be used for bytecode generation.
+     * @throws IllegalStateException If no field can be found matching the incomplete details of this field definition.
+     */
     public CompleteFieldDefinition completeDefinition(ClassBuildingContext buildingContext) {
         Optional<CompleteFieldDefinition> fdOpt = buildingContext.getFields()
             .stream()
@@ -58,6 +91,16 @@ public class FieldDefinition {
         throw createFieldNotFoundException(buildingContext.getClassName());
     }
 
+    /**
+     * Generates a completed field definition using the existing information in this "incomplete" field definition, and
+     * using the class building context and other reflections information to fill in the missing details.
+     * This method attempts to complete this field definition when the field might exist in some given owner type, or one
+     * of the parent types or interface types of the owner type.
+     * @param buildingContext The class building context containing the details about this class being generated.
+     * @param fieldOwnerType The owner type to search for an existing field within.
+     * @return A completed field definition which can be used for bytecode generation.
+     * @throws IllegalStateException If no field can be found matching the incomplete details of this field definition.
+     */
     public CompleteFieldDefinition completeDefinition(ClassBuildingContext buildingContext, TypeDefinition<?> fieldOwnerType) {
         Optional<CompleteFieldDefinition> fdOpt = attemptCompletion(fieldOwnerType.getType());
         if(fdOpt.isPresent()) {

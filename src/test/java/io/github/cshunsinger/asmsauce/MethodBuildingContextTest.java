@@ -106,20 +106,6 @@ class MethodBuildingContextTest extends BaseUnitTest {
     }
 
     @Test
-    public void addNamedLocalVariableType() {
-        context.addLocalType("myLocalVar", DefinitionBuilders.type(Object.class));
-        context.addLocalType("myOtherLocalVar", DefinitionBuilders.type(int.class));
-
-        assertThat(context.numLocals(), is(2));
-        MatcherAssert.assertThat(context, hasProperty("localTypes", Matchers.contains(
-            DefinitionBuilders.type(Object.class),
-            DefinitionBuilders.type(int.class)
-        )));
-        assertThat(context.getLocalIndex("myLocalVar"), is(0));
-        assertThat(context.getLocalIndex("myOtherLocalVar"), is(1));
-    }
-
-    @Test
     public void setLocalVariableType() {
         context.addLocalType(DefinitionBuilders.type(ThisClass.class));
         context.addLocalType(DefinitionBuilders.type(int.class));
@@ -137,9 +123,9 @@ class MethodBuildingContextTest extends BaseUnitTest {
 
     @Test
     public void setNamedLocalVariableType() {
-        context.addLocalType("myObject", DefinitionBuilders.type(ThisClass.class));
-        context.addLocalType("myInt", DefinitionBuilders.type(int.class));
-        context.addLocalType("myFloat", DefinitionBuilders.type(float.class));
+        context.setLocalType("myObject", DefinitionBuilders.type(ThisClass.class));
+        context.setLocalType("myInt", DefinitionBuilders.type(int.class));
+        context.setLocalType("myFloat", DefinitionBuilders.type(float.class));
 
         context.setLocalType("myInt", DefinitionBuilders.type(String.class));
 
@@ -221,9 +207,9 @@ class MethodBuildingContextTest extends BaseUnitTest {
 
     @Test
     public void destroyScopedLocalVariablesWhenLeavingTheScopeTheyExistIn() {
-        context.addLocalType("myOuterVar", DefinitionBuilders.type(Object.class));
+        context.setLocalType("myOuterVar", DefinitionBuilders.type(Object.class));
         context.beginScope();
-        context.addLocalType("myInnerVar", DefinitionBuilders.type(String.class));
+        context.setLocalType("myInnerVar", DefinitionBuilders.type(String.class));
 
         assertThat(context.numLocals(), is(2));
         MatcherAssert.assertThat(context, hasProperty("localTypes", Matchers.contains(

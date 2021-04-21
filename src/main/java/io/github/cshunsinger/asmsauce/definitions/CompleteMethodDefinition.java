@@ -12,7 +12,27 @@ import java.util.Optional;
 
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
+/**
+ * This class defines a method and contains all of its metadata. This class represent a "complete" set of metadata
+ * defining a method to call.
+ * @param <O> The type owning the method.
+ * @param <R> The return type of the method.
+ */
 public class CompleteMethodDefinition<O, R> extends MethodDefinition<O, R> {
+    /**
+     * Creates a completed method definition.
+     * @param owner The owner of this method.
+     * @param modifiers The access modifiers of this method being defined.
+     * @param name The name of this method.
+     * @param returnType The return type of this method.
+     * @param parameters The parameter types of this method.
+     * @param throwing The exceptions thrown by this method, if any.
+     * @throws IllegalArgumentException If the "owner" type is null or represents a void type, primitive type, or array type.
+     * @throws IllegalArgumentException If the "modifiers" are null.
+     * @throws IllegalArgumentException If the "returnType" is null.
+     * @throws IllegalArgumentException If the "parameters" definition is null.
+     * @throws IllegalArgumentException If the "throwing" definition is null.
+     */
     public CompleteMethodDefinition(TypeDefinition<O> owner,
                                     AccessModifiers modifiers,
                                     NameDefinition name,
@@ -35,6 +55,15 @@ public class CompleteMethodDefinition<O, R> extends MethodDefinition<O, R> {
             throw new IllegalArgumentException("Throwing cannot be null.");
     }
 
+    /**
+     * Validates that the complete set of method details provided in this "complete" method definition are all valid.
+     * @param buildingContext The method building context.
+     * @param numParameters The number of parameters this method should have.
+     * @return Returns a copy of this method definition which is guaranteed to have valid method or constructor details.
+     * @throws IllegalStateException If the method or constructor represented by this definition does not exist, is not
+     * accessible from the class being generated, does not have the required number of parameters "numParameters", or
+     * whose set of parameters are not assignable from the parameter types of this "complete" definition.
+     */
     @Override
     public CompleteMethodDefinition<?, ?> completeDefinition(MethodBuildingContext buildingContext, int numParameters) {
         AccessModifiers newModifiers;

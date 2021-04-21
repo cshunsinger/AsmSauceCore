@@ -13,9 +13,16 @@ import java.util.Stack;
 
 import static org.objectweb.asm.Opcodes.GETFIELD;
 
+/**
+ * This is a code builder for generating the bytecode to access an instance field.
+ */
 public class GetInstanceFieldInsn extends FieldInsn implements
     InvokableInstance, FieldAccessibleInstance, MathOperandInstance,
     ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike {
+    /**
+     * Instantiates this code builder from a defined field.
+     * @param fieldDefinition The defined field.
+     */
     public GetInstanceFieldInsn(FieldDefinition fieldDefinition) {
         super(fieldDefinition);
     }

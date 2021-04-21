@@ -12,9 +12,18 @@ import java.util.Stack;
 
 import static org.objectweb.asm.Opcodes.PUTFIELD;
 
+/**
+ * Code builder for assigning a value to an instance field of an instance on the stack.
+ */
 public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInstance, MathOperandInstance {
     private final CodeInsnBuilderLike valueBuilder;
 
+    /**
+     * Creates this code builder which will assign a value to an instance field.
+     * @param fieldDefinition The definition of the instance field to be assigned to.
+     * @param valueBuilder Code builder whose bytecode will stack the value to be assigned.
+     * @throws IllegalArgumentException If valueBuilder is null.
+     */
     public AssignInstanceFieldInsn(FieldDefinition fieldDefinition, CodeInsnBuilderLike valueBuilder) {
         super(fieldDefinition);
 
@@ -46,6 +55,10 @@ public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInsta
         super.build(context);
     }
 
+    /**
+     * Executes the code builder and verifies that the bytecode it generates only stacks 1 value.
+     * @param context The method building context.
+     */
     protected void executeValueBuilder(MethodBuildingContext context) {
         int stackSize = context.stackSize();
         valueBuilder.build(context);

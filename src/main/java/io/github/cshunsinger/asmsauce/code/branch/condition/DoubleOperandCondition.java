@@ -12,11 +12,26 @@ import org.apache.commons.lang3.ClassUtils;
 
 import static org.objectweb.asm.Opcodes.*;
 
+/**
+ * Represents a condition with two operands and one operation.
+ */
 @Getter
 public class DoubleOperandCondition extends Condition {
+    /**
+     * @return The code builder for stacking the first operand in this comparison condition.
+     */
     private final CodeInsnBuilderLike operand1Builder;
+    /**
+     * @return The code builder for stacking the second operand in this comparison condition.
+     */
     private final CodeInsnBuilderLike operand2Builder;
 
+    /**
+     * Creates a new double-operand condition.
+     * @param operand1Builder Code builder to stack the first operand in the condition.
+     * @param operand2Builder Code builder to stack the second operand in the condition.
+     * @param comparisonOp Comparison operation to use with the two stacked operands.
+     */
     public DoubleOperandCondition(CodeInsnBuilderLike operand1Builder,
                                   CodeInsnBuilderLike operand2Builder,
                                   Op comparisonOp) {

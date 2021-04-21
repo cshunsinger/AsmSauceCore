@@ -142,6 +142,7 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
         assertThat(result, is(10.0));
     }
 
+    @SuppressWarnings("unused")
     public interface TestInterfaceType {
         String getTestString();
         void setTestString(String testString);
