@@ -266,7 +266,7 @@ public class AccessModifiers {
         //Finally, protected members can be accessed when `accessorClass` inherits from `declaringClass`
         if(otherAccess.isProtected()) {
             if(accessorClass == ThisClass.class)
-                return buildingContext.getSuperclass().isAssignableFrom(declaringClass);
+                return declaringClass.isAssignableFrom(buildingContext.getSuperclass());
             else
                 return declaringClass.isAssignableFrom(accessorClass);
         }

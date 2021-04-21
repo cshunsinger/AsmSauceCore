@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
@@ -146,10 +147,45 @@ public class MethodDefinition<O, R> {
                 ).map(MethodNode::getDefinition);
             }
             else {
+                //Attempt to find a method in the class being built right now
                 completedOpt = attemptFindMethod(
                     buildingContext.getClassContext(),
                     paramTypes
                 ).map(MethodNode::getDefinition);
+
+                //If no method is found in the class being built right now, then attempt to find the method in the
+                //super classes or implemented interfaces of the class being built right now.
+                if(completedOpt.isEmpty()) {
+                    //Attempt to locate method in superclass lineage
+                    Optional<Method> methodOpt = attemptFindMethod(buildingContext.getClassContext().getSuperclass(), paramTypes);
+
+                    //Check interfaces if nothing found
+                    if(methodOpt.isEmpty()) {
+                        //For every interface implemented by the class currently being generated, check it as well as
+                        //all super-interfaces in the interface inheritance tree for the method existing.
+                        methodOpt = buildingContext.getClassContext().getInterfaces().stream()
+                            .map(rootInterfaceType -> Stream.concat(Stream.of(rootInterfaceType), Stream.of(rootInterfaceType.getInterfaces()))
+                                .map(interfaceType -> attemptFindMethod(interfaceType, paramTypes))
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .findFirst()
+                            )
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .findFirst();
+                    }
+
+                    //If a method was found in the class inheritance structure of the class being genrated, then create
+                    //a completed method definition from the found method.
+                    completedOpt = methodOpt.map(method -> new CompleteMethodDefinition<>(
+                        DefinitionBuilders.type(method.getDeclaringClass()),
+                        customAccess(method.getModifiers()),
+                        DefinitionBuilders.name(method.getName()),
+                        DefinitionBuilders.type(method.getReturnType()),
+                        parameters(method.getParameterTypes()),
+                        DefinitionBuilders.throwing((Class[])method.getExceptionTypes())
+                    ));
+                }
             }
         }
         else {
@@ -175,6 +211,7 @@ public class MethodDefinition<O, R> {
             }
         }
 
+        //Verify that the found method is accessible from the class being generated.
         completedOpt = completedOpt.filter(m -> AccessModifiers.isAccessible(
             buildingContext.getClassContext(),
             ThisClass.class,
