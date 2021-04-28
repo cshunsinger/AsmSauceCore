@@ -46,7 +46,7 @@ public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInsta
         if(instanceType.getType().isArray() && "length".equals(fieldDefinition.getFieldName().getName()))
             throw new IllegalStateException("Cannot assign a value to the 'length' field of an array.");
 
-        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext());
+        fieldDefinition = fieldDefinition.completeDefinition();
 
         //Build up the value that will be placed into the instance field
         executeValueBuilder();
@@ -57,7 +57,6 @@ public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInsta
 
     /**
      * Executes the code builder and verifies that the bytecode it generates only stacks 1 value.
-     * @param context The method building context.
      */
     protected void executeValueBuilder() {
         int stackSize = context().stackSize();

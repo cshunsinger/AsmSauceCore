@@ -37,7 +37,6 @@ public abstract class FieldInsn extends CodeInsnBuilder {
     /**
      * Uses the building context to verify that the bytecode being generated here will be safe, and then generates
      * the bytecode to either assign or access a field.
-     * @param context The method building context.
      * @throws IllegalStateException If accessing the field is illegal due to accessibility issues.
      */
     protected void generateBytecode() {
@@ -51,7 +50,7 @@ public abstract class FieldInsn extends CodeInsnBuilder {
             );
         }
 
-        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext());
+        fieldDefinition = fieldDefinition.completeDefinition();
 
         //Load a value from class field onto the stack
         String newClassJvmName = context().getClassContext().getJvmTypeName();

@@ -11,32 +11,67 @@ import java.util.List;
  */
 @Getter
 public class ClassBuildingContext {
+    private static final ThreadLocal<ClassBuildingContext> CONTEXT = new ThreadLocal<>();
+
     /**
-     * @return The ClassWriter which is writing this class being built.
+     * Fetches the currently active class building context for the current thread. The returned context will be the
+     * last instantiated ClassBuildingContext instance since the last {@link ClassBuildingContext#reset()} call.
+     * @return The currently active method building context if it exists.
+     * @throws IllegalStateException If there is no currently active class building context.
+     * @see #reset()
+     */
+    public static ClassBuildingContext context() {
+        ClassBuildingContext buildingContext = CONTEXT.get();
+        if(buildingContext == null)
+            throw new IllegalStateException("Context must be accessed from within a method building scope.");
+
+        return buildingContext;
+    }
+
+    /**
+     * Resets the active class building context for the current thread. This method is called by the AsmClassBuilder
+     * after it finishes building a class.
+     * After this method is called, {@link ClassBuildingContext#context()} will throw an {@link IllegalStateException}
+     * until a new context is started.
+     * @see #context()
+     */
+    public static void reset() {
+        CONTEXT.remove();
+    }
+
+    /**
+     * The ClassWriter which is writing this class being built.
+     * @return The ClassWriter instance.
      */
     private final ClassWriter classWriter;
     /**
-     * @return The jvm type name of this class being built.
+     * The jvm type name of this class being built.
+     * @return The jvm type name.
      */
     private final String jvmTypeName;
     /**
-     * @return The existing Java class that this generated class is inheriting.
+     * The existing Java class that this generated class is inheriting.
+     * @return The superclass of this class being generated.
      */
     private final Class<?> superclass;
     /**
-     * @return The list of zero or more existing Java interface types that this generated class is implementing.
+     * The list of zero or more existing Java interface types that this generated class is implementing.
+     * @return The interfaces list.
      */
     private final List<Class<?>> interfaces;
     /**
-     * @return The list of fields defined in this class being generated.
+     * The list of fields defined in this class being generated.
+     * @return The list of fields.
      */
     private final List<FieldNode> fields;
     /**
-     * @return The list of methods defined in this class being generated.
+     * The list of methods defined in this class being generated.
+     * @return The list of methods.
      */
     private final List<MethodNode> methods;
     /**
-     * @return The list of constructors defined in this class being generated.
+     * The list of constructors defined in this class being generated.
+     * @return The list of constructors.
      */
     private final List<ConstructorNode> constructors;
 
@@ -64,6 +99,8 @@ public class ClassBuildingContext {
         this.fields = fields;
         this.methods = methods;
         this.constructors = constructors;
+
+        CONTEXT.set(this);
     }
 
     /**

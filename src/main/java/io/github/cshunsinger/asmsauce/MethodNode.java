@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
+
 /**
  * Represents a method being built on a new class.
  * This class defines the method header (or its definition) as well as the method body which is represented as a list
@@ -47,11 +49,10 @@ public class MethodNode {
     /**
      * Defines this method as part of a class being generated and generates the bytecode which makes up the body
      * of this method being generated.
-     * @param context The class building context which contains the details about the class being generated with this method.
      */
-    public void build(ClassBuildingContext context) {
+    public void build() {
         CompleteMethodDefinition<?, ?> updatedMethodDefinition = new CompleteMethodDefinition<>(
-            TypeDefinition.fromCustomJvmName(context.getJvmTypeName()),
+            TypeDefinition.fromCustomJvmName(context().getJvmTypeName()),
             definition.getModifiers(),
             definition.getName(),
             definition.getReturnType(),
@@ -59,7 +60,7 @@ public class MethodNode {
             definition.getThrowing()
         );
 
-        MethodVisitor methodVisitor = context.getClassWriter().visitMethod(
+        MethodVisitor methodVisitor = context().getClassWriter().visitMethod(
             updatedMethodDefinition.getModifiers().getJvmModifiers(),
             updatedMethodDefinition.getName().getName(),
             updatedMethodDefinition.jvmMethodSignature(),
@@ -74,12 +75,16 @@ public class MethodNode {
         //Add the defined parameters for the method to the context
         methodParameters.addAll(updatedMethodDefinition.getParameters().getParams());
 
-        new MethodBuildingContext(methodVisitor, updatedMethodDefinition, context, methodParameters);
+        //Start the method building context
+        new MethodBuildingContext(methodVisitor, updatedMethodDefinition, context(), methodParameters);
 
         methodVisitor.visitCode();
         methodBody.stream().filter(Objects::nonNull).forEach(codeBuilder -> codeBuilder.getFirstInStack().buildClean());
         methodVisitor.visitMaxs(-1, -1); //COMPUTE_MAXS is enabled
         methodVisitor.visitEnd();
+
+        //Stop the method building context
+        MethodBuildingContext.reset();
     }
 
     /**

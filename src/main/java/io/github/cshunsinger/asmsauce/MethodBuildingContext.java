@@ -35,6 +35,8 @@ public class MethodBuildingContext {
     /**
      * Resets the active method building context for the current thread. This method is called by the AsmClassBuilder
      * after it finishes building each method or constructor.
+     * After this method is called, {@link MethodBuildingContext#context()} will throw an {@link IllegalStateException}
+     * until a new context is started.
      * @see #context()
      */
     static void reset() {

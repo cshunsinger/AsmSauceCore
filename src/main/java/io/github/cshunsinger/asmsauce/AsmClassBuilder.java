@@ -245,7 +245,8 @@ public class AsmClassBuilder<T> {
             interfaceJvmNames
         );
 
-        ClassBuildingContext classContext = new ClassBuildingContext(
+        //Start the class building context for this thread
+        new ClassBuildingContext(
             classWriter,
             newJvmClassname,
             superclass,
@@ -256,16 +257,19 @@ public class AsmClassBuilder<T> {
         );
 
         //Build each field onto the new class
-        fields.forEach(fieldNode -> fieldNode.build(classContext));
+        fields.forEach(FieldNode::build);
 
         //Build each constructor onto the new class
-        constructors.forEach(constructorNode -> constructorNode.build(classContext));
+        constructors.forEach(MethodNode::build);
 
         //Build each method onto the new class
-        methods.forEach(methodNode -> methodNode.build(classContext));
+        methods.forEach(MethodNode::build);
 
         //Finish the class
         classWriter.visitEnd();
+
+        //End the class building context for this thread
+        ClassBuildingContext.reset();
 
         //Construct the class
         builtClass = (Class<? extends T>)dynamicClassLoader.defineClass(newJvmClassname.replace('/', '.'), classWriter.toByteArray());

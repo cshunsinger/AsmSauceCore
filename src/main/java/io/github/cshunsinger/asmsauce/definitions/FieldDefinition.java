@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
 /**
@@ -64,12 +65,11 @@ public class FieldDefinition {
      * using the class building context and other reflections information to fill in the missing details.
      * This method attempts to complete this field definition when the field might exist in the generated class itself,
      * in one of the parent types of this class, or in one of the interface types of this class.
-     * @param buildingContext The class building context containing the details about this class being generated.
      * @return A completed field definition which can be used for bytecode generation.
      * @throws IllegalStateException If no field can be found matching the incomplete details of this field definition.
      */
-    public CompleteFieldDefinition completeDefinition(ClassBuildingContext buildingContext) {
-        Optional<CompleteFieldDefinition> fdOpt = buildingContext.getFields()
+    public CompleteFieldDefinition completeDefinition() {
+        Optional<CompleteFieldDefinition> fdOpt = context().getFields()
             .stream()
             .map(FieldNode::getFieldDefinition)
             .filter(fieldDefinition -> fieldDefinition.fieldName.equals(this.fieldName))
@@ -80,19 +80,19 @@ public class FieldDefinition {
 
         //If field was not found, iterate through the superclass and interface types of the class being built
         List<Class<?>> otherTypes = new ArrayList<>();
-        otherTypes.add(buildingContext.getSuperclass());
-        otherTypes.addAll(buildingContext.getInterfaces());
+        otherTypes.add(context().getSuperclass());
+        otherTypes.addAll(context().getInterfaces());
 
         for(Class<?> otherType: otherTypes) {
             fdOpt = attemptCompletion(otherType);
             if(fdOpt.isPresent()) {
                 FieldDefinition fd = fdOpt.get();
-                if(AccessModifiers.isAccessible(buildingContext, ThisClass.class, fd.getFieldOwner().getType(), fd.getAccessModifiers()))
+                if(AccessModifiers.isAccessible(context(), ThisClass.class, fd.getFieldOwner().getType(), fd.getAccessModifiers()))
                     return fdOpt.get();
             }
         }
 
-        throw createFieldNotFoundException(buildingContext.getClassName());
+        throw createFieldNotFoundException(context().getClassName());
     }
 
     /**

@@ -1,5 +1,6 @@
 package io.github.cshunsinger.asmsauce;
 
+import org.junit.jupiter.api.AfterEach;
 import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import org.hamcrest.MatcherAssert;
@@ -28,6 +29,11 @@ class MethodBuildingContextTest extends BaseUnitTest {
     @BeforeEach
     public void init() {
         context = new MethodBuildingContext(mockMethodVisitor, mockMethodDefinition, mockClassContext, new ArrayList<>());
+    }
+
+    @AfterEach
+    public void end() {
+        MethodBuildingContext.reset();
     }
 
     @Test

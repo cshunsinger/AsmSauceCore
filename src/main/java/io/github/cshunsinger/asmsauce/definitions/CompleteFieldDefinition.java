@@ -41,11 +41,10 @@ public class CompleteFieldDefinition extends FieldDefinition {
 
     /**
      * This field definition is already considered "complete".
-     * @param buildingContext The class building context containing metadata about the class currently being generated.
      * @return This.
      */
     @Override
-    public CompleteFieldDefinition completeDefinition(ClassBuildingContext buildingContext) {
+    public CompleteFieldDefinition completeDefinition() {
         return this; //This field definition is already completed therefore it returns itself
     }
 

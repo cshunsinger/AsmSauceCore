@@ -8,6 +8,7 @@ import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import lombok.Getter;
 import org.apache.commons.lang3.ClassUtils;
 
+import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
 import static java.util.Arrays.asList;
 
 /**
@@ -82,12 +83,11 @@ public class FieldNode {
 
     /**
      * Called by the class builder {@link AsmClassBuilder} to build this field onto the class being generated.
-     * @param context The class building context.
-     * @see AsmClassBuilder {@link AsmClassBuilder}
-     * @see ClassBuildingContext {@link ClassBuildingContext}
+     * @see AsmClassBuilder
+     * @see ClassBuildingContext
      */
-    public void build(ClassBuildingContext context) {
-        TypeDefinition<ThisClass> updatedOwnerType = TypeDefinition.fromCustomJvmName(context.getJvmTypeName());
+    public void build() {
+        TypeDefinition<ThisClass> updatedOwnerType = TypeDefinition.fromCustomJvmName(context().getJvmTypeName());
         TypeDefinition<?> updatedFieldType = fieldDefinition.getFieldType().getType() == ThisClass.class ?
             updatedOwnerType :
             fieldDefinition.getFieldType();
@@ -99,7 +99,7 @@ public class FieldNode {
             updatedFieldType
         );
 
-        FieldVisitor fieldVisitor = context.getClassWriter().visitField(
+        FieldVisitor fieldVisitor = context().getClassWriter().visitField(
             fieldDefinition.getAccessModifiers().getJvmModifiers(),
             fieldDefinition.getFieldName().getName(),
             fieldDefinition.getJvmDescriptor(),
