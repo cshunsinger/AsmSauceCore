@@ -1,12 +1,13 @@
 package io.github.cshunsinger.asmsauce.code.math;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.apache.commons.lang3.ClassUtils;
+
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 
 /**
  * Code builder for math operations.
@@ -30,13 +31,13 @@ public abstract class MathOperationInsn extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         //Make sure there is actually the first operand already on the stack
-        if(context.isStackEmpty())
+        if(context().isStackEmpty())
             throw new IllegalStateException("Expected to find a math operand on the stack, but the stack was empty.");
 
         //Make sure the first operand on the stack is actually an operand
-        TypeDefinition<?> firstOperandType = context.peekStack();
+        TypeDefinition<?> firstOperandType = context().peekStack();
         if(!ClassUtils.isPrimitiveOrWrapper(firstOperandType.getType())) {
             throw new IllegalStateException(
                 "Expected a math operand to exist on the stack as a primitive or wrapper type. Found type %s instead."
@@ -46,34 +47,34 @@ public abstract class MathOperationInsn extends CodeInsnBuilder {
 
         if(ClassUtils.isPrimitiveWrapper(firstOperandType.getType())) {
             //Auto-unbox if the type is a wrapper type
-            new ImplicitConversionInsn(DefinitionBuilders.type(ClassUtils.wrapperToPrimitive(firstOperandType.getType()))).build(context);
-            firstOperandType = context.peekStack();
+            new ImplicitConversionInsn(DefinitionBuilders.type(ClassUtils.wrapperToPrimitive(firstOperandType.getType()))).build();
+            firstOperandType = context().peekStack();
         }
 
         //Call the operand builder and then make sure that the stack size is correct
-        int stackSize = context.stackSize();
-        operandBuilder.build(context);
-        if(context.stackSize() != stackSize+1) {
+        int stackSize = context().stackSize();
+        operandBuilder.build();
+        if(context().stackSize() != stackSize+1) {
             throw new IllegalStateException(
                 "Expected 1 element to be pushed to the stack. Instead %d elements were pushed/removed."
-                    .formatted(context.stackSize() - stackSize)
+                    .formatted(context().stackSize() - stackSize)
             );
         }
 
         //Implicit cast if necessary
-        TypeDefinition<?> secondOperand = context.peekStack();
+        TypeDefinition<?> secondOperand = context().peekStack();
         if(ClassUtils.isPrimitiveWrapper(secondOperand.getType()))
-            new ImplicitConversionInsn(DefinitionBuilders.type(ClassUtils.wrapperToPrimitive(secondOperand.getType()))).build(context);
-        new ImplicitConversionInsn(firstOperandType).build(context);
+            new ImplicitConversionInsn(DefinitionBuilders.type(ClassUtils.wrapperToPrimitive(secondOperand.getType()))).build();
+        new ImplicitConversionInsn(firstOperandType).build();
 
         //Pop the two operands
-        context.popStack(2);
+        context().popStack(2);
 
         //Perform operation in bytecode
-        context.getMethodVisitor().visitInsn(mathOperator(firstOperandType));
+        context().getMethodVisitor().visitInsn(mathOperator(firstOperandType));
 
         //Push the result type to the stack
-        context.pushStack(firstOperandType);
+        context().pushStack(firstOperandType);
     }
 
     private int mathOperator(TypeDefinition<?> operandType) {

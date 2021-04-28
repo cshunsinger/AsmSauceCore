@@ -1,7 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import org.objectweb.asm.Label;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
@@ -10,6 +9,7 @@ import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.Getter;
 import org.apache.commons.lang3.ClassUtils;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -18,11 +18,13 @@ import static org.objectweb.asm.Opcodes.*;
 @Getter
 public class DoubleOperandCondition extends Condition {
     /**
-     * @return The code builder for stacking the first operand in this comparison condition.
+     * The code builder for stacking the first operand in this comparison condition.
+     * @return The code builder instance.
      */
     private final CodeInsnBuilderLike operand1Builder;
     /**
-     * @return The code builder for stacking the second operand in this comparison condition.
+     * The code builder for stacking the second operand in this comparison condition.
+     * @return The code builder instance.
      */
     private final CodeInsnBuilderLike operand2Builder;
 
@@ -61,43 +63,43 @@ public class DoubleOperandCondition extends Condition {
     }
 
     @Override
-    public void build(MethodBuildingContext context, Label endLabel) {
-        validateStackSingleValue(context, operand1Builder);
-        TypeDefinition<?> firstType = context.peekStack();
-        validateStackSingleValue(context, operand2Builder);
+    public void build(Label endLabel) {
+        validateStackSingleValue(operand1Builder);
+        TypeDefinition<?> firstType = context().peekStack();
+        validateStackSingleValue(operand2Builder);
 
         if(firstType.isPrimitive()) {
             //Ensure the second operand type matches, or is implicitly converted to match, the first operand
-            new ImplicitConversionInsn(firstType).build(context);
+            new ImplicitConversionInsn(firstType).build();
 
             Class<?> primitiveClass = firstType.getType();
             if(primitiveClass == long.class)
-                context.getMethodVisitor().visitInsn(LCMP);
+                context().getMethodVisitor().visitInsn(LCMP);
             else if(primitiveClass == double.class)
-                context.getMethodVisitor().visitInsn(DCMPG);
+                context().getMethodVisitor().visitInsn(DCMPG);
             else if(primitiveClass == float.class)
-                context.getMethodVisitor().visitInsn(FCMPG);
+                context().getMethodVisitor().visitInsn(FCMPG);
 
             if(primitiveClass == long.class || primitiveClass == double.class || primitiveClass == float.class)
-                context.getMethodVisitor().visitJumpInsn(conditionOp.getSinglePrimitiveOpcode(), endLabel);
+                context().getMethodVisitor().visitJumpInsn(conditionOp.getSinglePrimitiveOpcode(), endLabel);
             else
-                context.getMethodVisitor().visitJumpInsn(conditionOp.getDoublePrimitiveOpcode(), endLabel);
+                context().getMethodVisitor().visitJumpInsn(conditionOp.getDoublePrimitiveOpcode(), endLabel);
         }
         else {
             //Dealing with reference comparison - if second operand is primitive, convert it into a wrapper first
-            TypeDefinition<?> secondType = context.peekStack();
+            TypeDefinition<?> secondType = context().peekStack();
             if(secondType.isPrimitive()) {
                 TypeDefinition<?> secondTypeWrapper = DefinitionBuilders.type(ClassUtils.primitiveToWrapper(secondType.getType()));
-                new ImplicitConversionInsn(secondTypeWrapper).build(context);
+                new ImplicitConversionInsn(secondTypeWrapper).build();
             }
 
             Integer referenceOpcode = conditionOp.getReferenceOpcode();
             if(referenceOpcode == null)
                 throw new IllegalStateException("Comparison operation %s is invalid for reference comparisons.".formatted(conditionOp.name()));
 
-            context.getMethodVisitor().visitJumpInsn(referenceOpcode, endLabel);
+            context().getMethodVisitor().visitJumpInsn(referenceOpcode, endLabel);
         }
 
-        context.popStack(2);
+        context().popStack(2);
     }
 }

@@ -1,10 +1,11 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import org.objectweb.asm.Label;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import lombok.Getter;
+
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 
 /**
  * This class represents a single condition, which can be built as bytecode by the asm package.
@@ -33,10 +34,9 @@ public abstract class Condition {
 
     /**
      * Builds the bytecode that makes up this condition.
-     * @param context Method building context.
      * @param endLabel Label to jump to if the condition evaluates to false.
      */
-    public abstract void build(MethodBuildingContext context, Label endLabel);
+    public abstract void build(Label endLabel);
 
     /**
      * Combines this condition and another condition with an AND operation.
@@ -59,13 +59,12 @@ public abstract class Condition {
 
     /**
      * Executes a provided code builder, and verifies that exactly 1 element was stacked by that code builder.
-     * @param context The method building context.
      * @param insn The code builder to execute.
      */
-    protected static void validateStackSingleValue(MethodBuildingContext context, CodeInsnBuilderLike insn) {
-        int stackSize = context.stackSize();
-        insn.build(context);
-        int numStacked = context.stackSize() - stackSize;
+    protected static void validateStackSingleValue(CodeInsnBuilderLike insn) {
+        int stackSize = context().stackSize();
+        insn.build();
+        int numStacked = context().stackSize() - stackSize;
         if(numStacked != 1)
             throw new IllegalStateException("Expected 1 element to be stacked. Found " + numStacked + " instead.");
     }

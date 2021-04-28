@@ -15,6 +15,32 @@ import java.util.stream.Collectors;
  */
 @Getter
 public class MethodBuildingContext {
+    private static final ThreadLocal<MethodBuildingContext> CONTEXT = new ThreadLocal<>();
+
+    /**
+     * Fetches the currently active method building context for the current thread. The returned context will be the
+     * last instantiated MethodBuildingContext instance since the last reset() call.
+     * @return The currently active method building context if it exists.
+     * @throws IllegalStateException If there is no currently active method building context.
+     * @see #reset()
+     */
+    public static MethodBuildingContext context() {
+        MethodBuildingContext buildingContext = CONTEXT.get();
+        if(buildingContext == null)
+            throw new IllegalStateException("Context must be accessed from within a method building scope.");
+
+        return buildingContext;
+    }
+
+    /**
+     * Resets the active method building context for the current thread. This method is called by the AsmClassBuilder
+     * after it finishes building each method or constructor.
+     * @see #context()
+     */
+    static void reset() {
+        CONTEXT.remove();
+    }
+
     private static final Set<Class<?>> LARGE_LOCALS = Set.of(double.class, long.class);
 
     /**
@@ -76,6 +102,8 @@ public class MethodBuildingContext {
                 setLocalType(param.getParamName(), param.getParamType());
         });
         scopeStack.push(0);
+
+        CONTEXT.set(this);
     }
 
     /**

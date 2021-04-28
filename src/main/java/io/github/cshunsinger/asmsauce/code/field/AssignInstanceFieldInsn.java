@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
@@ -10,6 +9,7 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.PUTFIELD;
 
 /**
@@ -34,46 +34,46 @@ public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInsta
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
-        if(context.isStackEmpty()) {
+    public void build() {
+        if(context().isStackEmpty()) {
             throw new IllegalStateException(
                 "No instance on stack to access field '%s' from.".formatted(fieldDefinition.getFieldName().getName())
             );
         }
 
-        TypeDefinition<?> instanceType = context.peekStack();
+        TypeDefinition<?> instanceType = context().peekStack();
 
         if(instanceType.getType().isArray() && "length".equals(fieldDefinition.getFieldName().getName()))
             throw new IllegalStateException("Cannot assign a value to the 'length' field of an array.");
 
-        fieldDefinition = fieldDefinition.completeDefinition(context.getClassContext());
+        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext());
 
         //Build up the value that will be placed into the instance field
-        executeValueBuilder(context);
+        executeValueBuilder();
 
         //Generate the bytecode to set the instance field value
-        super.build(context);
+        super.build();
     }
 
     /**
      * Executes the code builder and verifies that the bytecode it generates only stacks 1 value.
      * @param context The method building context.
      */
-    protected void executeValueBuilder(MethodBuildingContext context) {
-        int stackSize = context.stackSize();
-        valueBuilder.build(context);
+    protected void executeValueBuilder() {
+        int stackSize = context().stackSize();
+        valueBuilder.build();
 
         //Validate that the size of the stack hasn't been fucked
-        if(context.stackSize() != stackSize+1) {
+        if(context().stackSize() != stackSize+1) {
             throw new IllegalStateException(
                 "Expected 1 element placed onto the stack. Instead %d elements were added/removed."
-                    .formatted(context.stackSize() - stackSize)
+                    .formatted(context().stackSize() - stackSize)
             );
         }
 
         //Implicit casting and/or auto-boxing/auto-unboxing if necessary
         //This will throw an exception if the value on the stack cannot be assigned to the field
-        new ImplicitConversionInsn(fieldDefinition.getFieldType()).build(context);
+        new ImplicitConversionInsn(fieldDefinition.getFieldType()).build();
     }
 
     @Override

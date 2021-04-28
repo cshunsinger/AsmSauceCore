@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
@@ -12,6 +11,7 @@ import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import org.apache.commons.lang3.StringUtils;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.*;
 import static java.util.Arrays.asList;
 
@@ -49,19 +49,19 @@ public class StackLocalVariableInsn extends CodeInsnBuilder implements
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         TypeDefinition<?> typeDefinition;
 
         int index;
         if(localName != null) {
-            index = context.getLocalIndex(localName);
-            typeDefinition = context.getLocalType(localName);
+            index = context().getLocalIndex(localName);
+            typeDefinition = context().getLocalType(localName);
         }
         else {
-            if(localIndex >= context.numLocals())
-                throw new IllegalStateException("Trying to access local variable at index " + localIndex + " when only " + context.numLocals() + " exists.");
+            if(localIndex >= context().numLocals())
+                throw new IllegalStateException("Trying to access local variable at index " + localIndex + " when only " + context().numLocals() + " exists.");
 
-            typeDefinition = context.getLocalType(localIndex);
+            typeDefinition = context().getLocalType(localIndex);
             index = localIndex;
         }
 
@@ -79,10 +79,10 @@ public class StackLocalVariableInsn extends CodeInsnBuilder implements
         else
             opcode = ALOAD;
 
-        context.getMethodVisitor().visitVarInsn(opcode, index);
-        context.pushStack(typeDefinition);
+        context().getMethodVisitor().visitVarInsn(opcode, index);
+        context().pushStack(typeDefinition);
 
         //Build the next series of bytecode instructions
-        super.build(context);
+        super.build();
     }
 }

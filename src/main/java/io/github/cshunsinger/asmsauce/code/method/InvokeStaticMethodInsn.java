@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
@@ -56,9 +55,9 @@ public class InvokeStaticMethodInsn extends InvocationInsn implements
     }
 
     @Override
-    protected void invokeMethodVisitor(MethodBuildingContext context) {
+    protected void invokeMethodVisitor() {
         validateMethodIsStatic(super.method);
-        super.invokeMethodVisitor(context);
+        super.invokeMethodVisitor();
     }
 
     private static void validateMethodIsStatic(MethodDefinition<?, ?> methodDefinition) {

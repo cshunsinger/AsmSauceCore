@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +13,8 @@ public abstract class CodeInsnBuilder implements CodeInsnBuilderLike {
     private CodeInsnBuilderLike prev;
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         if(next != null)
-            next.build(context);
+            next.build();
     }
 }

@@ -19,10 +19,10 @@ class StackLocalVariableInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_localIndexOutOfBounds() {
-        MethodBuildingContext methodContext = new MethodBuildingContext(null, null, null, emptyList());
+        new MethodBuildingContext(null, null, null, emptyList());
         IllegalStateException ex = assertThrows(
             IllegalStateException.class,
-            () -> new StackLocalVariableInsn(1).build(methodContext)
+            () -> new StackLocalVariableInsn(1).build()
         );
         assertThat(ex, hasProperty("message", is("Trying to access local variable at index 1 when only 0 exists.")));
     }

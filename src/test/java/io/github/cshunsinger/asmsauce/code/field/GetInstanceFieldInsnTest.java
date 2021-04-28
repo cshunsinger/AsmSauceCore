@@ -30,12 +30,12 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_noInstanceOnStackToAccessFieldFrom() {
-        MethodBuildingContext context = new MethodBuildingContext(null, null, null, emptyList());
+        new MethodBuildingContext(null, null, null, emptyList());
 
         GetInstanceFieldInsn insn = new GetInstanceFieldInsn(mockFieldDefinition);
         when(mockFieldDefinition.getFieldName()).thenReturn(DefinitionBuilders.name("testField"));
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(context));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("No instance on stack to access field 'testField' from.")));
     }
 

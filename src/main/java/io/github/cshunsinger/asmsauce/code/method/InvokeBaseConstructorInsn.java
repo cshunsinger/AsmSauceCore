@@ -1,7 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.definitions.*;
@@ -58,11 +57,11 @@ public class InvokeBaseConstructorInsn extends InvocationInsn {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         //Stack "this" onto the stack
-        CodeBuilders.this_().build(context);
+        CodeBuilders.this_().build();
 
         //Generate bytecode to load the parameters, and then generate bytecode to invoke the constructor
-        super.build(context);
+        super.build();
     }
 }

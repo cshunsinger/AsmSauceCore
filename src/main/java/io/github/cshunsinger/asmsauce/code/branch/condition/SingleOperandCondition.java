@@ -1,7 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import org.objectweb.asm.Label;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 
@@ -28,7 +27,7 @@ public abstract class SingleOperandCondition extends Condition {
     }
 
     @Override
-    public void build(MethodBuildingContext context, Label endLabel) {
-        validateStackSingleValue(context, operandBuilder);
+    public void build(Label endLabel) {
+        validateStackSingleValue(operandBuilder);
     }
 }

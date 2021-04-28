@@ -1,12 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.FieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.PUTSTATIC;
 
 /**
@@ -33,19 +33,19 @@ public class AssignStaticFieldInsn extends AssignInstanceFieldInsn {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         Class<?> fieldOwnerClass = fieldDefinition.getFieldOwner().getType();
         if(fieldOwnerClass.isArray()) {
             throw new IllegalStateException("Cannot access static field from array type %s.".formatted(fieldOwnerClass.getSimpleName()));
         }
 
-        fieldDefinition = fieldDefinition.completeDefinition(context.getClassContext(), fieldDefinition.getFieldOwner());
+        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext(), fieldDefinition.getFieldOwner());
 
         //Execute the value builder to place item onto stack that will be assigned to field
-        executeValueBuilder(context);
+        executeValueBuilder();
 
         //Generate the bytecode to set the static field value
-        generateBytecode(context);
+        generateBytecode();
     }
 
     @Override

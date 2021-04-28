@@ -1,13 +1,14 @@
 package io.github.cshunsinger.asmsauce.code.branch;
 
 import org.objectweb.asm.Label;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 
 /**
  * Code builder for producing the bytecode for a branch. Builds the bytecode which builds the body of a branch before
@@ -43,15 +44,15 @@ public class IfElseBranch extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         //Build the branch body inside of its own scope
-        context.beginScope();
-        body.forEach(builder -> builder.buildClean(context));
-        context.endScope();
+        context().beginScope();
+        body.forEach(CodeInsnBuilderLike::buildClean);
+        context().endScope();
 
         //Visit label at end of block
-        context.getMethodVisitor().visitLabel(endLabel);
+        context().getMethodVisitor().visitLabel(endLabel);
 
-        super.build(context);
+        super.build();
     }
 }

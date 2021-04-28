@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
@@ -59,13 +58,13 @@ public class InvokeInstanceMethodInsn extends InvocationInsn implements
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         //The element at the top of the stack is what is the element that the instance method will be invoked against
         //Perform any necessary implicit casting first
         if(method.getOwner() != null) //Ignore implicit cast if method owner type will be implied
-            new ImplicitConversionInsn(super.method.getOwner()).build(context);
+            new ImplicitConversionInsn(super.method.getOwner()).build();
 
         //Perform the method call
-        super.build(context);
+        super.build();
     }
 }

@@ -1,11 +1,11 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -31,32 +31,32 @@ public class ReturnInsn extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         if(returnValueBuilder != null)
-            returnValueBuilder.build(context);
+            returnValueBuilder.build();
 
-        if(context.getCurrentMethod().getReturnType().isVoid()) {
+        if(context().getCurrentMethod().getReturnType().isVoid()) {
             //If method is void method then return nothing
-            context.getMethodVisitor().visitInsn(RETURN);
+            context().getMethodVisitor().visitInsn(RETURN);
         }
         else /* Method being implemented here is not a void method */ {
             //Make sure the return type isn't completely stupid
-            validateReturnType(context);
+            validateReturnType();
 
             //Implicit casting if necessary - either this will throw an exception, or typeStack.peek() will be equal to methodReturnType
-            new ImplicitConversionInsn(context.getCurrentMethod().getReturnType()).build(context);
+            new ImplicitConversionInsn(context().getCurrentMethod().getReturnType()).build();
 
             //Determine and write the correct return opcode based on the return type
-            context.getMethodVisitor().visitInsn(retOpcode(context.popStack()));
+            context().getMethodVisitor().visitInsn(retOpcode(context().popStack()));
         }
     }
 
-    private void validateReturnType(MethodBuildingContext context) {
-        if(context.isStackEmpty()) {
+    private void validateReturnType() {
+        if(context().isStackEmpty()) {
             //Method does not return void, but nothing on the stack to return therefore throw exception
             throw new IllegalStateException(
                 "Method being implemented has a return type of %s but no value on the stack left to return."
-                    .formatted(context.returnType().getType().getName())
+                    .formatted(context().returnType().getType().getName())
             );
         }
     }

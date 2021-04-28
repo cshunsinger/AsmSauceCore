@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -11,6 +10,7 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.GETFIELD;
 
 /**
@@ -28,15 +28,15 @@ public class GetInstanceFieldInsn extends FieldInsn implements
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
-        if(context.isStackEmpty()) {
+    public void build() {
+        if(context().isStackEmpty()) {
             throw new IllegalStateException(
                 "No instance on stack to access field '%s' from.".formatted(fieldDefinition.getFieldName().getName())
             );
         }
 
         //Generate the actual bytecode to get field value
-        super.build(context);
+        super.build();
     }
 
     @Override

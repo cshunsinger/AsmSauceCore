@@ -53,13 +53,13 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_noInstanceOnStackToAccessFieldFrom() {
-        MethodBuildingContext methodContext = new MethodBuildingContext(null, null, null, emptyList());
+        new MethodBuildingContext(null, null, null, emptyList());
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
         when(mockFieldDefinition.getFieldName()).thenReturn(DefinitionBuilders.name("Test Field"));
 
         AssignInstanceFieldInsn op = new AssignInstanceFieldInsn(mockFieldDefinition, mockCodeBuilder);
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> op.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, op::build);
         assertThat(ex, hasProperty("message", is("No instance on stack to access field 'Test Field' from.")));
     }
 
@@ -69,10 +69,10 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
         methodContext.pushStack(DefinitionBuilders.type(Object.class));
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
-        doAnswer(i -> null).when(mockCodeBuilder).build(methodContext);
+        doAnswer(i -> null).when(mockCodeBuilder).build();
 
         AssignInstanceFieldInsn op = new AssignInstanceFieldInsn(mockFieldDefinition, mockCodeBuilder);
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> op.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, op::build);
         assertThat(ex, hasProperty("message", is("Expected 1 element placed onto the stack. Instead 0 elements were added/removed.")));
     }
 

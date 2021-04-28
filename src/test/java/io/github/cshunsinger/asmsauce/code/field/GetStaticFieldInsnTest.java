@@ -51,11 +51,10 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
         when(mockFieldDefinition.getFieldOwner()).thenReturn((TypeDefinition) DefinitionBuilders.type(int.class));
         when(mockFieldDefinition.completeDefinition(null, DefinitionBuilders.type(int.class))).thenReturn(mockFieldDefinition);
 
+        new MethodBuildingContext(null, null, null, new ArrayList<>());
+
         GetStaticFieldInsn insn = new GetStaticFieldInsn(mockFieldDefinition);
-        IllegalStateException ex = assertThrows(
-            IllegalStateException.class,
-            () -> insn.build(new MethodBuildingContext(null, null, null, new ArrayList<>()))
-        );
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("Cannot access a field from primitive type 'int'.")));
     }
 
@@ -65,11 +64,10 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
         when(mockFieldDefinition.getAccessModifiers()).thenReturn(publicStatic());
         when(mockFieldDefinition.getFieldOwner()).thenReturn((TypeDefinition) DefinitionBuilders.type(int[].class));
 
+        new MethodBuildingContext(null, null, null, new ArrayList<>());
+
         GetStaticFieldInsn insn = new GetStaticFieldInsn(mockFieldDefinition);
-        IllegalStateException ex = assertThrows(
-            IllegalStateException.class,
-            () -> insn.build(new MethodBuildingContext(null, null, null, new ArrayList<>()))
-        );
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("Cannot access static field from array type int[].")));
     }
 

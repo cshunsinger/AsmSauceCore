@@ -21,19 +21,23 @@ import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAcc
 @Getter
 public class FieldDefinition {
     /**
-     * @return The access modifier flags for this defined field.
+     * The access modifier flags for this defined field.
+     * @return The access modifiers.
      */
     protected final AccessModifiers accessModifiers;
     /**
-     * @return The owner type of this defined field.
+     * The owner type of this defined field.
+     * @return The type.
      */
     protected final TypeDefinition<?> fieldOwner;
     /**
-     * @return The name of this defined field.
+     * The name of this defined field.
+     * @return The name.
      */
     protected final NameDefinition fieldName;
     /**
-     * @return The type of this defined field.
+     * The type of this defined field.
+     * @return The type.
      */
     protected final TypeDefinition<?> fieldType;
 

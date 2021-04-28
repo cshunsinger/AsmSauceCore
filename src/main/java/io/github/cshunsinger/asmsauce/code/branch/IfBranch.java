@@ -1,11 +1,8 @@
 package io.github.cshunsinger.asmsauce.code.branch;
 
-import lombok.AccessLevel;
 import org.objectweb.asm.Label;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.Condition;
-import lombok.RequiredArgsConstructor;
 
 /**
  * This code builder makes up the if-portion of an if or if-else statement.
@@ -50,12 +47,12 @@ public class IfBranch extends IfElseBranch {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         //Generate the bytecode for the branching
-        condition.build(context, endLabel);
+        condition.build(endLabel);
 
         //Build the if body
-        super.build(context);
+        super.build();
     }
 
     /**

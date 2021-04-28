@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
@@ -12,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -51,34 +51,33 @@ public abstract class InvocationInsn extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         //Each paramStackBuilder is expected to put 1 element onto the stack
-        stackParameters(context);
+        stackParameters();
 
         //Complete the method definition to fill in the missing values
-        method = method.completeDefinition(context, parameterBuilders.size());
+        method = method.completeDefinition(parameterBuilders.size());
 
-        invokeMethodVisitor(context);
+        invokeMethodVisitor();
 
         //Pop each of the parameters off of the stack
-        context.popStack(method.getParameters().count());
+        context().popStack(method.getParameters().count());
 
         if(!method.getModifiers().isStatic())
-            context.popStack(); //Pop "this" off of the stack
+            context().popStack(); //Pop "this" off of the stack
 
         if(!method.getReturnType().isVoid())
-            context.pushStack(method.getReturnType()); //Push method return type onto the stack
+            context().pushStack(method.getReturnType()); //Push method return type onto the stack
 
-        super.build(context);
+        super.build();
     }
 
     /**
      * Adds the bytecode instruction(s) via the low-level method visitor of the provided method building context, which
      * will represent the invocation of a method. This method determines which bytecode instruction to use, the
      * method signature, and other parameters required.
-     * @param context The method building context, which contains all of the information about the method currently being generated.
      */
-    protected void invokeMethodVisitor(MethodBuildingContext context) {
+    protected void invokeMethodVisitor() {
         int instruction = INVOKEVIRTUAL;
         boolean isInterface = false;
         if(method.getModifiers().isStatic())
@@ -90,37 +89,37 @@ public abstract class InvocationInsn extends CodeInsnBuilder {
             isInterface = true;
         }
 
-        String ownerTypeName = method.getOwner().getJvmTypeName(context.getClassContext().getJvmTypeName());
+        String ownerTypeName = method.getOwner().getJvmTypeName(context().getClassContext().getJvmTypeName());
         String methodName = method.getName().getName();
         String methodSignature = method.jvmMethodSignature();
 
-        context.getMethodVisitor().visitMethodInsn(instruction, ownerTypeName, methodName, methodSignature, isInterface);
+        context().getMethodVisitor().visitMethodInsn(instruction, ownerTypeName, methodName, methodSignature, isInterface);
     }
 
-    private void stackParameters(MethodBuildingContext context) {
+    private void stackParameters() {
         if(method.getParameters() != null) {
             ParametersDefinition methodParameters = method.getParameters();
             for(int i = 0; i < methodParameters.count(); i++) {
                 TypeDefinition<?> paramType = methodParameters.get(i);
 
                 CodeInsnBuilderLike builder = parameterBuilders.get(i);
-                stackParameter(context, builder);
+                stackParameter(builder);
 
                 //Perform implicit casting if necessary
-                new ImplicitConversionInsn(paramType).build(context);
+                new ImplicitConversionInsn(paramType).build();
             }
         }
         else {
             for(CodeInsnBuilderLike builder : parameterBuilders) {
-                stackParameter(context, builder);
+                stackParameter(builder);
             }
         }
     }
 
-    private void stackParameter(MethodBuildingContext context, CodeInsnBuilderLike builder) {
-        int preStackCount = context.stackSize();
-        builder.build(context);
-        int postStackCount = context.stackSize();
+    private void stackParameter(CodeInsnBuilderLike builder) {
+        int preStackCount = context().stackSize();
+        builder.build();
+        int postStackCount = context().stackSize();
 
         //Make sure each code builder adds exactly 1 element to the stack
         if(postStackCount != preStackCount+1)

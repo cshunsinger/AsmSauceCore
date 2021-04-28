@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -10,6 +9,7 @@ import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 
 /**
@@ -42,21 +42,21 @@ public class StackObjectLiteralInsn extends CodeInsnBuilder implements
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         if(objValue == null) {
-            context.getMethodVisitor().visitInsn(ACONST_NULL);
-            context.pushStack(DefinitionBuilders.type(objClass));
+            context().getMethodVisitor().visitInsn(ACONST_NULL);
+            context().pushStack(DefinitionBuilders.type(objClass));
         }
         else if(objClass == Class.class) {
             String value = DefinitionBuilders.type((Class<?>)objValue).getJvmTypeDefinition() + ".class";
-            context.getMethodVisitor().visitLdcInsn(value);
-            context.pushStack(DefinitionBuilders.type(objClass));
+            context().getMethodVisitor().visitLdcInsn(value);
+            context().pushStack(DefinitionBuilders.type(objClass));
         }
         else {
-            context.getMethodVisitor().visitLdcInsn(objValue);
-            context.pushStack(DefinitionBuilders.type(objClass));
+            context().getMethodVisitor().visitLdcInsn(objValue);
+            context().pushStack(DefinitionBuilders.type(objClass));
         }
 
-        super.build(context); //build next instruction if it exists
+        super.build(); //build next instruction if it exists
     }
 }

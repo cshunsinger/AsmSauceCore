@@ -1,11 +1,11 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import org.apache.commons.lang3.StringUtils;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -50,16 +50,16 @@ public class StoreLocalVariableInsn extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
-        int initialStackSize = context.stackSize();
-        valueBuilder.build(context);
-        int finalStackSize = context.stackSize();
+    public void build() {
+        int initialStackSize = context().stackSize();
+        valueBuilder.build();
+        int finalStackSize = context().stackSize();
 
         if(finalStackSize != initialStackSize+1)
             throw new IllegalStateException("Code builder expected to add 1 element to the stack. Instead %d elements were added.".formatted(finalStackSize-initialStackSize));
 
         //Pop the result of the value builder from the stack to store it in local
-        TypeDefinition<?> type = context.popStack();
+        TypeDefinition<?> type = context().popStack();
 
         //Need to know the index of the local variable for the jvm
         int index;
@@ -67,16 +67,16 @@ public class StoreLocalVariableInsn extends CodeInsnBuilder {
         if(localName == null) {
             //Store local variable by index
             if(localIndex == null)
-                index = context.addLocalType(type);
+                index = context().addLocalType(type);
             else {
                 index = localIndex;
-                context.setLocalType(index, type);
+                context().setLocalType(index, type);
             }
         }
         else {
             //Store local variable by name
-            context.setLocalType(localName, type);
-            index = context.getLocalIndex(localName);
+            context().setLocalType(localName, type);
+            index = context().getLocalIndex(localName);
         }
 
         //Determine the correct store opcode based on type
@@ -96,6 +96,6 @@ public class StoreLocalVariableInsn extends CodeInsnBuilder {
             opcode = ASTORE;
         }
 
-        context.getMethodVisitor().visitVarInsn(opcode, index);
+        context().getMethodVisitor().visitVarInsn(opcode, index);
     }
 }

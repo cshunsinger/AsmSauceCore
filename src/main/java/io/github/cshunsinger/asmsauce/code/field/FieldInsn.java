@@ -1,12 +1,13 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
 import org.objectweb.asm.MethodVisitor;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.definitions.FieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
+
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 
 /**
  * This class represents any code builder instruction for field access.
@@ -29,8 +30,8 @@ public abstract class FieldInsn extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
-        generateBytecode(context);
+    public void build() {
+        generateBytecode();
     }
 
     /**
@@ -39,9 +40,9 @@ public abstract class FieldInsn extends CodeInsnBuilder {
      * @param context The method building context.
      * @throws IllegalStateException If accessing the field is illegal due to accessibility issues.
      */
-    protected void generateBytecode(MethodBuildingContext context) {
+    protected void generateBytecode() {
         //pop instance from the stack before fetching the field
-        TypeDefinition<?> fieldContainerType = determineFieldOwner(context.getTypeStack());
+        TypeDefinition<?> fieldContainerType = determineFieldOwner(context().getTypeStack());
 
         Class<?> fieldContainerClass = fieldContainerType.getType();
         if(fieldContainerClass.isPrimitive()) {
@@ -50,14 +51,14 @@ public abstract class FieldInsn extends CodeInsnBuilder {
             );
         }
 
-        fieldDefinition = fieldDefinition.completeDefinition(context.getClassContext());
+        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext());
 
         //Load a value from class field onto the stack
-        String newClassJvmName = context.getClassContext().getJvmTypeName();
-        callMethodVisitor(context.getMethodVisitor(), newClassJvmName);
-        performTypeStackChanges(context.getTypeStack());
+        String newClassJvmName = context().getClassContext().getJvmTypeName();
+        callMethodVisitor(context().getMethodVisitor(), newClassJvmName);
+        performTypeStackChanges(context().getTypeStack());
 
-        super.build(context);
+        super.build();
     }
 
     /**

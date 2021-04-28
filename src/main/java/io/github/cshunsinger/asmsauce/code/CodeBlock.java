@@ -1,7 +1,5 @@
 package io.github.cshunsinger.asmsauce.code;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,9 +22,8 @@ public class CodeBlock extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
-        builders.forEach(builder -> builder.buildClean(context));
-
-        super.build(context);
+    public void build() {
+        builders.forEach(CodeInsnBuilderLike::buildClean);
+        super.build();
     }
 }

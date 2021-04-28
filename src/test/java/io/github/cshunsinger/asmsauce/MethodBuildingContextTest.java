@@ -232,4 +232,20 @@ class MethodBuildingContextTest extends BaseUnitTest {
         );
         assertThat(ex, hasProperty("message", is("No local variable exists with the name myInnerVar.")));
     }
+
+    @Test
+    public void illegalStateException_attemptingToAccessMethodBuildingContext_whenNotBuilding() {
+        MethodBuildingContext.reset();
+        IllegalStateException ex = assertThrows(IllegalStateException.class, MethodBuildingContext::context);
+        assertThat(ex, hasProperty("message",
+            is("Context must be accessed from within a method building scope.")
+        ));
+    }
+
+    @Test
+    public void accessMethodBuildingContext_whenOneExistsAndIsActive() {
+        //context is instantiated in the @BeforeEach call, therefore it should be the value currently stored as
+        //the active context.
+        assertThat(MethodBuildingContext.context(), is(context));
+    }
 }

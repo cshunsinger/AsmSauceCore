@@ -23,11 +23,11 @@ class CodeBlockTest extends BaseUnitTest {
 
         MethodBuildingContext context = new MethodBuildingContext(null, null, null, new ArrayList<>());
         CodeBlock codeBlock = CodeBuilders.block(mockCodeBuilder1, mockCodeBuilder2);
-        codeBlock.build(context);
+        codeBlock.build();
 
         verify(mockCodeBuilder1).getFirstInStack();
-        verify(mockCodeBuilder1).buildClean(context);
+        verify(mockCodeBuilder1).buildClean();
         verify(mockCodeBuilder2).getFirstInStack();
-        verify(mockCodeBuilder2).buildClean(context);
+        verify(mockCodeBuilder2).buildClean();
     }
 }

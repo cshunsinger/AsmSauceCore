@@ -364,11 +364,11 @@ class MathOperationInsnTest extends BaseUnitTest {
             methodContext.pushStack(DefinitionBuilders.type(int.class));
             methodContext.pushStack(DefinitionBuilders.type(int.class));
             return null;
-        }).when(mockOperandBuilder).build(methodContext);
+        }).when(mockOperandBuilder).build();
         when(mockOperandBuilder.getFirstInStack()).thenReturn(mockOperandBuilder);
 
         AdditionMathOperationInsn op = new AdditionMathOperationInsn(mockOperandBuilder);
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> op.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, op::build);
         assertThat(ex, hasProperty("message", is("Expected 1 element to be pushed to the stack. Instead 2 elements were pushed/removed.")));
     }
 }

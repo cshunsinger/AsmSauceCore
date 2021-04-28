@@ -89,7 +89,7 @@ class StackPrimitiveLiteralInsnTest extends BaseUnitTest {
 
     private void testBuildStack(StackPrimitiveLiteralInsn insn, Class<?> expectedType) {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
-        insn.build(methodContext);
+        insn.build();
 
         //type stack should have exactly 1 element and that element should be the expected type
         assertThat(methodContext.stackSize(), is(1));

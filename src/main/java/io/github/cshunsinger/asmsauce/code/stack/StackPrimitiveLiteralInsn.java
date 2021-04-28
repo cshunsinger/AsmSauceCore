@@ -1,12 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.ICONST_0;
 import static org.objectweb.asm.Opcodes.ICONST_1;
 
@@ -108,42 +108,42 @@ public class StackPrimitiveLiteralInsn extends CodeInsnBuilder implements
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         switch(primitiveType) {
             case B_PRIM -> {
-                context.getMethodVisitor().visitLdcInsn(b);
-                context.pushStack(DefinitionBuilders.type(byte.class));
+                context().getMethodVisitor().visitLdcInsn(b);
+                context().pushStack(DefinitionBuilders.type(byte.class));
             }
             case S_PRIM -> {
-                context.getMethodVisitor().visitLdcInsn(s);
-                context.pushStack(DefinitionBuilders.type(short.class));
+                context().getMethodVisitor().visitLdcInsn(s);
+                context().pushStack(DefinitionBuilders.type(short.class));
             }
             case C_PRIM -> {
-                context.getMethodVisitor().visitLdcInsn(c);
-                context.pushStack(DefinitionBuilders.type(char.class));
+                context().getMethodVisitor().visitLdcInsn(c);
+                context().pushStack(DefinitionBuilders.type(char.class));
             }
             case I_PRIM -> {
-                context.getMethodVisitor().visitLdcInsn(i);
-                context.pushStack(DefinitionBuilders.type(int.class));
+                context().getMethodVisitor().visitLdcInsn(i);
+                context().pushStack(DefinitionBuilders.type(int.class));
             }
             case L_PRIM -> {
-                context.getMethodVisitor().visitLdcInsn(l);
-                context.pushStack(DefinitionBuilders.type(long.class));
+                context().getMethodVisitor().visitLdcInsn(l);
+                context().pushStack(DefinitionBuilders.type(long.class));
             }
             case F_PRIM -> {
-                context.getMethodVisitor().visitLdcInsn(f);
-                context.pushStack(DefinitionBuilders.type(float.class));
+                context().getMethodVisitor().visitLdcInsn(f);
+                context().pushStack(DefinitionBuilders.type(float.class));
             }
             case D_PRIM -> {
-                context.getMethodVisitor().visitLdcInsn(d);
-                context.pushStack(DefinitionBuilders.type(double.class));
+                context().getMethodVisitor().visitLdcInsn(d);
+                context().pushStack(DefinitionBuilders.type(double.class));
             }
             case BOOL_PRIM -> {
-                context.getMethodVisitor().visitInsn(bool ? ICONST_1 : ICONST_0);
-                context.pushStack(DefinitionBuilders.type(boolean.class));
+                context().getMethodVisitor().visitInsn(bool ? ICONST_1 : ICONST_0);
+                context().pushStack(DefinitionBuilders.type(boolean.class));
             }
         }
 
-        super.build(context);
+        super.build();
     }
 }

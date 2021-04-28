@@ -1,11 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import org.objectweb.asm.Label;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 
 /**
  * Condition representing multiple conditions being combined using and/or.
@@ -61,17 +62,17 @@ public class CompoundCondition extends Condition {
     }
 
     @Override
-    public void build(MethodBuildingContext context, Label endLabel) {
+    public void build(Label endLabel) {
         if(and)
-            buildAnd(context, endLabel, endLabel, false);
+            buildAnd(endLabel, endLabel, false);
         else {
             Label ifBodyLabel = new Label();
-            buildOr(context, ifBodyLabel, endLabel);
-            context.getMethodVisitor().visitLabel(ifBodyLabel);
+            buildOr(ifBodyLabel, endLabel);
+            context().getMethodVisitor().visitLabel(ifBodyLabel);
         }
     }
 
-    private void buildOr(MethodBuildingContext context, Label codeLabel, Label endLabel) {
+    private void buildOr(Label codeLabel, Label endLabel) {
         List<Condition> allConditions = determineAllConditions();
         int lastIndex = allConditions.size() - 1;
 
@@ -81,23 +82,23 @@ public class CompoundCondition extends Condition {
             if(condition instanceof CompoundCondition) {
                 CompoundCondition compoundCondition = (CompoundCondition)condition;
                 Label nextConditionLabel = new Label();
-                compoundCondition.buildAnd(context, codeLabel, nextConditionLabel, true);
-                context.getMethodVisitor().visitLabel(nextConditionLabel);
+                compoundCondition.buildAnd(codeLabel, nextConditionLabel, true);
+                context().getMethodVisitor().visitLabel(nextConditionLabel);
             }
             else {
-                condition.invert().build(context, codeLabel);
+                condition.invert().build(codeLabel);
             }
         }
 
         //Build the last condition
         Condition lastCondition = allConditions.get(lastIndex);
         if(lastCondition instanceof CompoundCondition)
-            ((CompoundCondition)lastCondition).buildAnd(context, codeLabel, endLabel, false);
+            ((CompoundCondition)lastCondition).buildAnd(codeLabel, endLabel, false);
         else
-            lastCondition.build(context, endLabel);
+            lastCondition.build(endLabel);
     }
 
-    private void buildAnd(MethodBuildingContext context, Label codeLabel, Label endLabel, boolean nested) {
+    private void buildAnd(Label codeLabel, Label endLabel, boolean nested) {
         List<Condition> allConditions = determineAllConditions();
         int lastIndex = allConditions.size() - 1;
 
@@ -107,23 +108,23 @@ public class CompoundCondition extends Condition {
             if(condition instanceof CompoundCondition) {
                 Label nextConditionLabel = new Label();
                 CompoundCondition compoundCondition = (CompoundCondition)condition;
-                compoundCondition.buildOr(context, nextConditionLabel, codeLabel);
-                context.getMethodVisitor().visitLabel(nextConditionLabel);
+                compoundCondition.buildOr(nextConditionLabel, codeLabel);
+                context().getMethodVisitor().visitLabel(nextConditionLabel);
             }
             else {
                 //In a compound-AND scenario nested inside of a compound-OR scenario, jump to the codeLabel if condition fails
-                condition.build(context, endLabel);
+                condition.build(endLabel);
             }
         }
 
         //Build the last condition
         Condition lastCondition = allConditions.get(lastIndex);
         if(lastCondition instanceof CompoundCondition)
-            lastCondition.build(context, endLabel);
+            lastCondition.build(endLabel);
         else if(nested)
-            lastCondition.invert().build(context, codeLabel);
+            lastCondition.invert().build(codeLabel);
         else
-            lastCondition.build(context, endLabel);
+            lastCondition.build(endLabel);
     }
 
     private List<Condition> determineAllConditions() {

@@ -64,14 +64,14 @@ class InvokeBaseConstructorInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_parameterBuilderPlacesMoreThanOneItemOntoTheStack() {
-        MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, singletonList(DefinitionBuilders.p("this", ThisClass.class)));
+        new MethodBuildingContext(mockMethodVisitor, null, null, singletonList(DefinitionBuilders.p("this", ThisClass.class)));
 
         when(mockParamBuilder.getFirstInStack()).thenReturn(mockParamBuilder);
-        doAnswer(i -> null).when(mockParamBuilder).build(methodContext);
+        doAnswer(i -> null).when(mockParamBuilder).build();
 
         InvokeBaseConstructorInsn insn = new InvokeBaseConstructorInsn(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.parameters(String.class), DefinitionBuilders.noThrows(), mockParamBuilder);
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("Code builder expected to add 1 element to the stack. Instead 0 elements were added.")));
     }
 
@@ -82,11 +82,11 @@ class InvokeBaseConstructorInsnTest extends BaseUnitTest {
         //the mocking below simulates an int being pushed to the stack as a parameter, when a String is expected
         //Because int cannot implicitly convert to a String, an exception should be thrown.
         when(mockParamBuilder.getFirstInStack()).thenReturn(mockParamBuilder);
-        doAnswer(i -> methodContext.pushStack(DefinitionBuilders.type(int.class))).when(mockParamBuilder).build(methodContext);
+        doAnswer(i -> methodContext.pushStack(DefinitionBuilders.type(int.class))).when(mockParamBuilder).build();
 
         InvokeBaseConstructorInsn insn = new InvokeBaseConstructorInsn(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.parameters(String.class), DefinitionBuilders.noThrows(), mockParamBuilder);
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("Cannot convert from type int into type java.lang.String.")));
     }
 

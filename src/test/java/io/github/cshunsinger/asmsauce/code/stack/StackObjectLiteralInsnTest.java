@@ -16,8 +16,6 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
@@ -41,7 +39,7 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
     @Test
     public void placeNullReferenceOntoStack() {
         StackObjectLiteralInsn insn = new StackObjectLiteralInsn(String.class,null);
-        insn.build(methodContext);
+        insn.build();
 
         verify(mockMethodVisitor).visitInsn(ACONST_NULL);
         verify(mockMethodVisitor, never()).visitLdcInsn(any());
@@ -52,7 +50,7 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
     @Test
     public void placeNonNullReferenceOntoStack() {
         StackObjectLiteralInsn insn = new StackObjectLiteralInsn(new ThisClass());
-        insn.build(methodContext);
+        insn.build();
 
         verify(mockMethodVisitor, never()).visitInsn(anyInt());
         verify(mockMethodVisitor).visitLdcInsn(any(ThisClass.class));
@@ -63,7 +61,7 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
     @Test
     public void placeClassOntoStack() {
         StackObjectLiteralInsn insn = new StackObjectLiteralInsn(String.class);
-        insn.build(methodContext);
+        insn.build();
 
         verify(mockMethodVisitor, never()).visitInsn(anyInt());
         verify(mockMethodVisitor).visitLdcInsn(DefinitionBuilders.type(String.class).getJvmTypeDefinition() + ".class");
@@ -74,7 +72,7 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
     @Test
     public void placeDefaultNullObjectOntoStack() {
         StackObjectLiteralInsn insn = new StackObjectLiteralInsn(null, null);
-        insn.build(methodContext);
+        insn.build();
 
         verify(mockMethodVisitor).visitInsn(ACONST_NULL);
         verify(mockMethodVisitor, never()).visitLdcInsn(any());

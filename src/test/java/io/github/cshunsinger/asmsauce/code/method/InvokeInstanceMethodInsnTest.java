@@ -82,10 +82,10 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
     @Test
     @DisplayName("Throw IllegalStateException when there is no value on the stack to act as the 'this' value.")
     public void illegalStateException_noElementOnStackForMethodOwnerInstance() {
-        MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
+        new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
 
         InvokeInstanceMethodInsn insn = new InvokeInstanceMethodInsn(DefinitionBuilders.type(ThisClass.class), mockMethod, mockParameterBuilder);
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 
         assertThat(ex, hasProperty("message", is("There is no element expected on the stack to be cast.")));
     }
@@ -98,7 +98,7 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
         when(mockParameterBuilder.getFirstInStack()).thenReturn(mockParameterBuilder);
 
         InvokeInstanceMethodInsn insn = new InvokeInstanceMethodInsn(DefinitionBuilders.type(ThisClass.class), mockMethod, mockParameterBuilder);
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 
         assertThat(ex, hasProperty("message",
             is("Code builder expected to add 1 element to the stack. Instead 0 elements were added.")

@@ -1,7 +1,6 @@
 package io.github.cshunsinger.asmsauce.definitions;
 
 import io.github.cshunsinger.asmsauce.ConstructorNode;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.MethodNode;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
@@ -10,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
 /**
@@ -57,7 +57,6 @@ public class CompleteMethodDefinition<O, R> extends MethodDefinition<O, R> {
 
     /**
      * Validates that the complete set of method details provided in this "complete" method definition are all valid.
-     * @param buildingContext The method building context.
      * @param numParameters The number of parameters this method should have.
      * @return Returns a copy of this method definition which is guaranteed to have valid method or constructor details.
      * @throws IllegalStateException If the method or constructor represented by this definition does not exist, is not
@@ -65,21 +64,21 @@ public class CompleteMethodDefinition<O, R> extends MethodDefinition<O, R> {
      * whose set of parameters are not assignable from the parameter types of this "complete" definition.
      */
     @Override
-    public CompleteMethodDefinition<?, ?> completeDefinition(MethodBuildingContext buildingContext, int numParameters) {
+    public CompleteMethodDefinition<?, ?> completeDefinition(int numParameters) {
         AccessModifiers newModifiers;
 
         if(name.isConstructorName()) {
             if(owner.getType() == ThisClass.class) {
-                Optional<ConstructorNode> foundConstructor = attemptFindConstructor(buildingContext.getClassContext(), parameters.getParamTypes());
+                Optional<ConstructorNode> foundConstructor = attemptFindConstructor(context().getClassContext(), parameters.getParamTypes());
                 if(foundConstructor.isEmpty()) {
-                    String exceptionMessage = getConstructorNotFoundMessage(buildingContext.getClassContext().getClassName(), parameters.getParamTypes());
+                    String exceptionMessage = getConstructorNotFoundMessage(context().getClassContext().getClassName(), parameters.getParamTypes());
                     throw new IllegalStateException(exceptionMessage);
                 }
 
                 newModifiers = foundConstructor.get().getDefinition().modifiers;
             }
             else {
-                Optional<Constructor<?>> foundConstructor = attemptFindConstructor(buildingContext, owner.getType(), parameters.getParamTypes());
+                Optional<Constructor<?>> foundConstructor = attemptFindConstructor(context(), owner.getType(), parameters.getParamTypes());
                 if(foundConstructor.isEmpty()) {
                     String exceptionMessage = getConstructorNotFoundMessage(owner.getClassName(), parameters.getParamTypes());
                     throw new IllegalStateException(exceptionMessage);
@@ -91,23 +90,23 @@ public class CompleteMethodDefinition<O, R> extends MethodDefinition<O, R> {
             if(owner.getType() == ThisClass.class) {
                 //Make sure the method exists in the class being built
                 //The method is guaranteed accessible if it does exist
-                Optional<MethodNode> foundMethod = attemptFindMethod(buildingContext.getClassContext(), parameters.getParamTypes());
+                Optional<MethodNode> foundMethod = attemptFindMethod(context().getClassContext(), parameters.getParamTypes());
                 if(foundMethod.isEmpty()) {
-                    String exceptionMessage = getMethodNotFoundMessage(name.getName(), buildingContext.getClassContext().getClassName(), parameters.getParamTypes());
+                    String exceptionMessage = getMethodNotFoundMessage(name.getName(), context().getClassContext().getClassName(), parameters.getParamTypes());
                     throw new IllegalStateException(exceptionMessage);
                 }
                 newModifiers = foundMethod.get().getDefinition().modifiers;
             }
             else {
                 //Make sure method exists and is accessible inside the owner class
-                Optional<Method> foundMethod = attemptFindMethod(buildingContext, owner.getType(), parameters.getParamTypes());
+                Optional<Method> foundMethod = attemptFindMethod(context(), owner.getType(), parameters.getParamTypes());
                 if (foundMethod.isEmpty()) {
                     String exceptionMessage = getMethodNotFoundMessage(name.getName(), owner.getClassName(), parameters.getParamTypes());
                     throw new IllegalStateException(exceptionMessage);
                 }
                 else {
                     newModifiers = customAccess(foundMethod.get().getModifiers());
-                    if(!AccessModifiers.isAccessible(buildingContext.getClassContext(), ThisClass.class, owner.getType(), newModifiers)) {
+                    if(!AccessModifiers.isAccessible(context().getClassContext(), ThisClass.class, owner.getType(), newModifiers)) {
                         String exceptionMessage = getMethodNotFoundMessage(name.getName(), owner.getClassName(), parameters.getParamTypes());
                         throw new IllegalStateException(exceptionMessage);
                     }

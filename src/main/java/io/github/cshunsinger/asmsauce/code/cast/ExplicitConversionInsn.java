@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.cast;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
@@ -10,13 +9,14 @@ import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
  * Code builder which explicitly converts from one Java type to another.
  * This code builder will perform any valid cast, and tries to throw it's own exceptions to warn about possible
  * ClassCastExceptions that could be thrown by the jvm.
- * @see ImplicitConversionInsn {@link ImplicitConversionInsn} For implicit conversions.
+ * @see ImplicitConversionInsn
  */
 public class ExplicitConversionInsn extends CodeInsnBuilder implements
     InvokableInstance, MathOperandInstance, ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike {
@@ -43,26 +43,26 @@ public class ExplicitConversionInsn extends CodeInsnBuilder implements
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
-        int stackSize = context.stackSize();
-        valueBuilder.build(context);
+    public void build() {
+        int stackSize = context().stackSize();
+        valueBuilder.build();
 
-        if(context.stackSize() != stackSize+1)
+        if(context().stackSize() != stackSize+1)
             throw new IllegalStateException(
                 "Expected 1 value to be placed onto the stack. Instead %d items were placed/removed to the stack."
-                    .formatted(context.stackSize() - stackSize)
+                    .formatted(context().stackSize() - stackSize)
             );
 
-        TypeDefinition<?> fromType = context.peekStack();
+        TypeDefinition<?> fromType = context().peekStack();
 
         if(fromType.getType() != toType.getType()) {
             if(ImplicitConversionInsn.implicitCastAllowed(fromType.getType(), toType.getType())) {
                 //Utilize the implicit conversion insn to do the conversion
-                new ImplicitConversionInsn(toType).build(context);
+                new ImplicitConversionInsn(toType).build();
             }
             else {
                 //An implicit cast cannot be done - must be explicit cast
-                context.popStack(); //Pull the type being cast off the stack
+                context().popStack(); //Pull the type being cast off the stack
 
                 if(fromType.isPrimitive() && toType.isPrimitive()) {
                     //Conversion of one primitive to another which cannot be done implicitly
@@ -71,28 +71,28 @@ public class ExplicitConversionInsn extends CodeInsnBuilder implements
 
                     if(fromType.getType() == double.class) {
                         if(toClass == float.class)
-                            context.getMethodVisitor().visitInsn(D2F);
+                            context().getMethodVisitor().visitInsn(D2F);
                         else if(toClass == long.class)
-                            context.getMethodVisitor().visitInsn(D2L);
+                            context().getMethodVisitor().visitInsn(D2L);
                         else
-                            context.getMethodVisitor().visitInsn(D2I);
+                            context().getMethodVisitor().visitInsn(D2I);
                     }
                     else if(fromType.getType() == float.class) {
                         if(toClass == long.class)
-                            context.getMethodVisitor().visitInsn(F2L);
+                            context().getMethodVisitor().visitInsn(F2L);
                         else
-                            context.getMethodVisitor().visitInsn(F2I);
+                            context().getMethodVisitor().visitInsn(F2I);
                     }
                     else if(fromType.getType() == long.class) {
-                        context.getMethodVisitor().visitInsn(L2I);
+                        context().getMethodVisitor().visitInsn(L2I);
                     }
 
                     if(toClass == byte.class)
-                        context.getMethodVisitor().visitInsn(I2B);
+                        context().getMethodVisitor().visitInsn(I2B);
                     else if(toClass == char.class)
-                        context.getMethodVisitor().visitInsn(I2C);
+                        context().getMethodVisitor().visitInsn(I2C);
                     else if(toClass == short.class)
-                        context.getMethodVisitor().visitInsn(I2S);
+                        context().getMethodVisitor().visitInsn(I2S);
                 }
                 else if(fromType.isPrimitive() || toType.isPrimitive()) {
                     //Casting not possible because one type is primitive and another type is reference type
@@ -101,13 +101,13 @@ public class ExplicitConversionInsn extends CodeInsnBuilder implements
                 }
                 else {
                     //Both values are reference types
-                    context.getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName(context.getClassContext().getJvmTypeName()));
+                    context().getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName(context().getClassContext().getJvmTypeName()));
                 }
 
-                context.pushStack(toType); //Push the new type from the cast onto the stack
+                context().pushStack(toType); //Push the new type from the cast onto the stack
             }
         }
 
-        super.build(context);
+        super.build();
     }
 }

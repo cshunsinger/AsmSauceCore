@@ -1,12 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import io.github.cshunsinger.asmsauce.definitions.*;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.DUP;
 import static org.objectweb.asm.Opcodes.NEW;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
@@ -58,21 +58,21 @@ public class InstantiateObjectInsn extends InvocationInsn implements InvokableIn
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         //The base class will stack parameters and invoke the constructor
         //but first the type must be created and stacked
-        String jvmType = method.getOwner().getJvmTypeName(context.getClassContext().getJvmTypeName());
+        String jvmType = method.getOwner().getJvmTypeName(context().getClassContext().getJvmTypeName());
 
         //Create a new typed reference and place it onto the stack
-        context.getMethodVisitor().visitTypeInsn(NEW, jvmType);
-        context.pushStack(method.getOwner());
+        context().getMethodVisitor().visitTypeInsn(NEW, jvmType);
+        context().pushStack(method.getOwner());
 
         //A constructor call, like a method call, consumes `this` as well as the parameters
         //The reference must be duped otherwise the constructor call will completely remove the new reference from the stack
-        context.getMethodVisitor().visitInsn(DUP);
-        context.pushStack(context.peekStack());
+        context().getMethodVisitor().visitInsn(DUP);
+        context().pushStack(context().peekStack());
 
         //Now let the constructor call happen
-        super.build(context);
+        super.build();
     }
 }

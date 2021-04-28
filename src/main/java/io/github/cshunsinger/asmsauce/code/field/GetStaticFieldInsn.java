@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -11,6 +10,7 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.GETSTATIC;
 
 /**
@@ -40,15 +40,15 @@ public class GetStaticFieldInsn extends FieldInsn implements
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
+    public void build() {
         Class<?> fieldOwnerClass = fieldDefinition.getFieldOwner().getType();
 
         if(fieldOwnerClass.isArray())
             throw new IllegalStateException("Cannot access static field from array type %s.".formatted(fieldOwnerClass.getSimpleName()));
 
-        fieldDefinition = fieldDefinition.completeDefinition(context.getClassContext(), fieldDefinition.getFieldOwner());
+        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext(), fieldDefinition.getFieldOwner());
 
-        super.build(context);
+        super.build();
     }
 
     @Override

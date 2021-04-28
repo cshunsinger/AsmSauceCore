@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
 /**
@@ -111,27 +112,26 @@ public class MethodDefinition<O, R> {
      * A method definition is considered "incomplete" by default, and is usually created when some method details are
      * meant to be implied during bytecode generation in the code builders.
      * This method reads from the method building context and other info to provide a completed method definition.
-     * @param buildingContext The method building context.
      * @param numParameters The number of parameters this method should have.
      * @return A completed method definition which has all of the details filled in about this method.
      * @throws IllegalStateException If not method can be found which has the parameter types and owner type compatible
      *                               with the types currently loaded on the stack, and the same number of parameters.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public CompleteMethodDefinition<?, ?> completeDefinition(MethodBuildingContext buildingContext, int numParameters) {
+    public CompleteMethodDefinition<?, ?> completeDefinition(int numParameters) {
         //Get the parameter types based on what exists on the stack currently
         List<TypeDefinition<?>> paramTypes = new ArrayList<>();
         for(int i = numParameters-1; i >= 0; i--) {
-            paramTypes.add(0, buildingContext.popStack());
+            paramTypes.add(0, context().popStack());
         }
 
         //Get the type that is supposed to own this method
         boolean staticMethod = modifiers != null && modifiers.isStatic();
-        TypeDefinition<?> ownerType = staticMethod ? this.owner : buildingContext.peekStack();
+        TypeDefinition<?> ownerType = staticMethod ? this.owner : context().peekStack();
 
         //Re-stack the parameter types because this method should not be modifying the type stack
         for(int i = 0; i < numParameters; i++) {
-            buildingContext.pushStack(paramTypes.get(i));
+            context().pushStack(paramTypes.get(i));
         }
 
         //Do some mid-flight validations on the method owner type if this is not a static method
@@ -142,14 +142,14 @@ public class MethodDefinition<O, R> {
         if(ownerType.getType() == ThisClass.class) {
             if(name.isConstructorName()) {
                 completedOpt = attemptFindConstructor(
-                    buildingContext.getClassContext(),
+                    context().getClassContext(),
                     paramTypes
                 ).map(MethodNode::getDefinition);
             }
             else {
                 //Attempt to find a method in the class being built right now
                 completedOpt = attemptFindMethod(
-                    buildingContext.getClassContext(),
+                    context().getClassContext(),
                     paramTypes
                 ).map(MethodNode::getDefinition);
 
@@ -157,15 +157,15 @@ public class MethodDefinition<O, R> {
                 //super classes or implemented interfaces of the class being built right now.
                 if(completedOpt.isEmpty()) {
                     //Attempt to locate method in superclass lineage
-                    Optional<Method> methodOpt = attemptFindMethod(buildingContext, buildingContext.getClassContext().getSuperclass(), paramTypes);
+                    Optional<Method> methodOpt = attemptFindMethod(context(), context().getClassContext().getSuperclass(), paramTypes);
 
                     //Check interfaces if nothing found
                     if(methodOpt.isEmpty()) {
                         //For every interface implemented by the class currently being generated, check it as well as
                         //all super-interfaces in the interface inheritance tree for the method existing.
-                        methodOpt = buildingContext.getClassContext().getInterfaces().stream()
+                        methodOpt = context().getClassContext().getInterfaces().stream()
                             .map(rootInterfaceType -> Stream.concat(Stream.of(rootInterfaceType), Stream.of(rootInterfaceType.getInterfaces()))
-                                .map(interfaceType -> attemptFindMethod(buildingContext, interfaceType, paramTypes))
+                                .map(interfaceType -> attemptFindMethod(context(), interfaceType, paramTypes))
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
                                 .findFirst()
@@ -190,7 +190,7 @@ public class MethodDefinition<O, R> {
         }
         else {
             if(name.isConstructorName()) {
-                completedOpt = attemptFindConstructor(buildingContext, ownerType.getType(), paramTypes).map(constructor -> new CompleteMethodDefinition<>(
+                completedOpt = attemptFindConstructor(context(), ownerType.getType(), paramTypes).map(constructor -> new CompleteMethodDefinition<>(
                     DefinitionBuilders.type(constructor.getDeclaringClass()),
                     customAccess(constructor.getModifiers()),
                     this.name,
@@ -200,7 +200,7 @@ public class MethodDefinition<O, R> {
                 ));
             }
             else {
-                completedOpt = attemptFindMethod(buildingContext, ownerType.getType(), paramTypes).map(method -> new CompleteMethodDefinition<>(
+                completedOpt = attemptFindMethod(context(), ownerType.getType(), paramTypes).map(method -> new CompleteMethodDefinition<>(
                     DefinitionBuilders.type(method.getDeclaringClass()),
                     customAccess(method.getModifiers()),
                     DefinitionBuilders.name(method.getName()),
@@ -212,7 +212,7 @@ public class MethodDefinition<O, R> {
         }
 
         if(completedOpt.isEmpty()) {
-            String ownerTypeName = ownerType.getType() == ThisClass.class ? buildingContext.getClassContext().getClassName() : ownerType.getClassName();
+            String ownerTypeName = ownerType.getType() == ThisClass.class ? context().getClassContext().getClassName() : ownerType.getClassName();
             String exceptionMessage;
 
             if(this.getName().isConstructorName())

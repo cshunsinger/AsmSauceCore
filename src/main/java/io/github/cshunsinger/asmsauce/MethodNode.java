@@ -74,10 +74,10 @@ public class MethodNode {
         //Add the defined parameters for the method to the context
         methodParameters.addAll(updatedMethodDefinition.getParameters().getParams());
 
-        MethodBuildingContext methodContext = new MethodBuildingContext(methodVisitor, updatedMethodDefinition, context, methodParameters);
+        new MethodBuildingContext(methodVisitor, updatedMethodDefinition, context, methodParameters);
 
         methodVisitor.visitCode();
-        methodBody.stream().filter(Objects::nonNull).forEach(codeBuilder -> codeBuilder.getFirstInStack().buildClean(methodContext));
+        methodBody.stream().filter(Objects::nonNull).forEach(codeBuilder -> codeBuilder.getFirstInStack().buildClean());
         methodVisitor.visitMaxs(-1, -1); //COMPUTE_MAXS is enabled
         methodVisitor.visitEnd();
     }

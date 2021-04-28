@@ -25,11 +25,11 @@ class ReturnInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_methodHasReturnTypeButNoValueOnStackToReturn() {
         ReturnInsn insn = new ReturnInsn();
-        MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, mockMethodDefinition, null, emptyList());
+        new MethodBuildingContext(mockMethodVisitor, mockMethodDefinition, null, emptyList());
 
         when(mockMethodDefinition.getReturnType()).thenReturn(DefinitionBuilders.type(String.class));
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 
         assertThat(ex, hasProperty("message", is(
             "Method being implemented has a return type of java.lang.String but no value on the stack left to return."

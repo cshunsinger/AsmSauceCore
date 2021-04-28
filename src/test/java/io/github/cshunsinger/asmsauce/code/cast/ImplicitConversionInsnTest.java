@@ -47,10 +47,10 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_nothingOnStackToImplicitlyConvert() {
         ImplicitConversionInsn insn = new ImplicitConversionInsn(DefinitionBuilders.type(String.class));
-        IllegalStateException ex = assertThrows(
-            IllegalStateException.class,
-            () -> insn.build(new MethodBuildingContext(null, null, null, emptyList()))
-        );
+
+        new MethodBuildingContext(null, null, null, emptyList());
+
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 
         assertThat(ex, hasProperty("message", is("There is no element expected on the stack to be cast.")));
     }
@@ -64,7 +64,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, methodDefinition, classContext, emptyList());
         methodContext.pushStack(DefinitionBuilders.type(String.class));
 
-        insn.build(methodContext);
+        insn.build();
 
         assertThat(methodContext.stackSize(), is(1)); //Should still only have 1 item on stack
         assertThat(methodContext.peekStack(), is(testToType)); //Item on stack should now be Object instead of String
@@ -80,7 +80,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
         methodContext.pushStack(DefinitionBuilders.type(Object.class));
 
-        insn.build(methodContext);
+        insn.build();
 
         assertThat(methodContext.stackSize(), is(1)); //Should still only have 1 item on stack
         assertThat(methodContext.peekStack(), is(testToType)); //Item on stack should now be Object instead of String
@@ -94,7 +94,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
         methodContext.pushStack(testFromType);
 
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is(
             "Cannot convert from type %s into type %s.".formatted(testFromType.getType().getName(), testToType.getType().getName())
         )));
@@ -117,7 +117,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, methodDefinition, null, emptyList());
         methodContext.pushStack(DefinitionBuilders.type(int.class));
 
-        insn.build(methodContext);
+        insn.build();
 
         verify(mockMethodVisitor).visitMethodInsn(
             INVOKESTATIC,
@@ -140,7 +140,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, methodDefinition, null, emptyList());
         methodContext.pushStack(testFromType);
 
-        insn.build(methodContext);
+        insn.build();
 
         verify(mockMethodVisitor).visitMethodInsn(
             INVOKEVIRTUAL,
@@ -164,7 +164,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, methodDefinition, null, emptyList());
         methodContext.pushStack(testFromType);
 
-        insn.build(methodContext);
+        insn.build();
 
         if(expectedInstruction != null)
             verify(mockMethodVisitor).visitInsn(expectedInstruction);

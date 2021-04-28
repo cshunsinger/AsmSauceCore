@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import static org.objectweb.asm.Opcodes.*;
-import static io.github.cshunsinger.asmsauce.code.CodeBuilders.setVar;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -71,10 +70,10 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
             context.pushStack(DefinitionBuilders.type(Object.class));
             context.pushStack(DefinitionBuilders.type(Object.class));
             return null;
-        }).when(mockCodeBuilder).build(context);
+        }).when(mockCodeBuilder).build();
 
         StoreLocalVariableInsn insn = new StoreLocalVariableInsn(localIndex, mockCodeBuilder);
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> insn.build(context));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 
         assertThat(ex, hasProperty("message", is("Code builder expected to add 1 element to the stack. Instead 2 elements were added.")));
     }
@@ -85,10 +84,10 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
         MethodBuildingContext context = new MethodBuildingContext(mockMethodVisitor, null, null, new ArrayList<>());
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
-        doAnswer(i -> context.pushStack(DefinitionBuilders.type(valueClass))).when(mockCodeBuilder).build(context);
+        doAnswer(i -> context.pushStack(DefinitionBuilders.type(valueClass))).when(mockCodeBuilder).build();
 
         StoreLocalVariableInsn insn = new StoreLocalVariableInsn(localIndex, mockCodeBuilder);
-        insn.build(context);
+        insn.build();
 
         verify(mockMethodVisitor).visitVarInsn(opcode, 0);
 
@@ -123,10 +122,10 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
         String localName = RandomStringUtils.randomAlphanumeric(10);
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
-        doAnswer(i -> context.pushStack(DefinitionBuilders.type(valueClass))).when(mockCodeBuilder).build(context);
+        doAnswer(i -> context.pushStack(DefinitionBuilders.type(valueClass))).when(mockCodeBuilder).build();
 
         StoreLocalVariableInsn insn = CodeBuilders.setVar(localName, mockCodeBuilder);
-        insn.build(context);
+        insn.build();
 
         verify(mockMethodVisitor).visitVarInsn(opcode, 0);
 

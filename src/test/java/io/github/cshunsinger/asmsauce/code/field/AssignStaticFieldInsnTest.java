@@ -68,10 +68,10 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
         when(mockFieldDefinition.getAccessModifiers()).thenReturn(publicStatic());
         when(mockFieldDefinition.getFieldOwner()).thenReturn((TypeDefinition) DefinitionBuilders.type(String.class));
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
-        doAnswer(i -> null).when(mockCodeBuilder).build(methodContext);
+        doAnswer(i -> null).when(mockCodeBuilder).build();
 
         AssignStaticFieldInsn op = new AssignStaticFieldInsn(mockFieldDefinition, mockCodeBuilder);
-        IllegalStateException ex = assertThrows(IllegalStateException.class, () -> op.build(methodContext));
+        IllegalStateException ex = assertThrows(IllegalStateException.class, op::build);
         assertThat(ex, hasProperty("message", is("Expected 1 element placed onto the stack. Instead 0 elements were added/removed.")));
     }
 

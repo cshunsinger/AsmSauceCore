@@ -1,6 +1,5 @@
 package io.github.cshunsinger.asmsauce.code.cast;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
@@ -12,6 +11,7 @@ import org.objectweb.asm.MethodVisitor;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
+import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static io.github.cshunsinger.asmsauce.util.AsmUtils.generateJvmMethodSignature;
 import static org.objectweb.asm.Opcodes.*;
 
@@ -37,11 +37,11 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
     }
 
     @Override
-    public void build(MethodBuildingContext context) {
-        if(context.isStackEmpty())
+    public void build() {
+        if(context().isStackEmpty())
             throw new IllegalStateException("There is no element expected on the stack to be cast.");
 
-        TypeDefinition<?> fromType = context.peekStack();
+        TypeDefinition<?> fromType = context().peekStack();
         Class<?> fromClass = fromType.getType();
         Class<?> toClass = toType.getType();
 
@@ -55,21 +55,21 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
 
         if(fromClass.isPrimitive() && toClass.isPrimitive()) {
             //Implicit casting is possible based on the previous check
-            buildImplicitCast(context.getMethodVisitor(), fromType, context.getTypeStack());
+            buildImplicitCast(context().getMethodVisitor(), fromType, context().getTypeStack());
         }
         else if(fromClass.isPrimitive()) {
             //Auto-boxing will occur
-            buildAutoboxing(context.getMethodVisitor(), context.getTypeStack());
+            buildAutoboxing(context().getMethodVisitor(), context().getTypeStack());
         }
         else if(toClass.isPrimitive()) {
             //Auto-unboxing will occur
-            buildAutoUnboxing(context.getMethodVisitor(), context.getTypeStack());
+            buildAutoUnboxing(context().getMethodVisitor(), context().getTypeStack());
         }
         else {
             //Implicit casting will occur (ToType)fromTypeValue where ToType.isAssignableFrom(FromType)
-            context.getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName(context.getClassContext().getJvmTypeName()));
-            context.popStack();
-            context.pushStack(toType);
+            context().getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName(context().getClassContext().getJvmTypeName()));
+            context().popStack();
+            context().pushStack(toType);
         }
     }
 
