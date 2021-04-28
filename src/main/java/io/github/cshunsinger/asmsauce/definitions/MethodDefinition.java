@@ -228,6 +228,7 @@ public class MethodDefinition<O, R> {
 
     /**
      * Attempts to find a method in a class, which can be invoked using the specified parameter types.
+     * @param buildingContext The method building context.
      * @param ownerClass The class to search in for a method.
      * @param paramTypes The parameter types.
      * @return Returns a method from the specified ownerClass if one can be found whose parameter types are all assignable
@@ -248,6 +249,7 @@ public class MethodDefinition<O, R> {
 
     /**
      * Attempts to find a constructor in a class, which can be invoked using the specified parameter types.
+     * @param buildingContext The method building context.
      * @param ownerClass The class to search in for a constructor.
      * @param paramTypes The parameter types.
      * @return Returns a constructor from the specified ownerClass if one can be found whose parameter types are all

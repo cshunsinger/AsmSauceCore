@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'io.github.cshunsinger'
-version = '0.8.0'
+version = project.hasProperty('version') ? project.getProperty('version') : 'dev'
 description = """A Java library which provides a high-level api for dynamically writing new classes at runtime, loading them, and using them."""
 
 boolean isReleaseVersion = !version.toString().endsWith("SNAPSHOT")
