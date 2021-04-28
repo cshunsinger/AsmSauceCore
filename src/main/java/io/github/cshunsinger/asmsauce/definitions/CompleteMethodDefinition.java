@@ -79,7 +79,7 @@ public class CompleteMethodDefinition<O, R> extends MethodDefinition<O, R> {
                 newModifiers = foundConstructor.get().getDefinition().modifiers;
             }
             else {
-                Optional<Constructor<?>> foundConstructor = attemptFindConstructor(owner.getType(), parameters.getParamTypes());
+                Optional<Constructor<?>> foundConstructor = attemptFindConstructor(buildingContext, owner.getType(), parameters.getParamTypes());
                 if(foundConstructor.isEmpty()) {
                     String exceptionMessage = getConstructorNotFoundMessage(owner.getClassName(), parameters.getParamTypes());
                     throw new IllegalStateException(exceptionMessage);
@@ -100,7 +100,7 @@ public class CompleteMethodDefinition<O, R> extends MethodDefinition<O, R> {
             }
             else {
                 //Make sure method exists and is accessible inside the owner class
-                Optional<Method> foundMethod = attemptFindMethod(owner.getType(), parameters.getParamTypes());
+                Optional<Method> foundMethod = attemptFindMethod(buildingContext, owner.getType(), parameters.getParamTypes());
                 if (foundMethod.isEmpty()) {
                     String exceptionMessage = getMethodNotFoundMessage(name.getName(), owner.getClassName(), parameters.getParamTypes());
                     throw new IllegalStateException(exceptionMessage);

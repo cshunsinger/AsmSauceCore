@@ -4,10 +4,10 @@ import io.github.cshunsinger.asmsauce.*;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +157,7 @@ public class MethodDefinition<O, R> {
                 //super classes or implemented interfaces of the class being built right now.
                 if(completedOpt.isEmpty()) {
                     //Attempt to locate method in superclass lineage
-                    Optional<Method> methodOpt = attemptFindMethod(buildingContext.getClassContext().getSuperclass(), paramTypes);
+                    Optional<Method> methodOpt = attemptFindMethod(buildingContext, buildingContext.getClassContext().getSuperclass(), paramTypes);
 
                     //Check interfaces if nothing found
                     if(methodOpt.isEmpty()) {
@@ -165,7 +165,7 @@ public class MethodDefinition<O, R> {
                         //all super-interfaces in the interface inheritance tree for the method existing.
                         methodOpt = buildingContext.getClassContext().getInterfaces().stream()
                             .map(rootInterfaceType -> Stream.concat(Stream.of(rootInterfaceType), Stream.of(rootInterfaceType.getInterfaces()))
-                                .map(interfaceType -> attemptFindMethod(interfaceType, paramTypes))
+                                .map(interfaceType -> attemptFindMethod(buildingContext, interfaceType, paramTypes))
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
                                 .findFirst()
@@ -190,7 +190,7 @@ public class MethodDefinition<O, R> {
         }
         else {
             if(name.isConstructorName()) {
-                completedOpt = attemptFindConstructor(ownerType.getType(), paramTypes).map(constructor -> new CompleteMethodDefinition<>(
+                completedOpt = attemptFindConstructor(buildingContext, ownerType.getType(), paramTypes).map(constructor -> new CompleteMethodDefinition<>(
                     DefinitionBuilders.type(constructor.getDeclaringClass()),
                     customAccess(constructor.getModifiers()),
                     this.name,
@@ -200,7 +200,7 @@ public class MethodDefinition<O, R> {
                 ));
             }
             else {
-                completedOpt = attemptFindMethod(ownerType.getType(), paramTypes).map(method -> new CompleteMethodDefinition<>(
+                completedOpt = attemptFindMethod(buildingContext, ownerType.getType(), paramTypes).map(method -> new CompleteMethodDefinition<>(
                     DefinitionBuilders.type(method.getDeclaringClass()),
                     customAccess(method.getModifiers()),
                     DefinitionBuilders.name(method.getName()),
@@ -210,14 +210,6 @@ public class MethodDefinition<O, R> {
                 ));
             }
         }
-
-        //Verify that the found method is accessible from the class being generated.
-        completedOpt = completedOpt.filter(m -> AccessModifiers.isAccessible(
-            buildingContext.getClassContext(),
-            ThisClass.class,
-            m.getOwner().getType(),
-            m.getModifiers())
-        );
 
         if(completedOpt.isEmpty()) {
             String ownerTypeName = ownerType.getType() == ThisClass.class ? buildingContext.getClassContext().getClassName() : ownerType.getClassName();
@@ -242,10 +234,16 @@ public class MethodDefinition<O, R> {
      * from the given paramTypes and whose parameter count matches the number of provided paramTypes.
      * Returns an empty Optional if no method can be found matching the supplied param types.
      */
-    protected Optional<Method> attemptFindMethod(Class<?> ownerClass, List<TypeDefinition<?>> paramTypes) {
+    protected Optional<Method> attemptFindMethod(MethodBuildingContext buildingContext, Class<?> ownerClass, List<TypeDefinition<?>> paramTypes) {
         Class<?>[] paramClasses = paramTypes.stream().map(TypeDefinition::getType).toArray(Class[]::new);
         Method method = MethodUtils.getMatchingMethod(ownerClass, this.getName().getName(), paramClasses);
-        return Optional.ofNullable(method);
+        return Optional.ofNullable(method)
+            .filter(m -> AccessModifiers.isAccessible(
+                buildingContext.getClassContext(),
+                ThisClass.class,
+                m.getDeclaringClass(),
+                customAccess(m.getModifiers())
+            ));
     }
 
     /**
@@ -256,10 +254,35 @@ public class MethodDefinition<O, R> {
      * assignable from the given paramTypes and whose parameter count matches the number of provided paramTypes.
      * Returns an empty Optional if no constructor can be found matching the supplied param types.
      */
-    protected Optional<Constructor<?>> attemptFindConstructor(Class<?> ownerClass, List<TypeDefinition<?>> paramTypes) {
+    protected Optional<Constructor<?>> attemptFindConstructor(MethodBuildingContext buildingContext, Class<?> ownerClass, List<TypeDefinition<?>> paramTypes) {
         Class<?>[] paramClasses = paramTypes.stream().map(TypeDefinition::getType).toArray(Class[]::new);
-        Constructor<?> constructor = ConstructorUtils.getMatchingAccessibleConstructor(ownerClass, paramClasses);
-        return Optional.ofNullable(constructor);
+
+        //First attempt to find a perfect match
+        try {
+            return filterByAccessModifiers(buildingContext, Optional.of(ownerClass.getDeclaredConstructor(paramClasses)));
+        }
+        catch(Exception ignored) {}
+
+        //Then attempt to find an assignment-compatible match
+        List<TypeDefinition<?>> actualTypes = parameters(paramClasses).getParamTypes();
+        return filterByAccessModifiers(buildingContext,
+            Stream.of(ownerClass.getDeclaredConstructors())
+                .filter(constructor -> {
+                    List<TypeDefinition<?>> requiredTypes = parameters(constructor.getParameterTypes()).getParamTypes();
+                    return doParametersMatch(null, requiredTypes, actualTypes);
+                })
+                .findFirst()
+        );
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private <T extends Executable> Optional<T> filterByAccessModifiers(MethodBuildingContext context, Optional<T> optional) {
+        return optional.filter(e -> AccessModifiers.isAccessible(
+            context.getClassContext(),
+            ThisClass.class,
+            e.getDeclaringClass(),
+            customAccess(e.getModifiers())
+        ));
     }
 
     /**
@@ -279,10 +302,7 @@ public class MethodDefinition<O, R> {
                 if(!def.getName().getName().equals(this.getName().getName()))
                     return false;
 
-                //If number of parameters does not match then the method does not match
                 List<TypeDefinition<?>> types = def.getParameters().getParamTypes();
-                if(types.size() != paramTypes.size())
-                    return false;
 
                 //Check that the actual param types are all assignable to the required param types
                 return doParametersMatch(classContext, types, paramTypes);
@@ -303,10 +323,6 @@ public class MethodDefinition<O, R> {
             .filter(node -> {
                 MethodDefinition<?, ?> constructorDef = node.getDefinition();
 
-                //If number of parameters does not match then the constructor does not match
-                if(paramTypes.size() != constructorDef.getParameters().count())
-                    return false;
-
                 //Check that the actual param types are all assignable to the required param types
                 List<TypeDefinition<?>> requiredTypes = constructorDef.getParameters().getParamTypes();
 
@@ -316,6 +332,9 @@ public class MethodDefinition<O, R> {
     }
 
     private boolean doParametersMatch(ClassBuildingContext classContext, List<TypeDefinition<?>> requiredTypes, List<TypeDefinition<?>> actualTypes) {
+        if(requiredTypes.size() != actualTypes.size())
+            return false;
+
         for(int i = 0; i < actualTypes.size(); i++) {
             TypeDefinition<?> requiredType = requiredTypes.get(i);
             TypeDefinition<?> actualType = actualTypes.get(i);

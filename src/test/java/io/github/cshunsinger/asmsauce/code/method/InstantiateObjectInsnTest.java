@@ -1,13 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
@@ -52,9 +51,9 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_implicitDefinition_tryingToAccessInaccessibleConstructor() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                instantiate(TestType.class, CodeBuilders.literalObj("Test String")),
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                instantiate(TestType.class, literalObj("Test String")),
                 returnVoid()
             ));
 
@@ -67,9 +66,9 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_explicitDefinition_tryingToAccessInaccessibleConstructor() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                instantiate(TestType.class, DefinitionBuilders.parameters(String.class), CodeBuilders.literalObj("Test String")),
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                instantiate(TestType.class, parameters(String.class), literalObj("Test String")),
                 returnVoid()
             ));
 
@@ -82,9 +81,9 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_implicitDefinition_tryingToAccessNonExistentConstructor() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                instantiate(TestType.class, CodeBuilders.literalObj("Test String"), CodeBuilders.literalObj("Test String 2")),
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                instantiate(TestType.class, literalObj("Test String"), literalObj("Test String 2")),
                 returnVoid()
             ));
 
@@ -99,9 +98,9 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_explicitDefinition_tryingToAccessNonExistentConstructor() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                instantiate(TestType.class, DefinitionBuilders.parameters(String.class, String.class), CodeBuilders.literalObj("Test String"), CodeBuilders.literalObj("Test String 2")),
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                instantiate(TestType.class, parameters(String.class, String.class), literalObj("Test String"), literalObj("Test String 2")),
                 returnVoid()
             ));
 
@@ -116,11 +115,11 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
     @Test
     public void implicitDefinition_successfullyConstructNewObjectInstance() {
         AsmClassBuilder<TestBase> builder = new AsmClassBuilder<>(TestBase.class, Object.class, singletonList(TestBase.class), publicOnly())
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(Object.class, DefinitionBuilders.noParameters()),
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
                 returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("createTestType"), DefinitionBuilders.parameters(DefinitionBuilders.p("myInt", int.class)), DefinitionBuilders.type(TestType.class),
+            .withMethod(method(publicOnly(), name("createTestType"), parameters(p("myInt", int.class)), type(TestType.class),
                 setVar("testType", instantiate(TestType.class, getVar("myInt"))),
                 returnValue(getVar("testType"))
             ));
@@ -138,12 +137,12 @@ class InstantiateObjectInsnTest extends BaseUnitTest {
     @Test
     public void explicitDefinition_successfullyConstructNewObjectInstance() {
         AsmClassBuilder<TestBase> builder = new AsmClassBuilder<>(TestBase.class, Object.class, singletonList(TestBase.class), publicOnly())
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(Object.class, DefinitionBuilders.noParameters()),
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
                 returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("createTestType"), DefinitionBuilders.parameters(DefinitionBuilders.p("myInt", int.class)), DefinitionBuilders.type(TestType.class),
-                setVar("testType", instantiate(TestType.class, DefinitionBuilders.parameters(int.class), getVar("myInt"))),
+            .withMethod(method(publicOnly(), name("createTestType"), parameters(p("myInt", int.class)), type(TestType.class),
+                setVar("testType", instantiate(TestType.class, parameters(int.class), getVar("myInt"))),
                 returnValue(getVar("testType"))
             ));
 
