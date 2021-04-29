@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefinitionBuilders {
     private static final TypeDefinition[] NO_TYPES = new TypeDefinition[] {};
-    @SuppressWarnings("unchecked")
     private static final TypeDefinition[] NO_EXCEPTION_TYPES = new TypeDefinition[] {};
 
     /**

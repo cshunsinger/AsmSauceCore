@@ -12,8 +12,6 @@ import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAcc
 /**
  * This class defines a method and contains all of its metadata. This class represent a "complete" set of metadata
  * defining a method to call.
- * @param <O> The type owning the method.
- * @param <R> The return type of the method.
  */
 public class CompleteMethodDefinition extends MethodDefinition {
     /**
@@ -52,7 +50,6 @@ public class CompleteMethodDefinition extends MethodDefinition {
             throw new IllegalArgumentException("Throwing cannot be null.");
     }
 
-    @SuppressWarnings("unchecked")
     public static CompleteMethodDefinition fromExecutable(Executable executable) {
         NameDefinition methodName = NameDefinition.CONSTRUCTOR_NAME_DEFINITION;
         TypeDefinition returnType = type(void.class);
@@ -76,7 +73,7 @@ public class CompleteMethodDefinition extends MethodDefinition {
             methodName,
             returnType,
             parameters(paramDefs),
-            throwing((Class<? super Exception>[])executable.getExceptionTypes())
+            throwing(executable.getExceptionTypes())
         );
     }
 

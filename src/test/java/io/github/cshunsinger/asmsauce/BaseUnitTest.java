@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.MockitoAnnotations.openMocks;
 
+@SuppressWarnings("JUnit5Platform")
 @ExtendWith(MockitoExtension.class)
 @RunWith(JUnitPlatform.class)
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)

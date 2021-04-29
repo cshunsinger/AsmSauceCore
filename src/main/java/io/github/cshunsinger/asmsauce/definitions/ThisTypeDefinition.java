@@ -74,7 +74,7 @@ public class ThisTypeDefinition extends TypeDefinition {
         return ClassBuildingContext.context()
             .getMethods()
             .stream()
-            .map(node -> (CompleteMethodDefinition)node.getDefinition())
+            .map(MethodNode::getDefinition)
             .collect(Collectors.toList());
     }
 

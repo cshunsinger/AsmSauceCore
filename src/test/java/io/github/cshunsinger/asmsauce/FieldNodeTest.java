@@ -1,10 +1,7 @@
 package io.github.cshunsinger.asmsauce;
 
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.FieldVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.List;
 
@@ -20,13 +17,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FieldNodeTest extends BaseUnitTest {
-    @Mock
-    private ClassBuildingContext mockClassBuildingContext;
-    @Mock
-    private ClassWriter mockClassWriter;
-    @Mock
-    private FieldVisitor mockFieldVisitor;
-
     @Test
     public void illegalArgumentException_nullFieldDefinition() {
         IllegalArgumentException ex = assertThrows(

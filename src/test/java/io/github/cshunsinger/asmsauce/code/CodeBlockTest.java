@@ -21,7 +21,7 @@ class CodeBlockTest extends BaseUnitTest {
         when(mockCodeBuilder1.getFirstInStack()).thenReturn(mockCodeBuilder1);
         when(mockCodeBuilder2.getFirstInStack()).thenReturn(mockCodeBuilder2);
 
-        MethodBuildingContext context = new MethodBuildingContext(null, null, null, new ArrayList<>());
+        new MethodBuildingContext(null, null, null, new ArrayList<>());
         CodeBlock codeBlock = CodeBuilders.block(mockCodeBuilder1, mockCodeBuilder2);
         codeBlock.build();
 

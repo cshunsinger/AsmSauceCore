@@ -7,7 +7,6 @@ import io.github.cshunsinger.asmsauce.code.field.FieldAccessibleInstance;
 import io.github.cshunsinger.asmsauce.code.field.FieldAssignableInstance;
 import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;

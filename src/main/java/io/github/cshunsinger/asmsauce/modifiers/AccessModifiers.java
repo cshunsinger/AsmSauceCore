@@ -1,7 +1,5 @@
 package io.github.cshunsinger.asmsauce.modifiers;
 
-import io.github.cshunsinger.asmsauce.ClassBuildingContext;
-import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import lombok.AccessLevel;
 import lombok.Getter;

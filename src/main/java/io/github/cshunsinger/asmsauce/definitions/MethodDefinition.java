@@ -4,26 +4,16 @@ import io.github.cshunsinger.asmsauce.*;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.MethodUtils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Stack;
-import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
-import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
 /**
  * This class defines a method and contains all of its metadata. The data to define a method in this class may be
  * "incomplete" and more information might be required in order for bytecode to be generated.
- * @param <O> The type which owns this method being defined.
- * @param <R> The return type of the defined method.
  */
 @Getter
 public class MethodDefinition {

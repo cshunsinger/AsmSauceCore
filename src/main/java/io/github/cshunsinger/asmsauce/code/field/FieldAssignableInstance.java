@@ -5,7 +5,6 @@ import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.FieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.NameDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.name;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;

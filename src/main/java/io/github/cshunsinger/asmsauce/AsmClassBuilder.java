@@ -153,7 +153,7 @@ public class AsmClassBuilder<T> {
             new DynamicClassLoader(parentClassLoader),
             new ClassWriter(COMPUTE_FRAMES | COMPUTE_MAXS),
             instanceType,
-            interfaces == null ? emptyList() : interfaces,
+            interfaces,
             superclass,
             classModifiers
         );
@@ -250,7 +250,7 @@ public class AsmClassBuilder<T> {
             classWriter,
             newJvmClassname,
             superclass,
-            interfaces,
+            interfaces == null ? emptyList() : interfaces,
             fields,
             methods,
             constructors
