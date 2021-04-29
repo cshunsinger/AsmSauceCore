@@ -12,6 +12,7 @@ import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.mockito.Mock;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
@@ -54,17 +55,17 @@ public class ElseBranchTest extends BaseUnitTest {
     @Test
     public void successfullyCreateBytecodeForIfElseBlock() {
         AsmClassBuilder<IfElseTestType> builder = new AsmClassBuilder<>(IfElseTestType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(IfElseTestType.class, DefinitionBuilders.noParameters()),
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(IfElseTestType.class, noParameters()),
                 returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("testIfElse"), DefinitionBuilders.parameters(DefinitionBuilders.p("branchName", String.class)),
-                if_(CodeBuilders.literalObj("if").invoke("equals", getVar("branchName")).isTrue()).then(
+            .withMethod(method(publicOnly(), name("testIfElse"), parameters(p("branchName", String.class)),
+                if_(literalObj("if").invoke("equals", getVar("branchName")).isTrue()).then(
                     this_().assignField("ifExecuted", true_()),
                     this_().assignField("elseIfExecuted", false_())
                 )
                 .elseDo(
-                    if_(CodeBuilders.literalObj("elseIf").invoke("equals", getVar("branchName")).isTrue()).then(
+                    if_(literalObj("elseIf").invoke("equals", getVar("branchName")).isTrue()).then(
                         this_().assignField("ifExecuted", false_()),
                         this_().assignField("elseIfExecuted", true_())
                     )

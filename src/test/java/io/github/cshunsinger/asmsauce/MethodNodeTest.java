@@ -3,6 +3,7 @@ package io.github.cshunsinger.asmsauce;
 import io.github.cshunsinger.asmsauce.definitions.ThrowsDefinition;
 import org.junit.jupiter.api.Test;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,10 +22,9 @@ class MethodNodeTest extends BaseUnitTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void defineMethodNodeWithThrowingClause() {
-        ThrowsDefinition throwsDefinition = DefinitionBuilders.throwing(Exception.class);
-        MethodNode node = method(publicOnly(), DefinitionBuilders.name("myMagicalMethod"), DefinitionBuilders.noParameters(), throwsDefinition);
+        ThrowsDefinition throwsDefinition = throwing(Exception.class);
+        MethodNode node = method(publicOnly(), name("myMagicalMethod"), noParameters(), throwsDefinition);
         assertThat(node, hasProperty("definition",
             hasProperty("throwing", is(throwsDefinition))
         ));

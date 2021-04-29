@@ -5,8 +5,6 @@ import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.Condition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,7 +13,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,9 +39,9 @@ public class IfBranchTest extends BaseUnitTest {
     }
 
     private static Stream<Arguments> illegalArgumentException_badConstructorParameters_testCases() {
-        Condition testCondition = CodeBuilders.literal(1).eq(CodeBuilders.literal(1));
+        Condition testCondition = literal(1).eq(literal(1));
         CodeInsnBuilderLike[] testBody = new CodeInsnBuilderLike[1];
-        testBody[0] = CodeBuilders.literal(1);
+        testBody[0] = literal(1);
 
         return Stream.of(
             Arguments.of(null, new Label(), testBody, "Condition cannot be null."),
@@ -57,15 +57,15 @@ public class IfBranchTest extends BaseUnitTest {
     @Test
     public void useBasicIfStatementToImplementAbsoluteValueMethod() {
         AsmClassBuilder<TestType> builder = new AsmClassBuilder<>(TestType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("abs"), DefinitionBuilders.parameters(DefinitionBuilders.p("value", int.class)), DefinitionBuilders.type(int.class),
-                CodeBuilders.if_(CodeBuilders.getVar("value").lt(CodeBuilders.literal(0))).then(
-                    CodeBuilders.returnValue(CodeBuilders.getVar("value").mul(CodeBuilders.literal(-1)))
+            .withMethod(method(publicOnly(), name("abs"), parameters(p("value", int.class)), type(int.class),
+                if_(getVar("value").lt(literal(0))).then(
+                    returnValue(getVar("value").mul(literal(-1)))
                 ),
-                CodeBuilders.returnValue(CodeBuilders.getVar("value"))
+                returnValue(getVar("value"))
             ));
 
         TestType instance = builder.buildInstance();

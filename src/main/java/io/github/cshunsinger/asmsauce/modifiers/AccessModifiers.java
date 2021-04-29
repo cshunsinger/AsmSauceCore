@@ -2,6 +2,7 @@ package io.github.cshunsinger.asmsauce.modifiers;
 
 import io.github.cshunsinger.asmsauce.ClassBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
+import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -227,50 +228,34 @@ public class AccessModifiers {
      * Note that this method does not check for a field or method existing.
      * This utility method only answers the question of "Can 'accessorClass' access a member of 'declaringClass' of that member has 'X' access?"
      *
-     * @param buildingContext Class building context strictly used when accessorClass is ThisClass.class.
-     * @param accessorClass The class that wants to access a field or method.
-     * @param declaringClass The class that supposedly contains the field or method.
+     * @param accessorType The type that wants to access a field or method.
+     * @param declaringType The type that contains the field or method.
      * @param otherAccess The access modifiers of the member of the "declaringClass" being tested.
      * @return True if `accessorClass` is allowed to access a member with X access level inside of `declaringClass`. Or else false.
      * @throws IllegalArgumentException If the provided class building context is null and accessorClass is ThisClass.class.
      */
-    public static boolean isAccessible(ClassBuildingContext buildingContext, Class<?> accessorClass, Class<?> declaringClass, AccessModifiers otherAccess) {
-        if(accessorClass == ThisClass.class && buildingContext == null)
-            throw new IllegalArgumentException("Building context cannot be null when accessorClass is ThisClass.class");
-
-        //public members can always be access
-        if(otherAccess.isPublic())
+    public static boolean isAccessible(TypeDefinition accessorType, TypeDefinition declaringType, AccessModifiers otherAccess) {
+        //A class is allowed to access any members within itself
+        if(accessorType.equals(declaringType))
             return true;
 
-        //private members can only be accessed inside of the class that declares that member
-        //This means this method will always return false unless the class trying to access the private member also declares it.
-        //Also member are always accessible if the class accessing the member is also the declaring class. Not just when the member is private.
-        if(accessorClass == declaringClass)
-            return true;
-
-        //Private members are not accessible outside of the declaring class
+        //A class is never allowed to access a private member within a different class
         if(otherAccess.isPrivate())
             return false;
 
-        //Take ThisClass.class and the class building context into account
-        String accessorPackage = accessorClass.getPackageName();
-        if(accessorClass == ThisClass.class) {
-            String fullClassName = buildingContext.getClassName();
-            accessorPackage = fullClassName.substring(0, fullClassName.lastIndexOf('.'));
-        }
-
-        //Protected and package-private members are accessible when `accessorClass` and `declaringClass` are in the same package
-        if(accessorPackage.equals(declaringClass.getPackageName()))
+        //A class is allowed to access any public members within another class
+        if(otherAccess.isPublic())
             return true;
 
-        //Finally, protected members can be accessed when `accessorClass` inherits from `declaringClass`
+        boolean samePackage = accessorType.getPackageName().equals(declaringType.getPackageName());
+
         if(otherAccess.isProtected()) {
-            if(accessorClass == ThisClass.class)
-                return declaringClass.isAssignableFrom(buildingContext.getSuperclass());
-            else
-                return declaringClass.isAssignableFrom(accessorClass);
+            //A class is allowed to access protected members declared in an inherited class or in a class located within the same package
+            if(samePackage || declaringType.isAssignableFrom(accessorType))
+                return true;
         }
 
-        return false;
+        //A class is allowed to access package-private members declared in a class located within the same package
+        return samePackage;
     }
 }

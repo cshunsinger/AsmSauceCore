@@ -10,7 +10,6 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
-import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.GETSTATIC;
 
 /**
@@ -46,13 +45,13 @@ public class GetStaticFieldInsn extends FieldInsn implements
         if(fieldOwnerClass.isArray())
             throw new IllegalStateException("Cannot access static field from array type %s.".formatted(fieldOwnerClass.getSimpleName()));
 
-        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext(), fieldDefinition.getFieldOwner());
+        fieldDefinition = fieldDefinition.completeDefinition();
 
         super.build();
     }
 
     @Override
-    protected void performTypeStackChanges(Stack<TypeDefinition<?>> typeStack) {
+    protected void performTypeStackChanges(Stack<TypeDefinition> typeStack) {
         //Push the field value type onto the stack
         typeStack.push(fieldDefinition.getFieldType());
     }
@@ -63,7 +62,7 @@ public class GetStaticFieldInsn extends FieldInsn implements
     }
 
     @Override
-    protected TypeDefinition<?> determineFieldOwner(Stack<TypeDefinition<?>> typeStack) {
+    protected TypeDefinition determineFieldOwner(Stack<TypeDefinition> typeStack) {
         return fieldDefinition.getFieldOwner();
     }
 }

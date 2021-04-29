@@ -1,12 +1,10 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import io.github.cshunsinger.asmsauce.definitions.ParametersDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ClassUtils;
 import org.junit.jupiter.api.Test;
@@ -20,7 +18,9 @@ import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomUtils.*;
@@ -123,75 +123,75 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
         Method lessThan = baseClass.getMethod("lessThan", parameterPrimitiveType, parameterPrimitiveType);
         Method refEqualsPrim = baseClass.getMethod("refEqualsPrim", parameterWrapperType, parameterPrimitiveType);
 
-        ParametersDefinition methodParameters = DefinitionBuilders.parameters(DefinitionBuilders.p("first", parameterPrimitiveType), DefinitionBuilders.p("second", parameterPrimitiveType));
+        ParametersDefinition methodParameters = parameters(p("first", parameterPrimitiveType), p("second", parameterPrimitiveType));
 
         Object instance = new AsmClassBuilder<>(baseClass)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(baseClass, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(baseClass, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("equals"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").eq(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("equals"), methodParameters, type(boolean.class),
+                if_(getVar("first").eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("notEquals"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").ne(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("notEquals"), methodParameters, type(boolean.class),
+                if_(getVar("first").ne(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("greaterThanOrEquals"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").ge(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("greaterThanOrEquals"), methodParameters, type(boolean.class),
+                if_(getVar("first").ge(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("lessThanOrEquals"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").le(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("lessThanOrEquals"), methodParameters, type(boolean.class),
+                if_(getVar("first").le(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("greaterThan"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").gt(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("greaterThan"), methodParameters, type(boolean.class),
+                if_(getVar("first").gt(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("lessThan"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").lt(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("lessThan"), methodParameters, type(boolean.class),
+                if_(getVar("first").lt(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("refEqualsPrim"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", parameterWrapperType), DefinitionBuilders.p("second", parameterPrimitiveType)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNotNull()).then(
-                    CodeBuilders.getStatic(System.class, "out").invoke("println",
-                        CodeBuilders.literalObj("first: ").invoke("concat",
-                            CodeBuilders.getVar("first").invoke("toString")
+            .withMethod(method(publicOnly(), name("refEqualsPrim"), parameters(p("first", parameterWrapperType), p("second", parameterPrimitiveType)), type(boolean.class),
+                if_(getVar("first").isNotNull()).then(
+                    getStatic(System.class, "out").invoke("println",
+                        literalObj("first: ").invoke("concat",
+                            getVar("first").invoke("toString")
                         )
                     )
                 ),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNull()).then(
-                    CodeBuilders.getStatic(System.class, "out").invoke("println",
-                        CodeBuilders.literalObj("first: null")
+                if_(getVar("first").isNull()).then(
+                    getStatic(System.class, "out").invoke("println",
+                        literalObj("first: null")
                     )
                 ),
-                CodeBuilders.getStatic(System.class, "out").invoke("println",
-                    CodeBuilders.literalObj("second: ").invoke("concat",
-                        CodeBuilders.invokeStatic(String.class, "valueOf",
+                getStatic(System.class, "out").invoke("println",
+                    literalObj("second: ").invoke("concat",
+                        invokeStatic(String.class, "valueOf",
                             parameterPrimitiveType == byte.class || parameterPrimitiveType == short.class ?
-                                CodeBuilders.cast(int.class, CodeBuilders.getVar("second")) :
-                                CodeBuilders.getVar("second")
+                                cast(int.class, getVar("second")) :
+                                getVar("second")
                         )
                     )
                 ),
-                CodeBuilders.if_(CodeBuilders.getVar("first").eq(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+                if_(getVar("first").eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
             .buildInstance();
 
@@ -261,21 +261,21 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
     @Test
     public void testComparisonsWithReferences() {
         AsmClassBuilder<TestReferenceComparisonsType> builder = new AsmClassBuilder<>(TestReferenceComparisonsType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestReferenceComparisonsType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestReferenceComparisonsType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("equals"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").eq(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("equals"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
+                if_(getVar("first").eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("notEquals"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").ne(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("notEquals"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
+                if_(getVar("first").ne(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ));
 
         TestReferenceComparisonsType instance = builder.buildInstance();
@@ -307,15 +307,15 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
     @EnumSource(value = Op.class, names = {"EQ", "NE", "NOT_EQ", "NOT_NE"}, mode = EnumSource.Mode.EXCLUDE)
     public void illegalStateException_invalidComparisonOperator(Op operation) {
         AsmClassBuilder<TestInvalidReferenceComparisonsType> builder = new AsmClassBuilder<>(TestInvalidReferenceComparisonsType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestInvalidReferenceComparisonsType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestInvalidReferenceComparisonsType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("invalidComparison"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(new DoubleOperandCondition(CodeBuilders.getVar("first"), CodeBuilders.getVar("second"), operation)).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("invalidComparison"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
+                if_(new DoubleOperandCondition(getVar("first"), getVar("second"), operation)).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -327,15 +327,15 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
     @Test
     public void illegalStateException_comparisonOperandBuilderStacksZeroValues() {
         AsmClassBuilder<TestInvalidReferenceComparisonsType> builder = new AsmClassBuilder<>(TestInvalidReferenceComparisonsType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestInvalidReferenceComparisonsType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestInvalidReferenceComparisonsType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("invalidComparison"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getStatic(System.class, "out").invoke("println", CodeBuilders.getVar("first").invoke("toString")).eq(CodeBuilders.getVar("second"))).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("invalidComparison"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
+                if_(getStatic(System.class, "out").invoke("println", getVar("first").invoke("toString")).eq(getVar("second"))).then(
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -352,8 +352,8 @@ public class DoubleOperandConditionTest extends BaseUnitTest {
         "LT,NOT_LT"
     })
     public void testInvertingDoubleOperandConditions(Op operation, Op inverseOperation) {
-        CodeInsnBuilderLike operand1 = CodeBuilders.literal(123);
-        CodeInsnBuilderLike operand2 = CodeBuilders.literal(456);
+        CodeInsnBuilderLike operand1 = literal(123);
+        CodeInsnBuilderLike operand2 = literal(456);
 
         //Test condition to be inverted
         DoubleOperandCondition originalCondition = new DoubleOperandCondition(operand1, operand2, operation);

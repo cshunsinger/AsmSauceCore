@@ -4,75 +4,63 @@ import io.github.cshunsinger.asmsauce.ClassBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.stream.Stream;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
+import static java.util.Collections.emptyList;
 import static org.objectweb.asm.Opcodes.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class AccessModifiersTest extends BaseUnitTest {
-    @Mock
-    private ClassBuildingContext mockBuildingContext;
-
-    @Test
-    public void illegalArgumentException_noBuildingContextWhenAccessorClassIsTheClassBeingBuilt() {
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> AccessModifiers.isAccessible(null, ThisClass.class, Object.class, publicOnly()));
-        assertThat(ex, hasProperty("message", is("Building context cannot be null when accessorClass is ThisClass.class")));
-    }
-
     @Test
     public void publicAccessAlwaysAccessible() {
-        assertTrue(AccessModifiers.isAccessible(null, null, null, publicOnly()));
+        assertTrue(AccessModifiers.isAccessible(type(Object.class), type(String.class), publicOnly()));
     }
 
     @Test
     public void privateMembersOnlyAccessibleFromDeclaringClass() {
-        assertTrue(AccessModifiers.isAccessible(null, String.class, String.class, privateOnly()));
+        assertTrue(AccessModifiers.isAccessible(type(String.class), type(String.class), privateOnly()));
     }
 
     @Test
     public void privateMembersNotAccessibleOutsideOfDeclaringClass() {
-        assertFalse(AccessModifiers.isAccessible(null, String.class, Object.class, privateOnly()));
+        assertFalse(AccessModifiers.isAccessible(type(String.class), type(Object.class), privateOnly()));
     }
 
     @Test
     public void packageAndProtectedMembersAreAccessibleFromWithinTheSamePackage() {
-        assertTrue(AccessModifiers.isAccessible(null, String.class, Integer.class, packageOnly()));
-        assertTrue(AccessModifiers.isAccessible(null, String.class, Integer.class, protectedOnly()));
+        assertTrue(AccessModifiers.isAccessible(type(String.class), type(Integer.class), packageOnly()));
+        assertTrue(AccessModifiers.isAccessible(type(String.class), type(Integer.class), protectedOnly()));
     }
 
     @Test
     public void packageAndProtectedMembersAreNotAccessibleFromOutsideThePackage() {
-        assertFalse(AccessModifiers.isAccessible(null, Stream.class, String.class, packageOnly()));
-        assertFalse(AccessModifiers.isAccessible(null, Stream.class, String.class, protectedOnly()));
+        assertFalse(AccessModifiers.isAccessible(type(Stream.class), type(String.class), packageOnly()));
+        assertFalse(AccessModifiers.isAccessible(type(Stream.class), type(String.class), protectedOnly()));
     }
 
     @Test
     public void protectedMembersAreAccessibleFromChildrenOfTheDeclaringClass() {
-        assertTrue(AccessModifiers.isAccessible(null, String.class, CharSequence.class, protectedOnly()));
+        assertTrue(AccessModifiers.isAccessible(type(String.class), type(CharSequence.class), protectedOnly()));
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void classBeingBuiltCanAccessProtectedMembersOfBaseClass() {
-        when(mockBuildingContext.getSuperclass()).thenReturn((Class)Object.class);
-        when(mockBuildingContext.getClassName()).thenReturn("test.class.Name");
+        new ClassBuildingContext(null, "com/example/MyNewClass", Object.class, emptyList(), emptyList(), emptyList(), emptyList());
 
-        assertTrue(AccessModifiers.isAccessible(mockBuildingContext, ThisClass.class, Object.class, protectedOnly()));
+        assertTrue(AccessModifiers.isAccessible(type(ThisClass.class), type(Object.class), protectedOnly()));
     }
 
     @Test
     public void classBeingBuiltCanAccessPackageMembersInSamePackage() {
-        //Simulating ThisClass existing in the same package as String.class (java.lang)
-        when(mockBuildingContext.getClassName()).thenReturn("java.lang.ThisType");
+        new ClassBuildingContext(null, "java/lang/ThisType", Object.class, emptyList(), emptyList(), emptyList(), emptyList());
 
-        assertTrue(AccessModifiers.isAccessible(mockBuildingContext, ThisClass.class, String.class, packageOnly()));
+        assertTrue(AccessModifiers.isAccessible(type(ThisClass.class), type(String.class), packageOnly()));
     }
 
     @Test

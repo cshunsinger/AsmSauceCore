@@ -61,7 +61,7 @@ public class ReturnInsn extends CodeInsnBuilder {
         }
     }
 
-    private static int retOpcode(TypeDefinition<?> returnType) {
+    private static int retOpcode(TypeDefinition returnType) {
         Class<?> returnClass = returnType.getType();
         if(!returnClass.isPrimitive())
             return ARETURN; //This is the bytecode instruction when a reference is to be returned

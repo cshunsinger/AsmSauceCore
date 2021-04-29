@@ -20,7 +20,7 @@ import static org.objectweb.asm.Opcodes.*;
  */
 public class ExplicitConversionInsn extends CodeInsnBuilder implements
     InvokableInstance, MathOperandInstance, ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike {
-    private final TypeDefinition<?> toType;
+    private final TypeDefinition toType;
     private final CodeInsnBuilderLike valueBuilder;
 
     /**
@@ -30,7 +30,7 @@ public class ExplicitConversionInsn extends CodeInsnBuilder implements
      * @throws IllegalArgumentException If toType is null or void.
      * @throws IllegalArgumentException If the valueBuilder is null.
      */
-    public ExplicitConversionInsn(TypeDefinition<?> toType, CodeInsnBuilderLike valueBuilder) {
+    public ExplicitConversionInsn(TypeDefinition toType, CodeInsnBuilderLike valueBuilder) {
         if(toType == null)
             throw new IllegalArgumentException("toType cannot be null.");
         if(toType.isVoid())
@@ -53,10 +53,10 @@ public class ExplicitConversionInsn extends CodeInsnBuilder implements
                     .formatted(context().stackSize() - stackSize)
             );
 
-        TypeDefinition<?> fromType = context().peekStack();
+        TypeDefinition fromType = context().peekStack();
 
         if(fromType.getType() != toType.getType()) {
-            if(ImplicitConversionInsn.implicitCastAllowed(fromType.getType(), toType.getType())) {
+            if(ImplicitConversionInsn.implicitCastAllowed(fromType, toType)) {
                 //Utilize the implicit conversion insn to do the conversion
                 new ImplicitConversionInsn(toType).build();
             }

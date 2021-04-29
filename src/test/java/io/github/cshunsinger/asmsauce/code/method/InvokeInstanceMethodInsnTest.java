@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
@@ -55,7 +56,7 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
 
     @ParameterizedTest
     @MethodSource("illegalArgumentException_whenConstructing_testArguments")
-    public void illegalArgumentException_whenConstructing(TypeDefinition<?> testType,
+    public void illegalArgumentException_whenConstructing(TypeDefinition testType,
                                                           Method testMethod,
                                                           String expectedExceptionMessage) {
         IllegalArgumentException ex = assertThrows(
@@ -72,10 +73,10 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
 
         return Stream.of(
             Arguments.of(null, mockMethod, "Method owner type cannot be null."),
-            Arguments.of(DefinitionBuilders.voidType(), mockMethod, "Method owner type cannot be void."),
-            Arguments.of(DefinitionBuilders.type(int.class), mockMethod, "Method owner type cannot be a primitive type."),
-            Arguments.of(DefinitionBuilders.type(ThisClass.class), null, "Method cannot be null."),
-            Arguments.of(DefinitionBuilders.type(ThisClass.class), mockMethod, "Expected 1 builders to satisfy the method parameters. Found 0 builders instead.")
+            Arguments.of(voidType(), mockMethod, "Method owner type cannot be void."),
+            Arguments.of(type(int.class), mockMethod, "Method owner type cannot be a primitive type."),
+            Arguments.of(type(ThisClass.class), null, "Method cannot be null."),
+            Arguments.of(type(ThisClass.class), mockMethod, "Expected 1 builders to satisfy the method parameters. Found 0 builders instead.")
         );
     }
 
@@ -84,7 +85,7 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
     public void illegalStateException_noElementOnStackForMethodOwnerInstance() {
         new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
 
-        InvokeInstanceMethodInsn insn = new InvokeInstanceMethodInsn(DefinitionBuilders.type(ThisClass.class), mockMethod, mockParameterBuilder);
+        InvokeInstanceMethodInsn insn = new InvokeInstanceMethodInsn(type(ThisClass.class), mockMethod, mockParameterBuilder);
         IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 
         assertThat(ex, hasProperty("message", is("There is no element expected on the stack to be cast.")));
@@ -93,11 +94,11 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_wrongNumberOfValuesStackedByParamBuilder() {
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
-        methodContext.pushStack(DefinitionBuilders.type(ThisClass.class));
+        methodContext.pushStack(type(ThisClass.class));
 
         when(mockParameterBuilder.getFirstInStack()).thenReturn(mockParameterBuilder);
 
-        InvokeInstanceMethodInsn insn = new InvokeInstanceMethodInsn(DefinitionBuilders.type(ThisClass.class), mockMethod, mockParameterBuilder);
+        InvokeInstanceMethodInsn insn = new InvokeInstanceMethodInsn(type(ThisClass.class), mockMethod, mockParameterBuilder);
         IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 
         assertThat(ex, hasProperty("message",
@@ -113,26 +114,26 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
     public void createPrivateMethodInNewClassAndCallIt() {
         AsmClassBuilder<TestBaseClass> builder = new AsmClassBuilder<>(TestBaseClass.class)
             //public TestBaseClassImpl() {...}
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(DefinitionBuilders.type(TestBaseClass.class), DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(type(TestBaseClass.class), noParameters()),
+                returnVoid()
             ))
             //private static double squared(double d) {...}
-            .withMethod(method(privateStatic(), DefinitionBuilders.name("squared"), DefinitionBuilders.parameters(double.class), DefinitionBuilders.type(double.class),
-                CodeBuilders.returnValue(CodeBuilders.getVar(0).mul(CodeBuilders.getVar(0))) //return d * d;
+            .withMethod(method(privateStatic(), name("squared"), parameters(double.class), type(double.class),
+                returnValue(getVar(0).mul(getVar(0))) //return d * d;
             ))
             //public double distance(double aX, double aY, double bX, double bY) {...}
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("distance"), DefinitionBuilders.parameters(double.class, double.class, double.class, double.class), DefinitionBuilders.type(double.class),
+            .withMethod(method(publicOnly(), name("distance"), parameters(double.class, double.class, double.class, double.class), type(double.class),
                 //double bXMinusAX = bX - aX; (local var 9)
-                CodeBuilders.setVar(CodeBuilders.getVar(5).sub(CodeBuilders.getVar(1))),
+                setVar(getVar(5).sub(getVar(1))),
                 //double bYMinusAY = bY - aY; (local var 11)
-                CodeBuilders.setVar(CodeBuilders.getVar(7).sub(CodeBuilders.getVar(3))),
+                setVar(getVar(7).sub(getVar(3))),
                 //return Math.sqrt(TestBaseClassImpl.squared(bXMinusAX) + TestBaseClassImpl.squared(bYMinusAY))
-                CodeBuilders.returnValue(invokeStatic(Math.class, DefinitionBuilders.name("sqrt"), DefinitionBuilders.parameters(double.class), DefinitionBuilders.type(double.class),
-                    invokeStatic(ThisClass.class, DefinitionBuilders.name("squared"), DefinitionBuilders.parameters(double.class), DefinitionBuilders.type(double.class),
-                        CodeBuilders.getVar(9)
-                    ).add(invokeStatic(ThisClass.class, DefinitionBuilders.name("squared"), DefinitionBuilders.parameters(double.class), DefinitionBuilders.type(double.class),
-                        CodeBuilders.getVar(11))
+                returnValue(invokeStatic(Math.class, name("sqrt"), parameters(double.class), type(double.class),
+                    invokeStatic(ThisClass.class, name("squared"), parameters(double.class), type(double.class),
+                        getVar(9)
+                    ).add(invokeStatic(ThisClass.class, name("squared"), parameters(double.class), type(double.class),
+                        getVar(11))
                     )
                 ))
             ));
@@ -164,15 +165,15 @@ class InvokeInstanceMethodInsnTest extends BaseUnitTest {
     @Test
     public void successfullyInvokeAnInstanceMethod_whichIsAlsoAnInterfaceMethod() {
         AsmClassBuilder<TestInterfaceReceiver> builder = new AsmClassBuilder<>(TestInterfaceReceiver.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestInterfaceReceiver.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestInterfaceReceiver.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("receive"), DefinitionBuilders.parameters(TestInterfaceType.class),
-                CodeBuilders.this_().assignField("testString", //super.testString = value.getTestString();
-                    CodeBuilders.getVar(1).invoke("getTestString")
+            .withMethod(method(publicOnly(), name("receive"), parameters(TestInterfaceType.class),
+                this_().assignField("testString", //super.testString = value.getTestString();
+                    getVar(1).invoke("getTestString")
                 ),
-                CodeBuilders.returnVoid()
+                returnVoid()
             ));
 
         //Test data

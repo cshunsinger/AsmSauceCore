@@ -13,7 +13,6 @@ import io.github.cshunsinger.asmsauce.code.stack.StackLocalVariableInsn;
 import io.github.cshunsinger.asmsauce.code.stack.StackObjectLiteralInsn;
 import io.github.cshunsinger.asmsauce.code.stack.StackPrimitiveLiteralInsn;
 import io.github.cshunsinger.asmsauce.code.stack.StoreLocalVariableInsn;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import io.github.cshunsinger.asmsauce.code.field.AssignStaticFieldInsn;
 import io.github.cshunsinger.asmsauce.definitions.*;
 import lombok.AccessLevel;
@@ -21,15 +20,16 @@ import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Constructor;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.privateStatic;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicStatic;
 
 /**
  * This class contains all of the static methods which can be used to create all of the code building instructions.
- * Like with DefinitionBuilders {@link DefinitionBuilders} it is recommended to use a static import to access the
+ * Like with DefinitionBuilders {@link io.github.cshunsinger.asmsauce.DefinitionBuilders} it is recommended to use a static import to access the
  * methods in this class.
  *
- * @see DefinitionBuilders
+ * @see io.github.cshunsinger.asmsauce.DefinitionBuilders
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CodeBuilders {
@@ -124,8 +124,8 @@ public class CodeBuilders {
      * @see #superConstructor(Class, ParametersDefinition, CodeInsnBuilderLike...)
      * @see #thisConstructor(ParametersDefinition, CodeInsnBuilderLike...)
      */
-    public static InvokeBaseConstructorInsn superConstructor(TypeDefinition<?> owner, ParametersDefinition parameters, CodeInsnBuilderLike... paramStackBuilders) {
-        return new InvokeBaseConstructorInsn(owner, parameters, DefinitionBuilders.noThrows(), paramStackBuilders);
+    public static InvokeBaseConstructorInsn superConstructor(TypeDefinition owner, ParametersDefinition parameters, CodeInsnBuilderLike... paramStackBuilders) {
+        return new InvokeBaseConstructorInsn(owner, parameters, noThrows(), paramStackBuilders);
     }
 
     /**
@@ -139,7 +139,7 @@ public class CodeBuilders {
      * @see #thisConstructor(ParametersDefinition, CodeInsnBuilderLike...)
      */
     public static InvokeBaseConstructorInsn superConstructor(Class<?> ownerClass, ParametersDefinition parameters, CodeInsnBuilderLike... paramStackBuilders) {
-        return superConstructor(DefinitionBuilders.type(ownerClass), parameters, paramStackBuilders);
+        return superConstructor(type(ownerClass), parameters, paramStackBuilders);
     }
 
     /**
@@ -403,7 +403,7 @@ public class CodeBuilders {
      * @see #invokeStatic(Class, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      */
-    public static InvokeStaticMethodInsn invokeStatic(TypeDefinition<?> ownerType, NameDefinition name, CodeInsnBuilderLike... paramBuilders) {
+    public static InvokeStaticMethodInsn invokeStatic(TypeDefinition ownerType, NameDefinition name, CodeInsnBuilderLike... paramBuilders) {
         return new InvokeStaticMethodInsn(ownerType, name, paramBuilders);
     }
 
@@ -420,7 +420,7 @@ public class CodeBuilders {
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      */
     public static InvokeStaticMethodInsn invokeStatic(Class<?> ownerClass, String name, CodeInsnBuilderLike... paramBuilders) {
-        return invokeStatic(DefinitionBuilders.type(ownerClass), DefinitionBuilders.name(name), paramBuilders);
+        return invokeStatic(type(ownerClass), name(name), paramBuilders);
     }
 
     /**
@@ -437,8 +437,8 @@ public class CodeBuilders {
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, CodeInsnBuilderLike...)
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      */
-    public static InvokeStaticMethodInsn invokeStatic(TypeDefinition<?> type, NameDefinition name, ParametersDefinition parameters, TypeDefinition<?> returnType, CodeInsnBuilderLike... paramBuilders) {
-        return new InvokeStaticMethodInsn(type, name, parameters, returnType, DefinitionBuilders.noThrows(), paramBuilders);
+    public static InvokeStaticMethodInsn invokeStatic(TypeDefinition type, NameDefinition name, ParametersDefinition parameters, TypeDefinition returnType, CodeInsnBuilderLike... paramBuilders) {
+        return new InvokeStaticMethodInsn(type, name, parameters, returnType, noThrows(), paramBuilders);
     }
 
     /**
@@ -455,8 +455,8 @@ public class CodeBuilders {
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, CodeInsnBuilderLike...)
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      */
-    public static InvokeStaticMethodInsn invokeStatic(Class<?> typeClass, NameDefinition name, ParametersDefinition parameters, TypeDefinition<?> returnType, CodeInsnBuilderLike... parameterBuilders) {
-        return invokeStatic(DefinitionBuilders.type(typeClass), name, parameters, returnType, parameterBuilders);
+    public static InvokeStaticMethodInsn invokeStatic(Class<?> typeClass, NameDefinition name, ParametersDefinition parameters, TypeDefinition returnType, CodeInsnBuilderLike... parameterBuilders) {
+        return invokeStatic(type(typeClass), name, parameters, returnType, parameterBuilders);
     }
 
     /**
@@ -472,8 +472,8 @@ public class CodeBuilders {
      * @see #invokeStatic(Class, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      */
-    public static InvokeStaticMethodInsn invokeStatic(TypeDefinition<?> type, NameDefinition name, ParametersDefinition parameters, CodeInsnBuilderLike... parameterBuilders) {
-        return new InvokeStaticMethodInsn(type, name, parameters, DefinitionBuilders.voidType(), DefinitionBuilders.noThrows(), parameterBuilders);
+    public static InvokeStaticMethodInsn invokeStatic(TypeDefinition type, NameDefinition name, ParametersDefinition parameters, CodeInsnBuilderLike... parameterBuilders) {
+        return new InvokeStaticMethodInsn(type, name, parameters, voidType(), noThrows(), parameterBuilders);
     }
 
     /**
@@ -490,7 +490,7 @@ public class CodeBuilders {
      * @see #invokeStatic(TypeDefinition, NameDefinition, ParametersDefinition, TypeDefinition, CodeInsnBuilderLike...)
      */
     public static InvokeStaticMethodInsn invokeStatic(Class<?> typeClass, NameDefinition name, ParametersDefinition parameters, CodeInsnBuilderLike... parameterBuilders) {
-        return invokeStatic(DefinitionBuilders.type(typeClass), name, parameters, parameterBuilders);
+        return invokeStatic(type(typeClass), name, parameters, parameterBuilders);
     }
 
     /**
@@ -502,7 +502,7 @@ public class CodeBuilders {
      * @see #getStatic(TypeDefinition, NameDefinition)
      * @see #getStatic(Class, String)
      */
-    public static GetStaticFieldInsn getStatic(TypeDefinition<?> owner, NameDefinition name, TypeDefinition<?> fieldType) {
+    public static GetStaticFieldInsn getStatic(TypeDefinition owner, NameDefinition name, TypeDefinition fieldType) {
         return new GetStaticFieldInsn(new CompleteFieldDefinition(
             publicStatic(), //Access is irrelevant here, other than that this be static
             owner, name, fieldType
@@ -517,7 +517,7 @@ public class CodeBuilders {
      * @see #getStatic(TypeDefinition, NameDefinition, TypeDefinition)
      * @see #getStatic(Class, String)
      */
-    public static GetStaticFieldInsn getStatic(TypeDefinition<?> owner, NameDefinition name) {
+    public static GetStaticFieldInsn getStatic(TypeDefinition owner, NameDefinition name) {
         return new GetStaticFieldInsn(new FieldDefinition(privateStatic(), owner, name, null));
     }
 
@@ -530,7 +530,7 @@ public class CodeBuilders {
      * @see #getStatic(TypeDefinition, NameDefinition)
      */
     public static GetStaticFieldInsn getStatic(Class<?> ownerClass, String fieldName) {
-        return getStatic(DefinitionBuilders.type(ownerClass), DefinitionBuilders.name(fieldName));
+        return getStatic(type(ownerClass), name(fieldName));
     }
 
     /**
@@ -543,7 +543,7 @@ public class CodeBuilders {
      * @see #setStatic(Class, String, CodeInsnBuilderLike)
      * @see #setStatic(TypeDefinition, NameDefinition, CodeInsnBuilderLike)
      */
-    public static AssignStaticFieldInsn setStatic(TypeDefinition<?> owner, NameDefinition name, TypeDefinition<?> fieldType, CodeInsnBuilderLike valueBuilder) {
+    public static AssignStaticFieldInsn setStatic(TypeDefinition owner, NameDefinition name, TypeDefinition fieldType, CodeInsnBuilderLike valueBuilder) {
         return new AssignStaticFieldInsn(new CompleteFieldDefinition(
             publicStatic(),
             owner, name, fieldType
@@ -559,7 +559,7 @@ public class CodeBuilders {
      * @see #setStatic(TypeDefinition, NameDefinition, TypeDefinition, CodeInsnBuilderLike)
      * @see #setStatic(Class, String, CodeInsnBuilderLike)
      */
-    public static AssignStaticFieldInsn setStatic(TypeDefinition<?> owner, NameDefinition name, CodeInsnBuilderLike valueBuilder) {
+    public static AssignStaticFieldInsn setStatic(TypeDefinition owner, NameDefinition name, CodeInsnBuilderLike valueBuilder) {
         return new AssignStaticFieldInsn(new FieldDefinition(
             publicStatic(),
             owner, name, null
@@ -576,7 +576,7 @@ public class CodeBuilders {
      * @see #setStatic(TypeDefinition, NameDefinition, CodeInsnBuilderLike)
      */
     public static AssignStaticFieldInsn setStatic(Class<?> owner, String name, CodeInsnBuilderLike valueBuilder) {
-        return setStatic(DefinitionBuilders.type(owner), DefinitionBuilders.name(name), valueBuilder);
+        return setStatic(type(owner), name(name), valueBuilder);
     }
 
     /**
@@ -586,7 +586,7 @@ public class CodeBuilders {
      * @return A code builder which produces the bytecode to cast a value.
      * @see #cast(Class, CodeInsnBuilderLike)
      */
-    public static ExplicitConversionInsn cast(TypeDefinition<?> toType, CodeInsnBuilderLike valueBuilder) {
+    public static ExplicitConversionInsn cast(TypeDefinition toType, CodeInsnBuilderLike valueBuilder) {
         return new ExplicitConversionInsn(toType, valueBuilder);
     }
 
@@ -598,7 +598,7 @@ public class CodeBuilders {
      * @see #cast(TypeDefinition, CodeInsnBuilderLike)
      */
     public static ExplicitConversionInsn cast(Class<?> toType, CodeInsnBuilderLike valueBuilder) {
-        return cast(DefinitionBuilders.type(toType), valueBuilder);
+        return cast(type(toType), valueBuilder);
     }
 
     /**
@@ -611,7 +611,7 @@ public class CodeBuilders {
      * @see #instantiate(TypeDefinition, CodeInsnBuilderLike...)
      * @see #instantiate(Class, ParametersDefinition, CodeInsnBuilderLike...)
      */
-    public static InstantiateObjectInsn instantiate(TypeDefinition<?> type, ParametersDefinition parameters, CodeInsnBuilderLike... paramBuilders) {
+    public static InstantiateObjectInsn instantiate(TypeDefinition type, ParametersDefinition parameters, CodeInsnBuilderLike... paramBuilders) {
         return new InstantiateObjectInsn(type, parameters, paramBuilders);
     }
 
@@ -626,7 +626,7 @@ public class CodeBuilders {
      * @see #instantiate(TypeDefinition, ParametersDefinition, CodeInsnBuilderLike...)
      */
     public static InstantiateObjectInsn instantiate(Class<?> type, ParametersDefinition parameters, CodeInsnBuilderLike... paramBuilders) {
-        return instantiate(DefinitionBuilders.type(type), parameters, paramBuilders);
+        return instantiate(type(type), parameters, paramBuilders);
     }
 
     /**
@@ -639,7 +639,7 @@ public class CodeBuilders {
      * @see #instantiate(Class, ParametersDefinition, CodeInsnBuilderLike...)
      * @see #instantiate(TypeDefinition, ParametersDefinition, CodeInsnBuilderLike...)
      */
-    public static InstantiateObjectInsn instantiate(TypeDefinition<?> type, CodeInsnBuilderLike... paramBuilders) {
+    public static InstantiateObjectInsn instantiate(TypeDefinition type, CodeInsnBuilderLike... paramBuilders) {
         return new InstantiateObjectInsn(type, paramBuilders);
     }
 
@@ -654,7 +654,7 @@ public class CodeBuilders {
      * @see #instantiate(TypeDefinition, ParametersDefinition, CodeInsnBuilderLike...)
      */
     public static InstantiateObjectInsn instantiate(Class<?> type, CodeInsnBuilderLike... paramBuilders) {
-        return instantiate(DefinitionBuilders.type(type), paramBuilders);
+        return instantiate(type(type), paramBuilders);
     }
 
     /**

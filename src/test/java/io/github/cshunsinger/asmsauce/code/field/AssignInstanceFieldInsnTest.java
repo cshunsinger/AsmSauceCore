@@ -3,11 +3,9 @@ package io.github.cshunsinger.asmsauce.code.field;
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,8 +13,10 @@ import org.mockito.Mock;
 import java.lang.reflect.Array;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.FieldNode.field;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.privateOnly;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static java.util.Collections.emptyList;
@@ -56,7 +56,7 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
         new MethodBuildingContext(null, null, null, emptyList());
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
-        when(mockFieldDefinition.getFieldName()).thenReturn(DefinitionBuilders.name("Test Field"));
+        when(mockFieldDefinition.getFieldName()).thenReturn(name("Test Field"));
 
         AssignInstanceFieldInsn op = new AssignInstanceFieldInsn(mockFieldDefinition, mockCodeBuilder);
         IllegalStateException ex = assertThrows(IllegalStateException.class, op::build);
@@ -66,7 +66,7 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_codeBuilderDoesNotPlaceExactlyOneElementOntoTheStack() {
         MethodBuildingContext methodContext = new MethodBuildingContext(null, null, null, emptyList());
-        methodContext.pushStack(DefinitionBuilders.type(Object.class));
+        methodContext.pushStack(type(Object.class));
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
         doAnswer(i -> null).when(mockCodeBuilder).build();
@@ -79,15 +79,15 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_instanceTypeOnStackIsPrimitive() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()), //basic super() call
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()), //basic super() call
                 //Invoke a static method that will place a primitive onto the stack as the "instance type"
-                CodeBuilders.invokeStatic(Math.class, DefinitionBuilders.name("abs"), DefinitionBuilders.parameters(int.class), DefinitionBuilders.type(int.class),
-                    CodeBuilders.literal(1234)
-                ).assignField(DefinitionBuilders.type(Object.class), DefinitionBuilders.name("fieldName"), DefinitionBuilders.type(int.class),
-                    CodeBuilders.literal(1234) //trying to assign 1234 to a field named "fieldName" on an primitive value, which will result in an exception
+                invokeStatic(Math.class, name("abs"), parameters(int.class), type(int.class),
+                    literal(1234)
+                ).assignField(type(Object.class), name("fieldName"), type(int.class),
+                    literal(1234) //trying to assign 1234 to a field named "fieldName" on an primitive value, which will result in an exception
                 ),
-                CodeBuilders.returnVoid()
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -96,20 +96,15 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_arrayTypeOnStack() {
-        AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()), //basic super() call
-                CodeBuilders.invokeStatic(Array.class, DefinitionBuilders.name("newInstance"), DefinitionBuilders.parameters(Class.class, int.class), DefinitionBuilders.type(int[].class),
-                    CodeBuilders.literalObj(int.class),
-                    CodeBuilders.literal(10)
-                ).assignField(DefinitionBuilders.type(int[].class), DefinitionBuilders.name("length"), DefinitionBuilders.type(int.class),
-                    CodeBuilders.literal(123) //Attempting to set the length field of an array which will result in an IllegalArgumentException from the builder
-                ),
-                CodeBuilders.returnVoid()
-            ));
-
-        IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
-        assertThat(ex, hasProperty("message", is("Cannot assign a value to the 'length' field of an array.")));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+            invokeStatic(Array.class, name("newInstance"), parameters(Class.class, int.class), type(int[].class),
+                literalObj(int.class),
+                literal(10)
+            ).assignField(type(int[].class), name("length"), type(int.class),
+                literal(123) //Attempting to set the length field of an array which will result in an IllegalArgumentException from the builder
+            )
+        );
+        assertThat(ex, hasProperty("message", is("Field owner cannot be void, primitive, or an array type.")));
     }
 
     public static abstract class TestBaseType {
@@ -119,20 +114,20 @@ class AssignInstanceFieldInsnTest extends BaseUnitTest {
     @Test
     public void successfullyAssignInstanceField() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class, publicOnly())
-            .withField(field(privateOnly(), DefinitionBuilders.type(String.class), DefinitionBuilders.name("str"))) //private String str;
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(String.class), //public TestBaseTypeImpl(String strParam)
+            .withField(field(privateOnly(), type(String.class), name("str"))) //private String str;
+            .withConstructor(constructor(publicOnly(), parameters(String.class), //public TestBaseTypeImpl(String strParam)
                 //super();
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
+                superConstructor(TestBaseType.class, noParameters()),
                 //this.str = strParam;
-                CodeBuilders.this_().assignField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("str"), DefinitionBuilders.type(String.class),
-                    CodeBuilders.getVar(1)
+                this_().assignField(type(ThisClass.class), name("str"), type(String.class),
+                    getVar(1)
                 ),
                 //return;
-                CodeBuilders.returnVoid()
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("getStr"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(String.class), //public String getStr()
-                CodeBuilders.returnValue( //return this.str;
-                    CodeBuilders.this_().getField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("str"), DefinitionBuilders.type(String.class))
+            .withMethod(method(publicOnly(), name("getStr"), noParameters(), type(String.class), //public String getStr()
+                returnValue( //return this.str;
+                    this_().getField(type(ThisClass.class), name("str"), type(String.class))
                 )
             ));
 

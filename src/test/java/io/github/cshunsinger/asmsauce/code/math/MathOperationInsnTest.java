@@ -3,14 +3,14 @@ package io.github.cshunsinger.asmsauce.code.math;
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -62,158 +62,158 @@ class MathOperationInsnTest extends BaseUnitTest {
     @Test
     public void testJavaByteCodeMathOperations() {
         AsmClassBuilder<TestMaths> mathsBuilder = new AsmClassBuilder<>(TestMaths.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(), //public TestMathsImpl()
-                CodeBuilders.superConstructor(TestMaths.class, DefinitionBuilders.noParameters()), //super();
-                CodeBuilders.returnVoid() //return;
+            .withConstructor(constructor(publicOnly(), noParameters(), //public TestMathsImpl()
+                superConstructor(TestMaths.class, noParameters()), //super();
+                returnVoid() //return;
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(byte.class, byte.class), DefinitionBuilders.type(byte.class), //public byte add(byte a, byte b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("add"), parameters(byte.class, byte.class), type(byte.class), //public byte add(byte a, byte b)
+                returnValue( //return a + b;
+                    getVar(1).add(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(short.class, short.class), DefinitionBuilders.type(short.class), //public short add(short a, short b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("add"), parameters(short.class, short.class), type(short.class), //public short add(short a, short b)
+                returnValue( //return a + b;
+                    getVar(1).add(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(int.class, int.class), DefinitionBuilders.type(int.class), //public int add(int a, int b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("add"), parameters(int.class, int.class), type(int.class), //public int add(int a, int b)
+                returnValue( //return a + b;
+                    getVar(1).add(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(long.class, long.class), DefinitionBuilders.type(long.class), //public long add(long a, long b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("add"), parameters(long.class, long.class), type(long.class), //public long add(long a, long b)
+                returnValue( //return a + b;
+                    getVar(1).add(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(float.class), //public float add(float a, float b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("add"), parameters(float.class, float.class), type(float.class), //public float add(float a, float b)
+                returnValue( //return a + b;
+                    getVar(1).add(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(double.class, double.class), DefinitionBuilders.type(double.class), //public double add(double a, double b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("add"), parameters(double.class, double.class), type(double.class), //public double add(double a, double b)
+                returnValue( //return a + b;
+                    getVar(1).add(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("sub"), DefinitionBuilders.parameters(byte.class, byte.class), DefinitionBuilders.type(byte.class), //public byte sub(byte a, byte b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).sub(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("sub"), parameters(byte.class, byte.class), type(byte.class), //public byte sub(byte a, byte b)
+                returnValue( //return a + b;
+                    getVar(1).sub(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("sub"), DefinitionBuilders.parameters(short.class, short.class), DefinitionBuilders.type(short.class), //public short sub(short a, short b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).sub(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("sub"), parameters(short.class, short.class), type(short.class), //public short sub(short a, short b)
+                returnValue( //return a + b;
+                    getVar(1).sub(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("sub"), DefinitionBuilders.parameters(int.class, int.class), DefinitionBuilders.type(int.class), //public int sub(int a, int b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).sub(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("sub"), parameters(int.class, int.class), type(int.class), //public int sub(int a, int b)
+                returnValue( //return a + b;
+                    getVar(1).sub(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("sub"), DefinitionBuilders.parameters(long.class, long.class), DefinitionBuilders.type(long.class), //public long sub(long a, long b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).sub(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("sub"), parameters(long.class, long.class), type(long.class), //public long sub(long a, long b)
+                returnValue( //return a + b;
+                    getVar(1).sub(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("sub"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(float.class), //public float sub(float a, float b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).sub(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("sub"), parameters(float.class, float.class), type(float.class), //public float sub(float a, float b)
+                returnValue( //return a + b;
+                    getVar(1).sub(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("sub"), DefinitionBuilders.parameters(double.class, double.class), DefinitionBuilders.type(double.class), //public double sub(double a, double b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).sub(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("sub"), parameters(double.class, double.class), type(double.class), //public double sub(double a, double b)
+                returnValue( //return a + b;
+                    getVar(1).sub(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mul"), DefinitionBuilders.parameters(byte.class, byte.class), DefinitionBuilders.type(byte.class), //public byte mul(byte a, byte b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mul(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mul"), parameters(byte.class, byte.class), type(byte.class), //public byte mul(byte a, byte b)
+                returnValue( //return a + b;
+                    getVar(1).mul(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mul"), DefinitionBuilders.parameters(short.class, short.class), DefinitionBuilders.type(short.class), //public short mul(short a, short b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mul(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mul"), parameters(short.class, short.class), type(short.class), //public short mul(short a, short b)
+                returnValue( //return a + b;
+                    getVar(1).mul(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mul"), DefinitionBuilders.parameters(int.class, int.class), DefinitionBuilders.type(int.class), //public int mul(int a, int b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mul(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mul"), parameters(int.class, int.class), type(int.class), //public int mul(int a, int b)
+                returnValue( //return a + b;
+                    getVar(1).mul(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mul"), DefinitionBuilders.parameters(long.class, long.class), DefinitionBuilders.type(long.class), //public long mul(long a, long b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mul(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("mul"), parameters(long.class, long.class), type(long.class), //public long mul(long a, long b)
+                returnValue( //return a + b;
+                    getVar(1).mul(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mul"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(float.class), //public float mul(float a, float b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mul(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mul"), parameters(float.class, float.class), type(float.class), //public float mul(float a, float b)
+                returnValue( //return a + b;
+                    getVar(1).mul(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mul"), DefinitionBuilders.parameters(double.class, double.class), DefinitionBuilders.type(double.class), //public double mul(double a, double b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mul(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("mul"), parameters(double.class, double.class), type(double.class), //public double mul(double a, double b)
+                returnValue( //return a + b;
+                    getVar(1).mul(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("div"), DefinitionBuilders.parameters(byte.class, byte.class), DefinitionBuilders.type(byte.class), //public byte div(byte a, byte b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).div(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("div"), parameters(byte.class, byte.class), type(byte.class), //public byte div(byte a, byte b)
+                returnValue( //return a + b;
+                    getVar(1).div(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("div"), DefinitionBuilders.parameters(short.class, short.class), DefinitionBuilders.type(short.class), //public short div(short a, short b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).div(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("div"), parameters(short.class, short.class), type(short.class), //public short div(short a, short b)
+                returnValue( //return a + b;
+                    getVar(1).div(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("div"), DefinitionBuilders.parameters(int.class, int.class), DefinitionBuilders.type(int.class), //public int div(int a, int b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).div(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("div"), parameters(int.class, int.class), type(int.class), //public int div(int a, int b)
+                returnValue( //return a + b;
+                    getVar(1).div(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("div"), DefinitionBuilders.parameters(long.class, long.class), DefinitionBuilders.type(long.class), //public long div(long a, long b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).div(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("div"), parameters(long.class, long.class), type(long.class), //public long div(long a, long b)
+                returnValue( //return a + b;
+                    getVar(1).div(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("div"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(float.class), //public float div(float a, float b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).div(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("div"), parameters(float.class, float.class), type(float.class), //public float div(float a, float b)
+                returnValue( //return a + b;
+                    getVar(1).div(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("div"), DefinitionBuilders.parameters(double.class, double.class), DefinitionBuilders.type(double.class), //public double div(double a, double b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).div(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("div"), parameters(double.class, double.class), type(double.class), //public double div(double a, double b)
+                returnValue( //return a + b;
+                    getVar(1).div(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mod"), DefinitionBuilders.parameters(byte.class, byte.class), DefinitionBuilders.type(byte.class), //public byte mod(byte a, byte b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mod(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mod"), parameters(byte.class, byte.class), type(byte.class), //public byte mod(byte a, byte b)
+                returnValue( //return a + b;
+                    getVar(1).mod(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mod"), DefinitionBuilders.parameters(short.class, short.class), DefinitionBuilders.type(short.class), //public short mod(short a, short b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mod(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mod"), parameters(short.class, short.class), type(short.class), //public short mod(short a, short b)
+                returnValue( //return a + b;
+                    getVar(1).mod(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mod"), DefinitionBuilders.parameters(int.class, int.class), DefinitionBuilders.type(int.class), //public int mod(int a, int b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mod(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mod"), parameters(int.class, int.class), type(int.class), //public int mod(int a, int b)
+                returnValue( //return a + b;
+                    getVar(1).mod(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mod"), DefinitionBuilders.parameters(long.class, long.class), DefinitionBuilders.type(long.class), //public long mod(long a, long b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mod(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("mod"), parameters(long.class, long.class), type(long.class), //public long mod(long a, long b)
+                returnValue( //return a + b;
+                    getVar(1).mod(getVar(3))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mod"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(float.class), //public float mod(float a, float b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mod(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("mod"), parameters(float.class, float.class), type(float.class), //public float mod(float a, float b)
+                returnValue( //return a + b;
+                    getVar(1).mod(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("mod"), DefinitionBuilders.parameters(double.class, double.class), DefinitionBuilders.type(double.class), //public double mod(double a, double b)
-                CodeBuilders.returnValue( //return a + b;
-                    CodeBuilders.getVar(1).mod(CodeBuilders.getVar(3))
+            .withMethod(method(publicOnly(), name("mod"), parameters(double.class, double.class), type(double.class), //public double mod(double a, double b)
+                returnValue( //return a + b;
+                    getVar(1).mod(getVar(3))
                 )
             ));
         TestMaths testMathsImpl = mathsBuilder.buildInstance();
@@ -265,28 +265,28 @@ class MathOperationInsnTest extends BaseUnitTest {
     @Test
     public void testMathOperationsWithWrapperClassesAndAutomaticImplicitBoxingAndUnboxing() {
         AsmClassBuilder<TestInterestingMaths> mathsBuilder = new AsmClassBuilder<>(TestInterestingMaths.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(), //public TestInterestingMathsImpl()
-                CodeBuilders.superConstructor(TestInterestingMaths.class, DefinitionBuilders.noParameters()), //super();
-                CodeBuilders.returnVoid() //return;
+            .withConstructor(constructor(publicOnly(), noParameters(), //public TestInterestingMathsImpl()
+                superConstructor(TestInterestingMaths.class, noParameters()), //super();
+                returnVoid() //return;
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("wrapperAdd"), DefinitionBuilders.parameters(Integer.class, Integer.class), DefinitionBuilders.type(int.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(Integer.class, Integer.class), type(int.class),
+                returnValue(
+                    getVar(1).add(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("wrapperAdd"), DefinitionBuilders.parameters(int.class, Integer.class), DefinitionBuilders.type(int.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(int.class, Integer.class), type(int.class),
+                returnValue(
+                    getVar(1).add(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("wrapperAdd"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(Float.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(float.class, float.class), type(Float.class),
+                returnValue(
+                    getVar(1).add(getVar(2))
                 )
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("wrapperAdd"), DefinitionBuilders.parameters(Double.class, Double.class), DefinitionBuilders.type(Double.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.getVar(1).add(CodeBuilders.getVar(2))
+            .withMethod(method(publicOnly(), name("wrapperAdd"), parameters(Double.class, Double.class), type(Double.class),
+                returnValue(
+                    getVar(1).add(getVar(2))
                 )
             ));
         TestInterestingMaths mathsImpl = mathsBuilder.buildInstance();
@@ -310,13 +310,13 @@ class MathOperationInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_attemptingToBuildBytecodePerformingMathOperationOnObject() {
         AsmClassBuilder<MathsInterface> builder = new AsmClassBuilder<>(MathsInterface.class, Object.class, singletonList(MathsInterface.class), publicOnly())
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(float.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.literalObj("SomeString").add(CodeBuilders.literal(1234))
+            .withMethod(method(publicOnly(), name("add"), parameters(float.class, float.class), type(float.class),
+                returnValue(
+                    literalObj("SomeString").add(literal(1234))
                 )
             ));
 
@@ -333,17 +333,17 @@ class MathOperationInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_attemptingToBuildBytecodePerformingMathOnEmptyStack() {
         AsmClassBuilder<MathsInterface> builder = new AsmClassBuilder<>(MathsInterface.class, Object.class, singletonList(MathsInterface.class), publicOnly())
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(privateStatic(), DefinitionBuilders.name("consumeFloat"), DefinitionBuilders.parameters(float.class), CodeBuilders.returnVoid()))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("add"), DefinitionBuilders.parameters(float.class, float.class), DefinitionBuilders.type(float.class),
-                CodeBuilders.returnValue(
+            .withMethod(method(privateStatic(), name("consumeFloat"), parameters(float.class), returnVoid()))
+            .withMethod(method(publicOnly(), name("add"), parameters(float.class, float.class), type(float.class),
+                returnValue(
                     //return MathsInterfaceImpl.consumeFloat(123f) + 123f; //consumeFloat is a void method
-                    CodeBuilders.invokeStatic(ThisClass.class, DefinitionBuilders.name("consumeFloat"), DefinitionBuilders.parameters(float.class), DefinitionBuilders.voidType(),
-                        CodeBuilders.literal(123f)
-                    ).add(CodeBuilders.literal(123f))
+                    invokeStatic(ThisClass.class, name("consumeFloat"), parameters(float.class), voidType(),
+                        literal(123f)
+                    ).add(literal(123f))
                 )
             ));
 
@@ -358,11 +358,11 @@ class MathOperationInsnTest extends BaseUnitTest {
     public void illegalStateException_moreThanOneOperandPlacedOntoStack_whenOneOperandWasExpected() {
         CodeInsnBuilderLike mockOperandBuilder = mock(CodeInsnBuilderLike.class);
         MethodBuildingContext methodContext = new MethodBuildingContext(null, null, null, emptyList());
-        methodContext.pushStack(DefinitionBuilders.type(float.class));
+        methodContext.pushStack(type(float.class));
 
         doAnswer(i -> {
-            methodContext.pushStack(DefinitionBuilders.type(int.class));
-            methodContext.pushStack(DefinitionBuilders.type(int.class));
+            methodContext.pushStack(type(int.class));
+            methodContext.pushStack(type(int.class));
             return null;
         }).when(mockOperandBuilder).build();
         when(mockOperandBuilder.getFirstInStack()).thenReturn(mockOperandBuilder);

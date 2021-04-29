@@ -2,15 +2,15 @@ package io.github.cshunsinger.asmsauce.code.field;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,7 +33,7 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
         new MethodBuildingContext(null, null, null, emptyList());
 
         GetInstanceFieldInsn insn = new GetInstanceFieldInsn(mockFieldDefinition);
-        when(mockFieldDefinition.getFieldName()).thenReturn(DefinitionBuilders.name("testField"));
+        when(mockFieldDefinition.getFieldName()).thenReturn(name("testField"));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("No instance on stack to access field 'testField' from.")));
@@ -42,12 +42,12 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_attemptingToGetFieldFromPrimitiveTypeOnStack() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.invokeStatic(Math.class, DefinitionBuilders.name("abs"), DefinitionBuilders.parameters(int.class), DefinitionBuilders.type(int.class),
-                    CodeBuilders.literal(123)
-                ).getField(DefinitionBuilders.type(Object.class), DefinitionBuilders.name("fieldName"), DefinitionBuilders.type(int.class)),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                invokeStatic(Math.class, name("abs"), parameters(int.class), type(int.class),
+                    literal(123)
+                ).getField(type(Object.class), name("fieldName"), type(int.class)),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -67,10 +67,10 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_attemptingToAccessInaccessibleField() {
         AsmClassBuilder<TestType> builder = new AsmClassBuilder<>(TestType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.this_().getField("privateString"),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestType.class, noParameters()),
+                this_().getField("privateString"),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -80,10 +80,10 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_attemptingToAccessFieldThatDoesNotExist() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.literalObj("Test String").getField("SomeFieldThatDoesNotExist"),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                literalObj("Test String").getField("SomeFieldThatDoesNotExist"),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -93,11 +93,11 @@ class GetInstanceFieldInsnTest extends BaseUnitTest {
     @Test
     public void successfullyAccessFieldWithImpliedOwnerAndImpliedType() {
         AsmClassBuilder<TestType> builder = new AsmClassBuilder<>(TestType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(), //constructor() {...}
-                CodeBuilders.superConstructor(TestType.class, DefinitionBuilders.noParameters()), //super();
-                CodeBuilders.this_().assignField("protectedString", CodeBuilders.literalObj("Some Test String Value")), //this.protectedString = "Some Test String Value";
-                CodeBuilders.this_().assignField("otherProtectedString", CodeBuilders.this_().getField("protectedString")), //this.otherProtectedString = this.protectedString;
-                CodeBuilders.returnVoid() //return;
+            .withConstructor(constructor(publicOnly(), noParameters(), //constructor() {...}
+                superConstructor(TestType.class, noParameters()), //super();
+                this_().assignField("protectedString", literalObj("Some Test String Value")), //this.protectedString = "Some Test String Value";
+                this_().assignField("otherProtectedString", this_().getField("protectedString")), //this.otherProtectedString = this.protectedString;
+                returnVoid() //return;
             ));
 
         TestType instance = builder.buildInstance();

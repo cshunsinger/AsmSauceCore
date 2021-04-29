@@ -41,7 +41,7 @@ public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInsta
             );
         }
 
-        TypeDefinition<?> instanceType = context().peekStack();
+        TypeDefinition instanceType = context().peekStack();
 
         if(instanceType.getType().isArray() && "length".equals(fieldDefinition.getFieldName().getName()))
             throw new IllegalStateException("Cannot assign a value to the 'length' field of an array.");
@@ -76,7 +76,7 @@ public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInsta
     }
 
     @Override
-    protected void performTypeStackChanges(Stack<TypeDefinition<?>> typeStack) {
+    protected void performTypeStackChanges(Stack<TypeDefinition> typeStack) {
         //Pop the value assigned to the field from the stack
         typeStack.pop();
         //Pop the instance type off of the stack
@@ -89,9 +89,9 @@ public class AssignInstanceFieldInsn extends FieldInsn implements InvokableInsta
     }
 
     @Override
-    protected TypeDefinition<?> determineFieldOwner(Stack<TypeDefinition<?>> typeStack) {
-        TypeDefinition<?> valueType = typeStack.pop(); //Temporarily pop the value type off the stack to look at what the instance type is
-        TypeDefinition<?> instanceType = typeStack.peek(); //The instance type (aka the object type we're setting the field on)
+    protected TypeDefinition determineFieldOwner(Stack<TypeDefinition> typeStack) {
+        TypeDefinition valueType = typeStack.pop(); //Temporarily pop the value type off the stack to look at what the instance type is
+        TypeDefinition instanceType = typeStack.peek(); //The instance type (aka the object type we're setting the field on)
         typeStack.push(valueType); //Push the value type back onto the stack so that stack is unaffected by this method call
         return instanceType;
     }

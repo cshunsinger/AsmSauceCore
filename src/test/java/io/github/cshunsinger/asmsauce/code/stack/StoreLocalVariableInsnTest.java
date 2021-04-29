@@ -4,11 +4,7 @@ import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,6 +14,8 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.setVar;
 import static org.objectweb.asm.Opcodes.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -67,8 +65,8 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
         doAnswer(i -> {
-            context.pushStack(DefinitionBuilders.type(Object.class));
-            context.pushStack(DefinitionBuilders.type(Object.class));
+            context.pushStack(type(Object.class));
+            context.pushStack(type(Object.class));
             return null;
         }).when(mockCodeBuilder).build();
 
@@ -84,7 +82,7 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
         MethodBuildingContext context = new MethodBuildingContext(mockMethodVisitor, null, null, new ArrayList<>());
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
-        doAnswer(i -> context.pushStack(DefinitionBuilders.type(valueClass))).when(mockCodeBuilder).build();
+        doAnswer(i -> context.pushStack(type(valueClass))).when(mockCodeBuilder).build();
 
         StoreLocalVariableInsn insn = new StoreLocalVariableInsn(localIndex, mockCodeBuilder);
         insn.build();
@@ -92,13 +90,13 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
         verify(mockMethodVisitor).visitVarInsn(opcode, 0);
 
         if(valueClass == double.class || valueClass == long.class) {
-            MatcherAssert.assertThat(context.getLocalTypes(), hasSize(2));
-            MatcherAssert.assertThat(context.getLocalType(0), Matchers.is(DefinitionBuilders.type(valueClass)));
-            MatcherAssert.assertThat(context.getLocalType(1), Matchers.is(DefinitionBuilders.type(valueClass)));
+            assertThat(context.getLocalTypes(), hasSize(2));
+            assertThat(context.getLocalType(0), is(type(valueClass)));
+            assertThat(context.getLocalType(1), is(type(valueClass)));
         }
         else {
-            MatcherAssert.assertThat(context.getLocalTypes(), hasSize(1));
-            MatcherAssert.assertThat(context.getLocalType(0), Matchers.is(DefinitionBuilders.type(valueClass)));
+            assertThat(context.getLocalTypes(), hasSize(1));
+            assertThat(context.getLocalType(0), is(type(valueClass)));
         }
     }
 
@@ -122,21 +120,21 @@ class StoreLocalVariableInsnTest extends BaseUnitTest {
         String localName = RandomStringUtils.randomAlphanumeric(10);
 
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
-        doAnswer(i -> context.pushStack(DefinitionBuilders.type(valueClass))).when(mockCodeBuilder).build();
+        doAnswer(i -> context.pushStack(type(valueClass))).when(mockCodeBuilder).build();
 
-        StoreLocalVariableInsn insn = CodeBuilders.setVar(localName, mockCodeBuilder);
+        StoreLocalVariableInsn insn = setVar(localName, mockCodeBuilder);
         insn.build();
 
         verify(mockMethodVisitor).visitVarInsn(opcode, 0);
 
         if(valueClass == double.class || valueClass == long.class) {
-            MatcherAssert.assertThat(context.getLocalTypes(), hasSize(2));
-            MatcherAssert.assertThat(context.getLocalType(0), Matchers.is(DefinitionBuilders.type(valueClass)));
-            MatcherAssert.assertThat(context.getLocalType(1), Matchers.is(DefinitionBuilders.type(valueClass)));
+            assertThat(context.getLocalTypes(), hasSize(2));
+            assertThat(context.getLocalType(0), is(type(valueClass)));
+            assertThat(context.getLocalType(1), is(type(valueClass)));
         }
         else {
-            MatcherAssert.assertThat(context.getLocalTypes(), hasSize(1));
-            MatcherAssert.assertThat(context.getLocalType(0), Matchers.is(DefinitionBuilders.type(valueClass)));
+            assertThat(context.getLocalTypes(), hasSize(1));
+            assertThat(context.getLocalType(0), is(type(valueClass)));
         }
 
         assertThat(context.getLocalIndex(localName), is(0));

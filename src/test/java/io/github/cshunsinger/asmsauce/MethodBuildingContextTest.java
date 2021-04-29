@@ -3,7 +3,6 @@ package io.github.cshunsinger.asmsauce;
 import org.junit.jupiter.api.AfterEach;
 import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import org.mockito.Mock;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,7 +20,7 @@ class MethodBuildingContextTest extends BaseUnitTest {
     @Mock
     private MethodVisitor mockMethodVisitor;
     @Mock
-    private CompleteMethodDefinition<?, ?> mockMethodDefinition;
+    private CompleteMethodDefinition mockMethodDefinition;
     @Mock
     private ClassBuildingContext mockClassContext;
 
@@ -44,7 +44,7 @@ class MethodBuildingContextTest extends BaseUnitTest {
         assertThat(context.isStackEmpty(), is(true));
 
         //Push value to stack so it is no longer empty
-        context.pushStack(DefinitionBuilders.type(Object.class));
+        context.pushStack(type(Object.class));
         //Sanity check stack size
         assertThat(context.stackSize(), is(1));
         //Stack should no longer indicate that it is empty
@@ -66,7 +66,7 @@ class MethodBuildingContextTest extends BaseUnitTest {
         assertThat(context.isStackEmpty(), is(true));
 
         //Push to stack and verify 1 element on the stack
-        context.pushStack(DefinitionBuilders.type(Object.class));
+        context.pushStack(type(Object.class));
         assertThat(context.stackSize(), is(1));
 
         //Peek stack and verify the stack is unmodified
@@ -90,8 +90,8 @@ class MethodBuildingContextTest extends BaseUnitTest {
         assertThat(context.isStackEmpty(), is(true));
 
         //Push two elements onto the stack and verify stack size
-        context.pushStack(DefinitionBuilders.type(Object.class));
-        context.pushStack(DefinitionBuilders.type(Object.class));
+        context.pushStack(type(Object.class));
+        context.pushStack(type(Object.class));
         assertThat(context.stackSize(), is(2));
 
         //Pop 2 elements off the stack and verify stack is now empty
@@ -101,49 +101,49 @@ class MethodBuildingContextTest extends BaseUnitTest {
 
     @Test
     public void addLocalVariableType() {
-        context.addLocalType(DefinitionBuilders.type(Object.class));
-        context.addLocalType(DefinitionBuilders.type(int.class));
+        context.addLocalType(type(Object.class));
+        context.addLocalType(type(int.class));
 
         assertThat(context.numLocals(), is(2));
-        MatcherAssert.assertThat(context, hasProperty("localTypes", Matchers.contains(
-            DefinitionBuilders.type(Object.class),
-            DefinitionBuilders.type(int.class)
+        assertThat(context, hasProperty("localTypes", Matchers.contains(
+            type(Object.class),
+            type(int.class)
         )));
     }
 
     @Test
     public void setLocalVariableType() {
-        context.addLocalType(DefinitionBuilders.type(ThisClass.class));
-        context.addLocalType(DefinitionBuilders.type(int.class));
-        context.addLocalType(DefinitionBuilders.type(float.class));
+        context.addLocalType(type(ThisClass.class));
+        context.addLocalType(type(int.class));
+        context.addLocalType(type(float.class));
 
-        context.setLocalType(1, DefinitionBuilders.type(String.class));
+        context.setLocalType(1, type(String.class));
 
         assertThat(context.numLocals(), is(3));
         assertThat(context, hasProperty("localTypes", contains(
-            DefinitionBuilders.type(ThisClass.class),
-            DefinitionBuilders.type(String.class),
-            DefinitionBuilders.type(float.class)
+            type(ThisClass.class),
+            type(String.class),
+            type(float.class)
         )));
     }
 
     @Test
     public void setNamedLocalVariableType() {
-        context.setLocalType("myObject", DefinitionBuilders.type(ThisClass.class));
-        context.setLocalType("myInt", DefinitionBuilders.type(int.class));
-        context.setLocalType("myFloat", DefinitionBuilders.type(float.class));
+        context.setLocalType("myObject", type(ThisClass.class));
+        context.setLocalType("myInt", type(int.class));
+        context.setLocalType("myFloat", type(float.class));
 
-        context.setLocalType("myInt", DefinitionBuilders.type(String.class));
+        context.setLocalType("myInt", type(String.class));
 
         assertThat(context.numLocals(), is(3));
         assertThat(context, hasProperty("localTypes", contains(
-            DefinitionBuilders.type(ThisClass.class),
-            DefinitionBuilders.type(String.class),
-            DefinitionBuilders.type(float.class)
+            type(ThisClass.class),
+            type(String.class),
+            type(float.class)
         )));
-        assertThat(context.getLocalType("myObject"), is(DefinitionBuilders.type(ThisClass.class)));
-        MatcherAssert.assertThat(context.getLocalType("myInt"), Matchers.is(DefinitionBuilders.type(String.class)));
-        MatcherAssert.assertThat(context.getLocalType("myFloat"), Matchers.is(DefinitionBuilders.type(float.class)));
+        assertThat(context.getLocalType("myObject"), is(type(ThisClass.class)));
+        assertThat(context.getLocalType("myInt"), Matchers.is(type(String.class)));
+        assertThat(context.getLocalType("myFloat"), Matchers.is(type(float.class)));
     }
 
     @Test
@@ -158,77 +158,77 @@ class MethodBuildingContextTest extends BaseUnitTest {
 
     @Test
     public void addLocalVariableType_doubleValue() {
-        context.addLocalType(DefinitionBuilders.type(double.class));
+        context.addLocalType(type(double.class));
 
         assertThat(context.numLocals(), is(2));
-        MatcherAssert.assertThat(context, hasProperty("localTypes", Matchers.contains(
-            DefinitionBuilders.type(double.class),
-            DefinitionBuilders.type(double.class)
+        assertThat(context, hasProperty("localTypes", Matchers.contains(
+            type(double.class),
+            type(double.class)
         )));
     }
 
     @Test
     public void addLocalVariableType_longValue() {
-        context.addLocalType(DefinitionBuilders.type(long.class));
+        context.addLocalType(type(long.class));
 
         assertThat(context.numLocals(), is(2));
-        MatcherAssert.assertThat(context, hasProperty("localTypes", Matchers.contains(
-            DefinitionBuilders.type(long.class),
-            DefinitionBuilders.type(long.class)
+        assertThat(context, hasProperty("localTypes", Matchers.contains(
+            type(long.class),
+            type(long.class)
         )));
     }
 
     @Test
     public void setLocalVariableType_doubleValue() {
-        context.addLocalType(DefinitionBuilders.type(ThisClass.class));
-        context.addLocalType(DefinitionBuilders.type(int.class));
-        context.addLocalType(DefinitionBuilders.type(float.class));
+        context.addLocalType(type(ThisClass.class));
+        context.addLocalType(type(int.class));
+        context.addLocalType(type(float.class));
 
-        context.setLocalType(1, DefinitionBuilders.type(double.class));
+        context.setLocalType(1, type(double.class));
 
         assertThat(context.numLocals(), is(3));
         assertThat(context, hasProperty("localTypes", contains(
-            DefinitionBuilders.type(ThisClass.class),
-            DefinitionBuilders.type(double.class),
-            DefinitionBuilders.type(double.class)
+            type(ThisClass.class),
+            type(double.class),
+            type(double.class)
         )));
     }
 
     @Test
     public void setLocalVariableType_longValue() {
-        context.addLocalType(DefinitionBuilders.type(ThisClass.class));
-        context.addLocalType(DefinitionBuilders.type(int.class));
-        context.addLocalType(DefinitionBuilders.type(float.class));
+        context.addLocalType(type(ThisClass.class));
+        context.addLocalType(type(int.class));
+        context.addLocalType(type(float.class));
 
-        context.setLocalType(2, DefinitionBuilders.type(long.class));
+        context.setLocalType(2, type(long.class));
 
         assertThat(context.numLocals(), is(4));
         assertThat(context, hasProperty("localTypes", contains(
-            DefinitionBuilders.type(ThisClass.class),
-            DefinitionBuilders.type(int.class),
-            DefinitionBuilders.type(long.class),
-            DefinitionBuilders.type(long.class)
+            type(ThisClass.class),
+            type(int.class),
+            type(long.class),
+            type(long.class)
         )));
     }
 
     @Test
     public void destroyScopedLocalVariablesWhenLeavingTheScopeTheyExistIn() {
-        context.setLocalType("myOuterVar", DefinitionBuilders.type(Object.class));
+        context.setLocalType("myOuterVar", type(Object.class));
         context.beginScope();
-        context.setLocalType("myInnerVar", DefinitionBuilders.type(String.class));
+        context.setLocalType("myInnerVar", type(String.class));
 
         assertThat(context.numLocals(), is(2));
-        MatcherAssert.assertThat(context, hasProperty("localTypes", Matchers.contains(
-            DefinitionBuilders.type(Object.class),
-            DefinitionBuilders.type(String.class)
+        assertThat(context, hasProperty("localTypes", Matchers.contains(
+            type(Object.class),
+            type(String.class)
         )));
         assertThat(context.getLocalIndex("myOuterVar"), is(0));
         assertThat(context.getLocalIndex("myInnerVar"), is(1));
 
         context.endScope();
         assertThat(context.numLocals(), is(1));
-        MatcherAssert.assertThat(context, hasProperty("localTypes", Matchers.contains(
-            DefinitionBuilders.type(Object.class)
+        assertThat(context, hasProperty("localTypes", Matchers.contains(
+            type(Object.class)
         )));
         assertThat(context.getLocalIndex("myOuterVar"), is(0));
 

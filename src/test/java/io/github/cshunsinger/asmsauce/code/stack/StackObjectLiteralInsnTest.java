@@ -6,8 +6,6 @@ import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +13,8 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -25,7 +25,7 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
     @Mock
     private MethodVisitor mockMethodVisitor;
     @Mock
-    private CompleteMethodDefinition<?, ?> mockMethodDefinition;
+    private CompleteMethodDefinition mockMethodDefinition;
     @Mock
     private ClassBuildingContext mockClassContext;
 
@@ -44,7 +44,7 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
         verify(mockMethodVisitor).visitInsn(ACONST_NULL);
         verify(mockMethodVisitor, never()).visitLdcInsn(any());
 
-        MatcherAssert.assertThat(methodContext.peekStack(), Matchers.is(DefinitionBuilders.type(String.class)));
+        assertThat(methodContext.peekStack(), Matchers.is(type(String.class)));
     }
 
     @Test
@@ -55,7 +55,7 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
         verify(mockMethodVisitor, never()).visitInsn(anyInt());
         verify(mockMethodVisitor).visitLdcInsn(any(ThisClass.class));
 
-        MatcherAssert.assertThat(methodContext.peekStack(), Matchers.is(DefinitionBuilders.type(ThisClass.class)));
+        assertThat(methodContext.peekStack(), Matchers.is(type(ThisClass.class)));
     }
 
     @Test
@@ -64,9 +64,9 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
         insn.build();
 
         verify(mockMethodVisitor, never()).visitInsn(anyInt());
-        verify(mockMethodVisitor).visitLdcInsn(DefinitionBuilders.type(String.class).getJvmTypeDefinition() + ".class");
+        verify(mockMethodVisitor).visitLdcInsn(type(String.class).getJvmTypeDefinition() + ".class");
 
-        MatcherAssert.assertThat(methodContext.peekStack(), Matchers.is(DefinitionBuilders.type(Class.class)));
+        assertThat(methodContext.peekStack(), Matchers.is(type(Class.class)));
     }
 
     @Test
@@ -77,6 +77,6 @@ class StackObjectLiteralInsnTest extends BaseUnitTest {
         verify(mockMethodVisitor).visitInsn(ACONST_NULL);
         verify(mockMethodVisitor, never()).visitLdcInsn(any());
 
-        MatcherAssert.assertThat(methodContext.peekStack(), Matchers.is(DefinitionBuilders.type(Object.class)));
+        assertThat(methodContext.peekStack(), Matchers.is(type(Object.class)));
     }
 }

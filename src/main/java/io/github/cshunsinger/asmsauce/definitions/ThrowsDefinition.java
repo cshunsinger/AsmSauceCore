@@ -7,14 +7,13 @@ import java.util.List;
  * can potentially be thrown by a method.
  */
 public class ThrowsDefinition {
-    private final List<TypeDefinition<? extends Exception>> exceptionTypes;
+    private final List<TypeDefinition> exceptionTypes;
 
     /**
      * Creates a throws definition containing a set of zero or more exception types that can be thrown by a method.
      * @param exceptionTypes The exception types to declare in this throws definition.
      */
-    @SafeVarargs
-    public ThrowsDefinition(TypeDefinition<? extends Exception>... exceptionTypes) {
+    public ThrowsDefinition(TypeDefinition... exceptionTypes) {
         this.exceptionTypes = List.of(exceptionTypes);
     }
 

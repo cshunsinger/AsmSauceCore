@@ -3,12 +3,13 @@ package io.github.cshunsinger.asmsauce.code.branch.condition;
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.definitions.ParametersDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -24,43 +25,43 @@ public class CompoundConditionTest extends BaseUnitTest {
     @Test
     public void testCompoundConditions() {
         AsmClassBuilder<TestCompoundConditionsType> builder = new AsmClassBuilder<>(TestCompoundConditionsType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestCompoundConditionsType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestCompoundConditionsType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("anyNull"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class), DefinitionBuilders.p("third", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNull()
-                    .or(CodeBuilders.getVar("second").isNull())
-                    .or(CodeBuilders.getVar("third").isNull())).then(
-                        CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("anyNull"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class)), type(boolean.class),
+                if_(getVar("first").isNull()
+                    .or(getVar("second").isNull())
+                    .or(getVar("third").isNull())).then(
+                        returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("allNull"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class), DefinitionBuilders.p("third", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNull()
-                    .and(CodeBuilders.getVar("second").isNull())
-                    .and(CodeBuilders.getVar("third").isNull())).then(
-                        CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("allNull"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class)), type(boolean.class),
+                if_(getVar("first").isNull()
+                    .and(getVar("second").isNull())
+                    .and(getVar("third").isNull())).then(
+                        returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("atLeastTwoNull"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class), DefinitionBuilders.p("third", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNull().and(CodeBuilders.getVar("second").isNull()).and(CodeBuilders.getVar("third").isNull())
-                    .or(CodeBuilders.getVar("first").isNull().and(CodeBuilders.getVar("second").isNull()))
-                    .or(CodeBuilders.getVar("first").isNull().and(CodeBuilders.getVar("third").isNull()))
-                    .or(CodeBuilders.getVar("second").isNull().and(CodeBuilders.getVar("third").isNull()))
+            .withMethod(method(publicOnly(), name("atLeastTwoNull"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class)), type(boolean.class),
+                if_(getVar("first").isNull().and(getVar("second").isNull()).and(getVar("third").isNull())
+                    .or(getVar("first").isNull().and(getVar("second").isNull()))
+                    .or(getVar("first").isNull().and(getVar("third").isNull()))
+                    .or(getVar("second").isNull().and(getVar("third").isNull()))
                 ).then(
-                        CodeBuilders.returnValue(CodeBuilders.true_())
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("atLeastOneNullPerPair"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class), DefinitionBuilders.p("third", Object.class), DefinitionBuilders.p("fourth", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNull().or(CodeBuilders.getVar("second").isNull())
-                    .and(CodeBuilders.getVar("third").isNull().or(CodeBuilders.getVar("fourth").isNull()))
+            .withMethod(method(publicOnly(), name("atLeastOneNullPerPair"), parameters(p("first", Object.class), p("second", Object.class), p("third", Object.class), p("fourth", Object.class)), type(boolean.class),
+                if_(getVar("first").isNull().or(getVar("second").isNull())
+                    .and(getVar("third").isNull().or(getVar("fourth").isNull()))
                 ).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ));
 
         TestCompoundConditionsType instance = builder.buildInstance();
@@ -165,31 +166,31 @@ public class CompoundConditionTest extends BaseUnitTest {
 
     @Test
     public void flattenNestedCompoundConditionsIfTheyAreTheSameType() {
-        ParametersDefinition methodParameters = DefinitionBuilders.parameters(
-            DefinitionBuilders.p("first", Object.class),
-            DefinitionBuilders.p("second", Object.class),
-            DefinitionBuilders.p("third", Object.class),
-            DefinitionBuilders.p("fourth", Object.class)
+        ParametersDefinition methodParameters = parameters(
+            p("first", Object.class),
+            p("second", Object.class),
+            p("third", Object.class),
+            p("fourth", Object.class)
         );
 
         AsmClassBuilder<TestNestedCompoundsType> builder = new AsmClassBuilder<>(TestNestedCompoundsType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestNestedCompoundsType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestNestedCompoundsType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("allNotNull"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNotNull().and(CodeBuilders.getVar("second").isNotNull())
-                    .and(CodeBuilders.getVar("third").isNotNull().and(CodeBuilders.getVar("fourth").isNotNull()))).then(
-                        CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("allNotNull"), methodParameters, type(boolean.class),
+                if_(getVar("first").isNotNull().and(getVar("second").isNotNull())
+                    .and(getVar("third").isNotNull().and(getVar("fourth").isNotNull()))).then(
+                        returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("anyNotNull"), methodParameters, DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.getVar("first").isNotNull().or(CodeBuilders.getVar("second").isNotNull())
-                    .or(CodeBuilders.getVar("third").isNotNull().or(CodeBuilders.getVar("fourth").isNotNull()))).then(
-                        CodeBuilders.returnValue(CodeBuilders.true_())
+            .withMethod(method(publicOnly(), name("anyNotNull"), methodParameters, type(boolean.class),
+                if_(getVar("first").isNotNull().or(getVar("second").isNotNull())
+                    .or(getVar("third").isNotNull().or(getVar("fourth").isNotNull()))).then(
+                        returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ));
 
         TestNestedCompoundsType instance = builder.buildInstance();
@@ -272,17 +273,17 @@ public class CompoundConditionTest extends BaseUnitTest {
     @Test
     public void invertingCompoundCondition() {
         AsmClassBuilder<TestInvertedCompoundConditionType> builder = new AsmClassBuilder<>(TestInvertedCompoundConditionType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestInvertedCompoundConditionType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestInvertedCompoundConditionType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("bothNull"), DefinitionBuilders.parameters(DefinitionBuilders.p("first", Object.class), DefinitionBuilders.p("second", Object.class)), DefinitionBuilders.type(boolean.class),
-                CodeBuilders.if_(CodeBuilders.not(
-                    CodeBuilders.getVar("first").isNotNull().or(CodeBuilders.getVar("second").isNotNull())
+            .withMethod(method(publicOnly(), name("bothNull"), parameters(p("first", Object.class), p("second", Object.class)), type(boolean.class),
+                if_(CodeBuilders.not(
+                    getVar("first").isNotNull().or(getVar("second").isNotNull())
                 )).then(
-                    CodeBuilders.returnValue(CodeBuilders.true_())
+                    returnValue(true_())
                 ),
-                CodeBuilders.returnValue(CodeBuilders.false_())
+                returnValue(false_())
             ));
 
         TestInvertedCompoundConditionType instance = builder.buildInstance();

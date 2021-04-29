@@ -5,7 +5,6 @@ import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,6 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
@@ -24,42 +24,42 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class CompleteMethodDefinitionTest extends BaseUnitTest {
     @ParameterizedTest
     @MethodSource("illegalArgumentException_badConstructorParameters_testCases")
-    public void illegalArgumentException_badConstructorParameters(TypeDefinition<?> owner,
+    public void illegalArgumentException_badConstructorParameters(TypeDefinition owner,
                                                                   AccessModifiers modifiers,
                                                                   NameDefinition name,
-                                                                  TypeDefinition<?> returnType,
+                                                                  TypeDefinition returnType,
                                                                   ParametersDefinition parameters,
                                                                   ThrowsDefinition throwing,
                                                                   String expectedExceptionMessage) {
         IllegalArgumentException ex = assertThrows(
             IllegalArgumentException.class,
-            () -> new CompleteMethodDefinition<>(owner, modifiers, name, returnType, parameters, throwing)
+            () -> new CompleteMethodDefinition(owner, modifiers, name, returnType, parameters, throwing)
         );
         assertThat(ex, hasProperty("message", is(expectedExceptionMessage)));
     }
 
     private static Stream<Arguments> illegalArgumentException_badConstructorParameters_testCases() {
         return Stream.of(
-            Arguments.of(DefinitionBuilders.type(Object.class), publicOnly(), DefinitionBuilders.name("Name"), DefinitionBuilders.voidType(), DefinitionBuilders.noParameters(), null, "Throwing cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), publicOnly(), DefinitionBuilders.name("Name"), DefinitionBuilders.voidType(), null, DefinitionBuilders.noThrows(), "Parameters cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), publicOnly(), DefinitionBuilders.name("Name"), null, DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Return type cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), publicOnly(), null, DefinitionBuilders.voidType(), DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Name cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), null, DefinitionBuilders.name("Name"), DefinitionBuilders.voidType(), DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Modifiers cannot be null."),
-            Arguments.of(null, publicOnly(), DefinitionBuilders.name("Name"), DefinitionBuilders.voidType(), DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Method owner type cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object[].class), publicOnly(), DefinitionBuilders.name("Name"), DefinitionBuilders.voidType(), DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Method owner type cannot be an array type.")
+            Arguments.of(type(Object.class), publicOnly(), name("Name"), voidType(), noParameters(), null, "Throwing cannot be null."),
+            Arguments.of(type(Object.class), publicOnly(), name("Name"), voidType(), null, noThrows(), "Parameters cannot be null."),
+            Arguments.of(type(Object.class), publicOnly(), name("Name"), null, noParameters(), noThrows(), "Return type cannot be null."),
+            Arguments.of(type(Object.class), publicOnly(), null, voidType(), noParameters(), noThrows(), "Name cannot be null."),
+            Arguments.of(type(Object.class), null, name("Name"), voidType(), noParameters(), noThrows(), "Modifiers cannot be null."),
+            Arguments.of(null, publicOnly(), name("Name"), voidType(), noParameters(), noThrows(), "Method owner type cannot be null."),
+            Arguments.of(type(Object[].class), publicOnly(), name("Name"), voidType(), noParameters(), noThrows(), "Method owner type cannot be an array type.")
         );
     }
 
     @Test
     public void illegalStateException_noConstructorFoundForThisClass() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("createAnotherOne"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(ThisClass.class),
-                CodeBuilders.returnValue(
-                    instantiate(ThisClass.class, DefinitionBuilders.parameters(String.class), CodeBuilders.literalObj("Some String"))
+            .withMethod(method(publicOnly(), name("createAnotherOne"), noParameters(), type(ThisClass.class),
+                returnValue(
+                    instantiate(ThisClass.class, parameters(String.class), literalObj("Some String"))
                 )
             ));
 
@@ -70,13 +70,13 @@ class CompleteMethodDefinitionTest extends BaseUnitTest {
     @Test
     public void illegalStateException_constructorInAnotherClassCannotBeAccessed() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("createAnotherOne"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(AccessModifiers.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.instantiate(AccessModifiers.class, DefinitionBuilders.parameters(int.class), CodeBuilders.literal(123))
+            .withMethod(method(publicOnly(), name("createAnotherOne"), noParameters(), type(AccessModifiers.class),
+                returnValue(
+                    instantiate(AccessModifiers.class, parameters(int.class), literal(123))
                 )
             ));
 
@@ -89,13 +89,13 @@ class CompleteMethodDefinitionTest extends BaseUnitTest {
     @Test
     public void illegalStateException_methodInThisClassCannotBeFound() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("createAnotherOne"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(String.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.invokeStatic(ThisClass.class, DefinitionBuilders.name("imaginaryStaticMethod"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(String.class))
+            .withMethod(method(publicOnly(), name("createAnotherOne"), noParameters(), type(String.class),
+                returnValue(
+                    invokeStatic(ThisClass.class, name("imaginaryStaticMethod"), noParameters(), type(String.class))
                 )
             ));
 

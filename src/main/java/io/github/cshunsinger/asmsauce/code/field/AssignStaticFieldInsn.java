@@ -6,7 +6,6 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 
 import java.util.Stack;
 
-import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.PUTSTATIC;
 
 /**
@@ -34,12 +33,7 @@ public class AssignStaticFieldInsn extends AssignInstanceFieldInsn {
 
     @Override
     public void build() {
-        Class<?> fieldOwnerClass = fieldDefinition.getFieldOwner().getType();
-        if(fieldOwnerClass.isArray()) {
-            throw new IllegalStateException("Cannot access static field from array type %s.".formatted(fieldOwnerClass.getSimpleName()));
-        }
-
-        fieldDefinition = fieldDefinition.completeDefinition(context().getClassContext(), fieldDefinition.getFieldOwner());
+        fieldDefinition = fieldDefinition.completeDefinition();
 
         //Execute the value builder to place item onto stack that will be assigned to field
         executeValueBuilder();
@@ -49,7 +43,7 @@ public class AssignStaticFieldInsn extends AssignInstanceFieldInsn {
     }
 
     @Override
-    protected void performTypeStackChanges(Stack<TypeDefinition<?>> typeStack) {
+    protected void performTypeStackChanges(Stack<TypeDefinition> typeStack) {
         //Pop the value assigned to the static field from the stack
         typeStack.pop();
     }
@@ -60,7 +54,7 @@ public class AssignStaticFieldInsn extends AssignInstanceFieldInsn {
     }
 
     @Override
-    protected TypeDefinition<?> determineFieldOwner(Stack<TypeDefinition<?>> ignored) {
+    protected TypeDefinition determineFieldOwner(Stack<TypeDefinition> ignored) {
         return fieldDefinition.getFieldOwner();
     }
 }

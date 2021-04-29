@@ -3,9 +3,10 @@ package io.github.cshunsinger.asmsauce.code.method;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import io.github.cshunsinger.asmsauce.definitions.*;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.noThrows;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.voidType;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.DUP;
 import static org.objectweb.asm.Opcodes.NEW;
@@ -21,13 +22,13 @@ public class InstantiateObjectInsn extends InvocationInsn implements InvokableIn
      * @param instantiatedType The type of object being instantiated.
      * @param paramBuilders The code builders for stacking the parameters to pass to the constructor being invoked.
      */
-    public InstantiateObjectInsn(TypeDefinition<?> instantiatedType, CodeInsnBuilderLike... paramBuilders) {
-        super(new MethodDefinition<>(
+    public InstantiateObjectInsn(TypeDefinition instantiatedType, CodeInsnBuilderLike... paramBuilders) {
+        super(new MethodDefinition(
             instantiatedType,
             null,
             NameDefinition.CONSTRUCTOR_NAME_DEFINITION,
             null,
-            DefinitionBuilders.voidType(),
+            voidType(),
             null
         ), paramBuilders);
 
@@ -46,14 +47,14 @@ public class InstantiateObjectInsn extends InvocationInsn implements InvokableIn
      * @param parameters The parameters defined in the constructor to be called.
      * @param paramBuilders The code builders for stacking the parameters to pass to the constructor being invoked.
      */
-    public InstantiateObjectInsn(TypeDefinition<?> instantiatedType, ParametersDefinition parameters, CodeInsnBuilderLike... paramBuilders) {
-        super(new CompleteMethodDefinition<>(
+    public InstantiateObjectInsn(TypeDefinition instantiatedType, ParametersDefinition parameters, CodeInsnBuilderLike... paramBuilders) {
+        super(new CompleteMethodDefinition(
             instantiatedType, //CompleteMethodDefinition will verify that instantiatedType is not null
             publicOnly(), //Not too relevant here
             NameDefinition.CONSTRUCTOR_NAME_DEFINITION,
-            DefinitionBuilders.voidType(),
+            voidType(),
             parameters,
-            DefinitionBuilders.noThrows() //does not matter here
+            noThrows() //does not matter here
         ), paramBuilders);
     }
 

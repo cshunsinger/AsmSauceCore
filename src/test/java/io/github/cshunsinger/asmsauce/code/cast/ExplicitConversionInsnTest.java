@@ -5,7 +5,6 @@ import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -41,7 +41,7 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
 
     @ParameterizedTest
     @MethodSource("illegalArgumentException_nullOrInvalidConstructorParameters_testCases")
-    public void illegalArgumentException_nullOrInvalidConstructorParameters(TypeDefinition<?> testType, CodeInsnBuilderLike testCodeBuilder, String exceptionMessage) {
+    public void illegalArgumentException_nullOrInvalidConstructorParameters(TypeDefinition testType, CodeInsnBuilderLike testCodeBuilder, String exceptionMessage) {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> new ExplicitConversionInsn(testType, testCodeBuilder));
         assertThat(ex, hasProperty("message", is(exceptionMessage)));
     }
@@ -50,28 +50,28 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         CodeInsnBuilderLike mockCodeBuilder = mock(CodeInsnBuilderLike.class);
 
         return Stream.of(
-            Arguments.of(DefinitionBuilders.voidType(), mockCodeBuilder, "toType cannot be void."),
+            Arguments.of(voidType(), mockCodeBuilder, "toType cannot be void."),
             Arguments.of(null, mockCodeBuilder, "toType cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), null, "Code builder cannot be null.")
+            Arguments.of(type(Object.class), null, "Code builder cannot be null.")
         );
     }
 
     @Test
     public void illegalStateException_noStackElementsFromCodeBuilder() {
         AsmClassBuilder<TestExplicitConversion> builder = new AsmClassBuilder<>(TestExplicitConversion.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(Object.class), //public TestExplicitConversionImpl(Object obj)
-                CodeBuilders.superConstructor(TestExplicitConversion.class, DefinitionBuilders.parameters(String.class),
-                    CodeBuilders.cast(
+            .withConstructor(constructor(publicOnly(), parameters(Object.class), //public TestExplicitConversionImpl(Object obj)
+                superConstructor(TestExplicitConversion.class, parameters(String.class),
+                    cast(
                         String.class,
                         invokeStatic( //TestExplicitConversion.wasteMethod(obj)
                             TestExplicitConversion.class,
-                            DefinitionBuilders.name("wasteMethod"),
-                            DefinitionBuilders.parameters(Object.class),
-                            CodeBuilders.getVar(1)
+                            name("wasteMethod"),
+                            parameters(Object.class),
+                            getVar(1)
                         )
                     ) //super((String)TestExplicitConversion.wasteMethod(obj));
                 ),
-                CodeBuilders.returnVoid()
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -81,12 +81,12 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_cannotCastObjectToPrimitive() {
         AsmClassBuilder<TestExplicitConversion> builder = new AsmClassBuilder<>(TestExplicitConversion.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(), //public TestExplicitConversionImpl()
-                superConstructor(TestExplicitConversion.class, DefinitionBuilders.parameters(String.class),
-                    CodeBuilders.literalObj("SomeString")
+            .withConstructor(constructor(publicOnly(), noParameters(), //public TestExplicitConversionImpl()
+                superConstructor(TestExplicitConversion.class, parameters(String.class),
+                    literalObj("SomeString")
                 ),
-                CodeBuilders.setVar(cast(int.class, CodeBuilders.instantiate(Object.class))), //attempt: (int)(new Object()) which is an invalid cast
-                CodeBuilders.returnVoid()
+                setVar(cast(int.class, instantiate(Object.class))), //attempt: (int)(new Object()) which is an invalid cast
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -100,12 +100,12 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         //Using the explicit casting system to cast String to an Object
         //String can be implicitly cast, so the explicit casting system will fall back on the implicit casting system
         AsmClassBuilder<TestExplicitConversion> builder = new AsmClassBuilder<>(TestExplicitConversion.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(String.class),
-                superConstructor(TestExplicitConversion.class, DefinitionBuilders.parameters(String.class), CodeBuilders.getVar(1)),
-                CodeBuilders.getStatic(System.class, "out").invoke("println",
-                    cast(Object.class, CodeBuilders.getVar(1)
+            .withConstructor(constructor(publicOnly(), parameters(String.class),
+                superConstructor(TestExplicitConversion.class, parameters(String.class), getVar(1)),
+                getStatic(System.class, "out").invoke("println",
+                    cast(Object.class, getVar(1)
                 )),
-                CodeBuilders.returnVoid()
+                returnVoid()
             ));
 
         String testString = "Uncle Ben Dies in Spiderman: Far From Home";
@@ -118,11 +118,11 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         Object testInput = "Test String As Object";
 
         AsmClassBuilder<TestExplicitConversion> builder = new AsmClassBuilder<>(TestExplicitConversion.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(Object.class),
-                CodeBuilders.superConstructor(TestExplicitConversion.class, DefinitionBuilders.parameters(String.class),
-                    cast(String.class, CodeBuilders.getVar(1))
+            .withConstructor(constructor(publicOnly(), parameters(Object.class),
+                superConstructor(TestExplicitConversion.class, parameters(String.class),
+                    cast(String.class, getVar(1))
                 ),
-                CodeBuilders.returnVoid()
+                returnVoid()
             ));
 
         //Successfully instantiate when passing a String as an Object parameter.
@@ -149,17 +149,17 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
     @MethodSource("successfullyCastingPrimitivesExplicitly_testCases")
     public void successfullyCastingPrimitivesExplicitly(Number value, CodeInsnBuilderLike valueStacker) {
         AsmClassBuilder<TestPrimitivesType> builder = new AsmClassBuilder<>(TestPrimitivesType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestPrimitivesType.class, DefinitionBuilders.parameters(double.class, float.class, long.class, int.class, short.class, char.class, byte.class),
-                    CodeBuilders.cast(double.class, valueStacker),
-                    CodeBuilders.cast(float.class, valueStacker),
-                    CodeBuilders.cast(long.class, valueStacker),
-                    CodeBuilders.cast(int.class, valueStacker),
-                    CodeBuilders.cast(short.class, valueStacker),
-                    CodeBuilders.cast(char.class, valueStacker),
-                    CodeBuilders.cast(byte.class, valueStacker)
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestPrimitivesType.class, parameters(double.class, float.class, long.class, int.class, short.class, char.class, byte.class),
+                    cast(double.class, valueStacker),
+                    cast(float.class, valueStacker),
+                    cast(long.class, valueStacker),
+                    cast(int.class, valueStacker),
+                    cast(short.class, valueStacker),
+                    cast(char.class, valueStacker),
+                    cast(byte.class, valueStacker)
                 ),
-                CodeBuilders.returnVoid()
+                returnVoid()
             ));
 
         TestPrimitivesType instance = builder.buildInstance();
@@ -205,13 +205,13 @@ public class ExplicitConversionInsnTest extends BaseUnitTest {
         byte b = (byte)nextInt();
 
         return Stream.of(
-            Arguments.of(d, CodeBuilders.literal(d)),
-            Arguments.of(f, CodeBuilders.literal(f)),
-            Arguments.of(l, CodeBuilders.literal(l)),
-            Arguments.of(i, CodeBuilders.literal(i)),
-            Arguments.of(s, CodeBuilders.literal(s)),
-            Arguments.of((int)c, CodeBuilders.literal(c)), //Character does not inherit from Number, so cast it to int to be passed as test parameter
-            Arguments.of(b, CodeBuilders.literal(b))
+            Arguments.of(d, literal(d)),
+            Arguments.of(f, literal(f)),
+            Arguments.of(l, literal(l)),
+            Arguments.of(i, literal(i)),
+            Arguments.of(s, literal(s)),
+            Arguments.of((int)c, literal(c)), //Character does not inherit from Number, so cast it to int to be passed as test parameter
+            Arguments.of(b, literal(b))
         );
     }
 }

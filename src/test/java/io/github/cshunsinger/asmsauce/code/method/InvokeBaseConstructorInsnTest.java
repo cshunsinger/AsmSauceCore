@@ -8,7 +8,6 @@ import io.github.cshunsinger.asmsauce.definitions.ParametersDefinition;
 import io.github.cshunsinger.asmsauce.definitions.ThrowsDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,6 +16,7 @@ import org.mockito.Mock;
 
 import java.util.stream.Stream;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
@@ -39,7 +39,7 @@ class InvokeBaseConstructorInsnTest extends BaseUnitTest {
 
     @ParameterizedTest
     @MethodSource("illegalArgumentException_constructingNewInsn_testParameters")
-    public void illegalArgumentException_constructingNewInsn(TypeDefinition<?> testOwnerType,
+    public void illegalArgumentException_constructingNewInsn(TypeDefinition testOwnerType,
                                                              ParametersDefinition testParametersDefinition,
                                                              ThrowsDefinition testThrowsDefinition,
                                                              String expectedExceptionMessage) {
@@ -53,23 +53,23 @@ class InvokeBaseConstructorInsnTest extends BaseUnitTest {
 
     private static Stream<Arguments> illegalArgumentException_constructingNewInsn_testParameters() {
         return Stream.of(
-            Arguments.of(null, DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Method owner type cannot be null."),
-            Arguments.of(DefinitionBuilders.voidType(), DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Method owner type cannot be void."),
-            Arguments.of(DefinitionBuilders.type(int.class), DefinitionBuilders.noParameters(), DefinitionBuilders.noThrows(), "Method owner type cannot be a primitive type."),
-            Arguments.of(DefinitionBuilders.type(ThisClass.class), null, DefinitionBuilders.noThrows(), "Parameters cannot be null."),
-            Arguments.of(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.noParameters(), null, "Throwing cannot be null."),
-            Arguments.of(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.parameters(String.class), DefinitionBuilders.noThrows(), "Expected 1 builders to satisfy the method parameters. Found 0 builders instead.")
+            Arguments.of(null, noParameters(), noThrows(), "Method owner type cannot be null."),
+            Arguments.of(voidType(), noParameters(), noThrows(), "Method owner type cannot be void."),
+            Arguments.of(type(int.class), noParameters(), noThrows(), "Method owner type cannot be a primitive type."),
+            Arguments.of(type(ThisClass.class), null, noThrows(), "Parameters cannot be null."),
+            Arguments.of(type(ThisClass.class), noParameters(), null, "Throwing cannot be null."),
+            Arguments.of(type(ThisClass.class), parameters(String.class), noThrows(), "Expected 1 builders to satisfy the method parameters. Found 0 builders instead.")
         );
     }
 
     @Test
     public void illegalStateException_parameterBuilderPlacesMoreThanOneItemOntoTheStack() {
-        new MethodBuildingContext(mockMethodVisitor, null, null, singletonList(DefinitionBuilders.p("this", ThisClass.class)));
+        new MethodBuildingContext(mockMethodVisitor, null, null, singletonList(p("this", ThisClass.class)));
 
         when(mockParamBuilder.getFirstInStack()).thenReturn(mockParamBuilder);
         doAnswer(i -> null).when(mockParamBuilder).build();
 
-        InvokeBaseConstructorInsn insn = new InvokeBaseConstructorInsn(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.parameters(String.class), DefinitionBuilders.noThrows(), mockParamBuilder);
+        InvokeBaseConstructorInsn insn = new InvokeBaseConstructorInsn(type(ThisClass.class), parameters(String.class), noThrows(), mockParamBuilder);
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("Code builder expected to add 1 element to the stack. Instead 0 elements were added.")));
@@ -77,14 +77,14 @@ class InvokeBaseConstructorInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_parameterBuilderPlacesWrongTypeOntoTheStack() {
-        MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, singletonList(DefinitionBuilders.p("this", ThisClass.class)));
+        MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, singletonList(p("this", ThisClass.class)));
 
         //the mocking below simulates an int being pushed to the stack as a parameter, when a String is expected
         //Because int cannot implicitly convert to a String, an exception should be thrown.
         when(mockParamBuilder.getFirstInStack()).thenReturn(mockParamBuilder);
-        doAnswer(i -> methodContext.pushStack(DefinitionBuilders.type(int.class))).when(mockParamBuilder).build();
+        doAnswer(i -> methodContext.pushStack(type(int.class))).when(mockParamBuilder).build();
 
-        InvokeBaseConstructorInsn insn = new InvokeBaseConstructorInsn(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.parameters(String.class), DefinitionBuilders.noThrows(), mockParamBuilder);
+        InvokeBaseConstructorInsn insn = new InvokeBaseConstructorInsn(type(ThisClass.class), parameters(String.class), noThrows(), mockParamBuilder);
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
         assertThat(ex, hasProperty("message", is("Cannot convert from type int into type java.lang.String.")));

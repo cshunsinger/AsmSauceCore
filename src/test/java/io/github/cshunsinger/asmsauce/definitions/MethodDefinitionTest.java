@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class MethodDefinitionTest extends BaseUnitTest {
     @Test
     public void illegalStateException_attemptToGenerateMethodSignature_noParametersDefined() {
-        MethodDefinition<?, ?> methodDefinition = new MethodDefinition<>(null, null, name("Name"), null, null, null);
+        MethodDefinition methodDefinition = new MethodDefinition(null, null, name("Name"), null, null, null);
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, methodDefinition::jvmMethodSignature);
         assertThat(ex, hasProperty("message", is("Cannot build jvm method signature without defined parameters.")));
@@ -29,7 +29,7 @@ public class MethodDefinitionTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_attemptToGenerateMethodSignature_noReturnTypeDefined() {
-        MethodDefinition<?, ?> methodDefinition = new MethodDefinition<>(null, null, name("Name"), noParameters(), null, null);
+        MethodDefinition methodDefinition = new MethodDefinition(null, null, name("Name"), noParameters(), null, null);
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, methodDefinition::jvmMethodSignature);
         assertThat(ex, hasProperty("message", is("Cannot build jvm method signature without defined return type.")));

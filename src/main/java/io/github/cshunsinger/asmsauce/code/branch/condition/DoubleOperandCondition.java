@@ -5,10 +5,10 @@ import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.Getter;
 import org.apache.commons.lang3.ClassUtils;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.*;
 
@@ -65,7 +65,7 @@ public class DoubleOperandCondition extends Condition {
     @Override
     public void build(Label endLabel) {
         validateStackSingleValue(operand1Builder);
-        TypeDefinition<?> firstType = context().peekStack();
+        TypeDefinition firstType = context().peekStack();
         validateStackSingleValue(operand2Builder);
 
         if(firstType.isPrimitive()) {
@@ -87,9 +87,9 @@ public class DoubleOperandCondition extends Condition {
         }
         else {
             //Dealing with reference comparison - if second operand is primitive, convert it into a wrapper first
-            TypeDefinition<?> secondType = context().peekStack();
+            TypeDefinition secondType = context().peekStack();
             if(secondType.isPrimitive()) {
-                TypeDefinition<?> secondTypeWrapper = DefinitionBuilders.type(ClassUtils.primitiveToWrapper(secondType.getType()));
+                TypeDefinition secondTypeWrapper = type(ClassUtils.primitiveToWrapper(secondType.getType()));
                 new ImplicitConversionInsn(secondTypeWrapper).build();
             }
 

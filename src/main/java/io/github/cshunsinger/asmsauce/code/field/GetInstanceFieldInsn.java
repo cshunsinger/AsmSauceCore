@@ -40,7 +40,7 @@ public class GetInstanceFieldInsn extends FieldInsn implements
     }
 
     @Override
-    protected void performTypeStackChanges(Stack<TypeDefinition<?>> typeStack) {
+    protected void performTypeStackChanges(Stack<TypeDefinition> typeStack) {
         //Pop the instance type from the stack
         typeStack.pop();
         //Push the field value type onto the stack
@@ -53,7 +53,7 @@ public class GetInstanceFieldInsn extends FieldInsn implements
     }
 
     @Override
-    protected TypeDefinition<?> determineFieldOwner(Stack<TypeDefinition<?>> typeStack) {
+    protected TypeDefinition determineFieldOwner(Stack<TypeDefinition> typeStack) {
         return typeStack.peek(); //popping and pushing on stack done later
     }
 }

@@ -27,8 +27,8 @@ public class InvokeStaticMethodInsn extends InvocationInsn implements
      * @param throwsDefinition The throws clause of the static method.
      * @param paramBuilders The code builders to stack the parameters to pass to the static method.
      */
-    public InvokeStaticMethodInsn(TypeDefinition<?> type, NameDefinition methodName, ParametersDefinition methodParameters, TypeDefinition<?> returnType, ThrowsDefinition throwsDefinition, CodeInsnBuilderLike... paramBuilders) {
-        super(new CompleteMethodDefinition<>(
+    public InvokeStaticMethodInsn(TypeDefinition type, NameDefinition methodName, ParametersDefinition methodParameters, TypeDefinition returnType, ThrowsDefinition throwsDefinition, CodeInsnBuilderLike... paramBuilders) {
+        super(new CompleteMethodDefinition(
             type,
             customAccess(0).withStatic(),
             methodName,
@@ -44,8 +44,8 @@ public class InvokeStaticMethodInsn extends InvocationInsn implements
      * @param name The name of the static method.
      * @param paramBuilders The code builders which will stack the parameter values to pass to the static method.
      */
-    public InvokeStaticMethodInsn(TypeDefinition<?> ownerType, NameDefinition name, CodeInsnBuilderLike... paramBuilders) {
-        super(new MethodDefinition<>(
+    public InvokeStaticMethodInsn(TypeDefinition ownerType, NameDefinition name, CodeInsnBuilderLike... paramBuilders) {
+        super(new MethodDefinition(
             ownerType,
             customAccess(0).withStatic(),
             name,
@@ -60,7 +60,7 @@ public class InvokeStaticMethodInsn extends InvocationInsn implements
         super.invokeMethodVisitor();
     }
 
-    private static void validateMethodIsStatic(MethodDefinition<?, ?> methodDefinition) {
+    private static void validateMethodIsStatic(MethodDefinition methodDefinition) {
         if(methodDefinition.getModifiers().isStatic())
             return;
 

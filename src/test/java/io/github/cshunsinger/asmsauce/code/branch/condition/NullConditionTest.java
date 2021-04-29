@@ -3,11 +3,12 @@ package io.github.cshunsinger.asmsauce.code.branch.condition;
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,18 +24,18 @@ public class NullConditionTest extends BaseUnitTest {
     @Test
     public void testUseOfNullAndNonNullConditions() {
         AsmClassBuilder<TestType> builder = new AsmClassBuilder<>(TestType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("generateString"), DefinitionBuilders.parameters(DefinitionBuilders.p("value", Object.class), DefinitionBuilders.p("defaultString", String.class)), DefinitionBuilders.type(String.class),
-                CodeBuilders.if_(CodeBuilders.getVar("value").isNotNull()).then(
-                    CodeBuilders.returnValue(CodeBuilders.getVar("value").invoke("toString"))
+            .withMethod(method(publicOnly(), name("generateString"), parameters(p("value", Object.class), p("defaultString", String.class)), type(String.class),
+                if_(getVar("value").isNotNull()).then(
+                    returnValue(getVar("value").invoke("toString"))
                 ),
-                CodeBuilders.if_(CodeBuilders.not(CodeBuilders.getVar("defaultString").isNull())).then(
-                    CodeBuilders.returnValue(CodeBuilders.getVar("defaultString"))
+                if_(CodeBuilders.not(getVar("defaultString").isNull())).then(
+                    returnValue(getVar("defaultString"))
                 ),
-                CodeBuilders.returnValue(CodeBuilders.literalObj("null"))
+                returnValue(literalObj("null"))
             ));
 
         TestType instance = builder.buildInstance();
@@ -50,15 +51,15 @@ public class NullConditionTest extends BaseUnitTest {
     @Test
     public void illegalStateException_attemptingToComparePrimitiveTypeToNull() {
         AsmClassBuilder<TestType> builder = new AsmClassBuilder<>(TestType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("generateString"), DefinitionBuilders.parameters(DefinitionBuilders.p("value", Object.class), DefinitionBuilders.p("defaultString", String.class)), DefinitionBuilders.type(String.class),
-                CodeBuilders.if_(new NullCondition(CodeBuilders.literal(101))).then(
-                    CodeBuilders.returnValue(CodeBuilders.getVar("value").invoke("toString"))
+            .withMethod(method(publicOnly(), name("generateString"), parameters(p("value", Object.class), p("defaultString", String.class)), type(String.class),
+                if_(new NullCondition(literal(101))).then(
+                    returnValue(getVar("value").invoke("toString"))
                 ),
-                CodeBuilders.returnValue(CodeBuilders.stackNull())
+                returnValue(CodeBuilders.stackNull())
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);

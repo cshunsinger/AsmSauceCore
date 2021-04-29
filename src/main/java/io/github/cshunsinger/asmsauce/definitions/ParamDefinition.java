@@ -18,7 +18,7 @@ public class ParamDefinition {
     /**
      * @return The type of this defined parameter.
      */
-    private final TypeDefinition<?> paramType;
+    private final TypeDefinition paramType;
 
     /**
      * Defines an unnamed parameter from a type definition.
@@ -26,7 +26,7 @@ public class ParamDefinition {
      * @throws IllegalArgumentException If the paramType is null.
      * @see io.github.cshunsinger.asmsauce.code.CodeBuilders#getVar(int)
      */
-    public ParamDefinition(TypeDefinition<?> paramType) {
+    public ParamDefinition(TypeDefinition paramType) {
         this(null, paramType);
     }
 
@@ -39,7 +39,7 @@ public class ParamDefinition {
      * @see io.github.cshunsinger.asmsauce.code.CodeBuilders#getVar(String)
      * @see io.github.cshunsinger.asmsauce.code.CodeBuilders#getVar(int)
      */
-    public ParamDefinition(String paramName, TypeDefinition<?> paramType) {
+    public ParamDefinition(String paramName, TypeDefinition paramType) {
         paramName = StringUtils.trimToNull(paramName);
         this.paramName = paramName;
         this.paramType = paramType;

@@ -4,9 +4,9 @@ import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.apache.commons.lang3.ClassUtils;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 
 /**
@@ -37,7 +37,7 @@ public abstract class MathOperationInsn extends CodeInsnBuilder {
             throw new IllegalStateException("Expected to find a math operand on the stack, but the stack was empty.");
 
         //Make sure the first operand on the stack is actually an operand
-        TypeDefinition<?> firstOperandType = context().peekStack();
+        TypeDefinition firstOperandType = context().peekStack();
         if(!ClassUtils.isPrimitiveOrWrapper(firstOperandType.getType())) {
             throw new IllegalStateException(
                 "Expected a math operand to exist on the stack as a primitive or wrapper type. Found type %s instead."
@@ -47,7 +47,7 @@ public abstract class MathOperationInsn extends CodeInsnBuilder {
 
         if(ClassUtils.isPrimitiveWrapper(firstOperandType.getType())) {
             //Auto-unbox if the type is a wrapper type
-            new ImplicitConversionInsn(DefinitionBuilders.type(ClassUtils.wrapperToPrimitive(firstOperandType.getType()))).build();
+            new ImplicitConversionInsn(type(ClassUtils.wrapperToPrimitive(firstOperandType.getType()))).build();
             firstOperandType = context().peekStack();
         }
 
@@ -62,9 +62,9 @@ public abstract class MathOperationInsn extends CodeInsnBuilder {
         }
 
         //Implicit cast if necessary
-        TypeDefinition<?> secondOperand = context().peekStack();
+        TypeDefinition secondOperand = context().peekStack();
         if(ClassUtils.isPrimitiveWrapper(secondOperand.getType()))
-            new ImplicitConversionInsn(DefinitionBuilders.type(ClassUtils.wrapperToPrimitive(secondOperand.getType()))).build();
+            new ImplicitConversionInsn(type(ClassUtils.wrapperToPrimitive(secondOperand.getType()))).build();
         new ImplicitConversionInsn(firstOperandType).build();
 
         //Pop the two operands
@@ -77,7 +77,7 @@ public abstract class MathOperationInsn extends CodeInsnBuilder {
         context().pushStack(firstOperandType);
     }
 
-    private int mathOperator(TypeDefinition<?> operandType) {
+    private int mathOperator(TypeDefinition operandType) {
         Class<?> operandClass = operandType.getType();
         if(operandClass == double.class)
             return doubleOperator();

@@ -59,7 +59,7 @@ public class StoreLocalVariableInsn extends CodeInsnBuilder {
             throw new IllegalStateException("Code builder expected to add 1 element to the stack. Instead %d elements were added.".formatted(finalStackSize-initialStackSize));
 
         //Pop the result of the value builder from the stack to store it in local
-        TypeDefinition<?> type = context().popStack();
+        TypeDefinition type = context().popStack();
 
         //Need to know the index of the local variable for the jvm
         int index;

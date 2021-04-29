@@ -1,9 +1,11 @@
 package io.github.cshunsinger.asmsauce;
 
+import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import org.objectweb.asm.ClassWriter;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The context representing the state of the class building which is present during the building of a new class.
@@ -53,12 +55,12 @@ public class ClassBuildingContext {
      * The existing Java class that this generated class is inheriting.
      * @return The superclass of this class being generated.
      */
-    private final Class<?> superclass;
+    private final TypeDefinition superType;
     /**
      * The list of zero or more existing Java interface types that this generated class is implementing.
      * @return The interfaces list.
      */
-    private final List<Class<?>> interfaces;
+    private final List<TypeDefinition> interfaces;
     /**
      * The list of fields defined in this class being generated.
      * @return The list of fields.
@@ -79,7 +81,7 @@ public class ClassBuildingContext {
      * Creates a new class building context with all of the metadata about the class being generated.
      * @param classWriter The class writer for generating this class.
      * @param jvmTypeName The jvm classname of the class being generated.
-     * @param superclass The class that the generated class will be inheriting.
+     * @param superType The class that the generated class will be inheriting.
      * @param interfaces The interface types that the generated class will be implementing.
      * @param fields The fields to be generated in the new class.
      * @param methods The methods to be generated in the new class.
@@ -87,15 +89,17 @@ public class ClassBuildingContext {
      */
     public ClassBuildingContext(ClassWriter classWriter,
                                 String jvmTypeName,
-                                Class<?> superclass,
+                                Class<?> superType,
                                 List<Class<?>> interfaces,
                                 List<FieldNode> fields,
                                 List<MethodNode> methods,
                                 List<ConstructorNode> constructors) {
         this.classWriter = classWriter;
         this.jvmTypeName = jvmTypeName;
-        this.superclass = superclass;
-        this.interfaces = interfaces;
+        this.superType = TypeDefinition.fromClass(superType);
+        this.interfaces = interfaces.stream()
+            .map(TypeDefinition::fromClass)
+            .collect(Collectors.toList());
         this.fields = fields;
         this.methods = methods;
         this.constructors = constructors;

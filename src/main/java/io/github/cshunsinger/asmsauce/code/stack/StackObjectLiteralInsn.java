@@ -9,6 +9,7 @@ import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.code.method.InvokableInstance;
 import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 
@@ -45,16 +46,16 @@ public class StackObjectLiteralInsn extends CodeInsnBuilder implements
     public void build() {
         if(objValue == null) {
             context().getMethodVisitor().visitInsn(ACONST_NULL);
-            context().pushStack(DefinitionBuilders.type(objClass));
+            context().pushStack(type(objClass));
         }
         else if(objClass == Class.class) {
-            String value = DefinitionBuilders.type((Class<?>)objValue).getJvmTypeDefinition() + ".class";
+            String value = type((Class<?>)objValue).getJvmTypeDefinition() + ".class";
             context().getMethodVisitor().visitLdcInsn(value);
-            context().pushStack(DefinitionBuilders.type(objClass));
+            context().pushStack(type(objClass));
         }
         else {
             context().getMethodVisitor().visitLdcInsn(objValue);
-            context().pushStack(DefinitionBuilders.type(objClass));
+            context().pushStack(type(objClass));
         }
 
         super.build(); //build next instruction if it exists

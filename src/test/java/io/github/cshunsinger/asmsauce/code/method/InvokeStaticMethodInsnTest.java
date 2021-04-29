@@ -6,8 +6,6 @@ import io.github.cshunsinger.asmsauce.definitions.ParametersDefinition;
 import io.github.cshunsinger.asmsauce.definitions.ThrowsDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,18 +14,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class InvokeStaticMethodInsnTest extends BaseUnitTest {
+public class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalArgumentException_nullMethod() {
         IllegalArgumentException ex = assertThrows(
             IllegalArgumentException.class,
-            () -> new InvokeStaticMethodInsn(DefinitionBuilders.type(Object.class), null)
+            () -> new InvokeStaticMethodInsn(type(Object.class), null)
         );
 
         assertThat(ex, hasProperty("message", is("Name cannot be null.")));
@@ -35,10 +35,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
 
     @ParameterizedTest
     @MethodSource("illegalArgumentException_constructingInsn_testArguments")
-    public void illegalArgumentException_constructingInsn(TypeDefinition<?> testType,
+    public void illegalArgumentException_constructingInsn(TypeDefinition testType,
                                                           NameDefinition testMethodName,
                                                           ParametersDefinition testMethodParameters,
-                                                          TypeDefinition<?> testReturnType,
+                                                          TypeDefinition testReturnType,
                                                           ThrowsDefinition testThrowsDefinition,
                                                           String expectedExceptionMessage) {
         IllegalArgumentException ex = assertThrows(
@@ -51,13 +51,13 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
 
     private static Stream<Arguments> illegalArgumentException_constructingInsn_testArguments() {
         return Stream.of(
-            Arguments.of(null, DefinitionBuilders.name("testMethod"), DefinitionBuilders.noParameters(), DefinitionBuilders.voidType(), DefinitionBuilders.noThrows(), "Method owner type is mandatory for static methods."),
-            Arguments.of(DefinitionBuilders.voidType(), DefinitionBuilders.name("testMethod"), DefinitionBuilders.noParameters(), DefinitionBuilders.voidType(), DefinitionBuilders.noThrows(), "Method owner type cannot be void."),
-            Arguments.of(DefinitionBuilders.type(Object.class), null, DefinitionBuilders.noParameters(), DefinitionBuilders.voidType(), DefinitionBuilders.noThrows(), "Name cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), DefinitionBuilders.name("testMethod"), null, DefinitionBuilders.voidType(), DefinitionBuilders.noThrows(), "Parameters cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), DefinitionBuilders.name("testMethod"), DefinitionBuilders.noParameters(), null, DefinitionBuilders.noThrows(), "Return type cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), DefinitionBuilders.name("testMethod"), DefinitionBuilders.noParameters(), DefinitionBuilders.voidType(), null, "Throwing cannot be null."),
-            Arguments.of(DefinitionBuilders.type(Object.class), DefinitionBuilders.name("testMethod"), DefinitionBuilders.parameters(String.class), DefinitionBuilders.voidType(), DefinitionBuilders.noThrows(), "Expected 1 builders to satisfy the method parameters. Found 0 builders instead.")
+            Arguments.of(null, name("testMethod"), noParameters(), voidType(), noThrows(), "Method owner type is mandatory for static methods."),
+            Arguments.of(voidType(), name("testMethod"), noParameters(), voidType(), noThrows(), "Method owner type cannot be void."),
+            Arguments.of(type(Object.class), null, noParameters(), voidType(), noThrows(), "Name cannot be null."),
+            Arguments.of(type(Object.class), name("testMethod"), null, voidType(), noThrows(), "Parameters cannot be null."),
+            Arguments.of(type(Object.class), name("testMethod"), noParameters(), null, noThrows(), "Return type cannot be null."),
+            Arguments.of(type(Object.class), name("testMethod"), noParameters(), voidType(), null, "Throwing cannot be null."),
+            Arguments.of(type(Object.class), name("testMethod"), parameters(String.class), voidType(), noThrows(), "Expected 1 builders to satisfy the method parameters. Found 0 builders instead.")
         );
     }
 
@@ -65,7 +65,7 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     public void illegalArgumentException_nullMethodOwnerForStaticMethod() {
         IllegalArgumentException ex = assertThrows(
             IllegalArgumentException.class,
-            () -> new InvokeStaticMethodInsn(null, DefinitionBuilders.name("testMethodName"))
+            () -> new InvokeStaticMethodInsn(null, name("testMethodName"))
         );
 
         assertThat(ex, hasProperty("message", is("Method owner type is mandatory for static methods.")));
@@ -90,10 +90,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_implicitMethodInfo_staticMethodNotAccessible() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.invokeStatic(TestStatics.class, "privateStaticMethod"),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                invokeStatic(TestStatics.class, "privateStaticMethod"),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -105,10 +105,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_explicitMethodInfo_staticMethodNotAccessible() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.invokeStatic(TestStatics.class, DefinitionBuilders.name("privateStaticMethod"), DefinitionBuilders.noParameters(), DefinitionBuilders.voidType()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                invokeStatic(TestStatics.class, name("privateStaticMethod"), noParameters(), voidType()),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -120,10 +120,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_implicitMethodInfo_staticMethodDoesNotExist() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.invokeStatic(TestStatics.class, "someMethodWhichNeverExists"),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                invokeStatic(TestStatics.class, "someMethodWhichNeverExists"),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -135,10 +135,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_explicitMethodInfo_staticMethodDoesNotExist() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.invokeStatic(TestStatics.class, DefinitionBuilders.name("someMethodWhichNeverExists"), DefinitionBuilders.noParameters(), DefinitionBuilders.voidType()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                invokeStatic(TestStatics.class, name("someMethodWhichNeverExists"), noParameters(), voidType()),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -150,10 +150,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_implicitMethodInfo_methodIsNotStatic() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.invokeStatic(TestStatics.class, "nonStaticTestMethod"),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                invokeStatic(TestStatics.class, "nonStaticTestMethod"),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -165,10 +165,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_explicitMethodInfo_methodIsNotStatic() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.invokeStatic(TestStatics.class, DefinitionBuilders.name("nonStaticTestMethod"), DefinitionBuilders.noParameters(), DefinitionBuilders.voidType()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                invokeStatic(TestStatics.class, name("nonStaticTestMethod"), noParameters(), voidType()),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -180,14 +180,14 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void successfullyCallAnExplicitlyDefinedStaticMethod() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("abs"), DefinitionBuilders.parameters(int.class), DefinitionBuilders.type(int.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.invokeStatic(DefinitionBuilders.type(Math.class), DefinitionBuilders.name("abs"), DefinitionBuilders.parameters(int.class), DefinitionBuilders.type(int.class),
-                        CodeBuilders.getVar(1)
+            .withMethod(method(publicOnly(), name("abs"), parameters(int.class), type(int.class),
+                returnValue(
+                    invokeStatic(type(Math.class), name("abs"), parameters(int.class), type(int.class),
+                        getVar(1)
                     )
                 )
             ));
@@ -200,13 +200,13 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void successfullyCallAnImplicitlyDefinedStaticMethod() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("abs"), DefinitionBuilders.parameters(int.class), DefinitionBuilders.type(int.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.invokeStatic(Math.class, "abs", CodeBuilders.getVar(1))
+            .withMethod(method(publicOnly(), name("abs"), parameters(int.class), type(int.class),
+                returnValue(
+                    invokeStatic(Math.class, "abs", getVar(1))
                 )
             ));
 
@@ -218,10 +218,10 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_implicitMethodInfo_methodDoesNotExistInBuildingClass() {
         AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.this_().invoke("someUnknownMethod"),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                this_().invoke("someUnknownMethod"),
+                returnVoid()
             ));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
@@ -233,14 +233,14 @@ class InvokeStaticMethodInsnTest extends BaseUnitTest {
     @Test
     public void illegalStateException_parameterBuilderDoesNotAddExactlyOneElementToStack() {
         AsmClassBuilder<TestBaseType> builder = new AsmClassBuilder<>(TestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestBaseType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestBaseType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("abs"), DefinitionBuilders.parameters(int.class), DefinitionBuilders.type(int.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.invokeStatic(Math.class, "abs",
-                        CodeBuilders.invokeStatic(TestStatics.class, "protectedStaticMethod") //void method does not stack the expected 1 element
+            .withMethod(method(publicOnly(), name("abs"), parameters(int.class), type(int.class),
+                returnValue(
+                    invokeStatic(Math.class, "abs",
+                        invokeStatic(TestStatics.class, "protectedStaticMethod") //void method does not stack the expected 1 element
                     )
                 )
             ));

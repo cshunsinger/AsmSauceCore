@@ -4,10 +4,10 @@ import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 class ReturnInsnTest extends BaseUnitTest {
     @Mock
-    private CompleteMethodDefinition<?, String> mockMethodDefinition;
+    private CompleteMethodDefinition mockMethodDefinition;
 
     @Mock
     private MethodVisitor mockMethodVisitor;
@@ -27,7 +27,7 @@ class ReturnInsnTest extends BaseUnitTest {
         ReturnInsn insn = new ReturnInsn();
         new MethodBuildingContext(mockMethodVisitor, mockMethodDefinition, null, emptyList());
 
-        when(mockMethodDefinition.getReturnType()).thenReturn(DefinitionBuilders.type(String.class));
+        when(mockMethodDefinition.getReturnType()).thenReturn(type(String.class));
 
         IllegalStateException ex = assertThrows(IllegalStateException.class, insn::build);
 

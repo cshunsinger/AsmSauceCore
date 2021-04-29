@@ -1,9 +1,8 @@
 package io.github.cshunsinger.asmsauce.code.cast;
 
-import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
+import io.github.cshunsinger.asmsauce.definitions.ThisTypeDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.objectweb.asm.MethodVisitor;
@@ -11,6 +10,7 @@ import org.objectweb.asm.MethodVisitor;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static io.github.cshunsinger.asmsauce.util.AsmUtils.generateJvmMethodSignature;
 import static org.objectweb.asm.Opcodes.*;
@@ -22,7 +22,7 @@ import static org.objectweb.asm.Opcodes.*;
  * @see ExplicitConversionInsn {@link ExplicitConversionInsn} For explicit type conversion bytecode generation.
  */
 public class ImplicitConversionInsn extends CodeInsnBuilder {
-    private final TypeDefinition<?> toType;
+    private final TypeDefinition toType;
 
     /**
      * Creates an implicit conversion instruction to convert the element on the top of the jvm stack to a desired type.
@@ -30,7 +30,7 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
      * @throws IllegalArgumentException If toType is null.
      *
      */
-    public ImplicitConversionInsn(TypeDefinition<?> toType) {
+    public ImplicitConversionInsn(TypeDefinition toType) {
         if(toType == null)
             throw new IllegalArgumentException("toType cannot be null.");
         this.toType = toType;
@@ -41,27 +41,25 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
         if(context().isStackEmpty())
             throw new IllegalStateException("There is no element expected on the stack to be cast.");
 
-        TypeDefinition<?> fromType = context().peekStack();
-        Class<?> fromClass = fromType.getType();
-        Class<?> toClass = toType.getType();
+        TypeDefinition fromType = context().peekStack();
 
         if(fromType.equals(toType)) {
             //No autoboxing, unboxing, or implicit casts necessary
             return;
         }
 
-        if(!implicitCastAllowed(fromClass, toClass))
+        if(!implicitCastAllowed(fromType, toType))
             throw new IllegalStateException("Cannot convert from type %s into type %s.".formatted(fromType.getType().getName(), toType.getType().getName()));
 
-        if(fromClass.isPrimitive() && toClass.isPrimitive()) {
+        if(fromType.isPrimitive() && toType.isPrimitive()) {
             //Implicit casting is possible based on the previous check
             buildImplicitCast(context().getMethodVisitor(), fromType, context().getTypeStack());
         }
-        else if(fromClass.isPrimitive()) {
+        else if(fromType.isPrimitive()) {
             //Auto-boxing will occur
             buildAutoboxing(context().getMethodVisitor(), context().getTypeStack());
         }
-        else if(toClass.isPrimitive()) {
+        else if(toType.isPrimitive()) {
             //Auto-unboxing will occur
             buildAutoUnboxing(context().getMethodVisitor(), context().getTypeStack());
         }
@@ -79,16 +77,16 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
      * @param to The type to convert to.
      * @return Returns true if 'from' can be converted to 'to' implicitly. Otherwise returns false.
      */
-    public static boolean implicitCastAllowed(Class<?> from, Class<?> to) {
-        return ClassUtils.isAssignable(from, to)
-            || (from == ThisClass.class)
-            || (from == byte.class && to == char.class)
-            || (from == long.class && (to == float.class || to == double.class))
-            || (from == short.class && to == char.class)
-            || (from == char.class && to == short.class);
+    public static boolean implicitCastAllowed(TypeDefinition from, TypeDefinition to) {
+        return ClassUtils.isAssignable(from.getType(), to.getType(), true)
+            || (from instanceof ThisTypeDefinition)
+            || (from.getType() == byte.class && to.getType() == char.class)
+            || (from.getType() == long.class && (to.getType() == float.class || to.getType() == double.class))
+            || (from.getType() == short.class && to.getType() == char.class)
+            || (from.getType() == char.class && to.getType() == short.class);
     }
 
-    private void buildImplicitCast(MethodVisitor methodVisitor, TypeDefinition<?> fromType, Stack<TypeDefinition<?>> classStack) {
+    private void buildImplicitCast(MethodVisitor methodVisitor, TypeDefinition fromType, Stack<TypeDefinition> classStack) {
         Class<?> fromClass = fromType.getType();
         Class<?> toClass = toType.getType();
 
@@ -117,7 +115,7 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
         classStack.push(toType);
     }
 
-    private void buildAutoboxing(MethodVisitor methodVisitor, Stack<TypeDefinition<?>> typeStack) {
+    private void buildAutoboxing(MethodVisitor methodVisitor, Stack<TypeDefinition> typeStack) {
         Class<?> fromPrimitive = typeStack.pop().getType();
         Method method = MethodUtils.getAccessibleMethod(toType.getType(), "valueOf", fromPrimitive);
         methodVisitor.visitMethodInsn(
@@ -130,8 +128,8 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
         typeStack.push(toType);
     }
 
-    private static void buildAutoUnboxing(MethodVisitor methodVisitor, Stack<TypeDefinition<?>> typeStack) {
-        TypeDefinition<?> fromWrapper = typeStack.pop();
+    private static void buildAutoUnboxing(MethodVisitor methodVisitor, Stack<TypeDefinition> typeStack) {
+        TypeDefinition fromWrapper = typeStack.pop();
         Class<?> fromClass = fromWrapper.getType();
         Class<?> toClass = ClassUtils.wrapperToPrimitive(fromClass);
 
@@ -144,6 +142,6 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
             generateJvmMethodSignature(method),
             method.getDeclaringClass().isInterface()
         );
-        typeStack.push(DefinitionBuilders.type(toClass));
+        typeStack.push(type(toClass));
     }
 }

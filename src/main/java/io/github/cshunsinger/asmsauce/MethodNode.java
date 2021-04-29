@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 
 /**
  * Represents a method being built on a new class.
@@ -21,10 +22,11 @@ import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
  */
 public class MethodNode {
     /**
+     * The definition of this method being generated.
      * @return The definition of this method being generated.
      */
     @Getter
-    protected final CompleteMethodDefinition<?, ?> definition;
+    protected final CompleteMethodDefinition definition;
     /**
      * The code builders which make up the code body of this method being generated.
      */
@@ -35,7 +37,7 @@ public class MethodNode {
      * @param definition The definition of the method to generate.
      * @param methodBody The code builders whose bytecode makes up this method's implementation.
      */
-    protected MethodNode(CompleteMethodDefinition<?, ?> definition, CodeInsnBuilderLike... methodBody) {
+    protected MethodNode(CompleteMethodDefinition definition, CodeInsnBuilderLike... methodBody) {
         if(definition == null)
             throw new IllegalArgumentException("Method definition cannot be null.");
         List<CodeInsnBuilderLike> methodBodyList = Stream.of(methodBody)
@@ -51,8 +53,8 @@ public class MethodNode {
      * of this method being generated.
      */
     public void build() {
-        CompleteMethodDefinition<?, ?> updatedMethodDefinition = new CompleteMethodDefinition<>(
-            TypeDefinition.fromCustomJvmName(context().getJvmTypeName()),
+        CompleteMethodDefinition updatedMethodDefinition = new CompleteMethodDefinition(
+            type(ThisClass.class),
             definition.getModifiers(),
             definition.getName(),
             definition.getReturnType(),
@@ -71,7 +73,7 @@ public class MethodNode {
         List<ParamDefinition> methodParameters = new ArrayList<>();
         //If the method being built is an instance method, then make "this" be the first local variable
         if(!updatedMethodDefinition.getModifiers().isStatic())
-            methodParameters.add(DefinitionBuilders.p("this", ThisClass.class));
+            methodParameters.add(p("this", ThisClass.class));
         //Add the defined parameters for the method to the context
         methodParameters.addAll(updatedMethodDefinition.getParameters().getParams());
 
@@ -103,7 +105,7 @@ public class MethodNode {
                                     NameDefinition name,
                                     ParametersDefinition parameters,
                                     CodeInsnBuilderLike... methodBody) {
-        return method(modifiers, name, parameters, DefinitionBuilders.voidType(), methodBody);
+        return method(modifiers, name, parameters, voidType(), methodBody);
     }
 
     /**
@@ -122,9 +124,9 @@ public class MethodNode {
     public static MethodNode method(AccessModifiers modifiers,
                                     NameDefinition name,
                                     ParametersDefinition parameters,
-                                    TypeDefinition<?> returnType,
+                                    TypeDefinition returnType,
                                     CodeInsnBuilderLike... methodBody) {
-        return method(modifiers, name, parameters, returnType, DefinitionBuilders.noThrows(), methodBody);
+        return method(modifiers, name, parameters, returnType, noThrows(), methodBody);
     }
 
     /**
@@ -145,7 +147,7 @@ public class MethodNode {
                                     ParametersDefinition parameters,
                                     ThrowsDefinition throwing,
                                     CodeInsnBuilderLike... methodBody) {
-        return method(modifiers, name, parameters, DefinitionBuilders.voidType(), throwing, methodBody);
+        return method(modifiers, name, parameters, voidType(), throwing, methodBody);
     }
 
     /**
@@ -165,10 +167,10 @@ public class MethodNode {
     public static MethodNode method(AccessModifiers modifiers,
                                     NameDefinition name,
                                     ParametersDefinition parameters,
-                                    TypeDefinition<?> returnType,
+                                    TypeDefinition returnType,
                                     ThrowsDefinition throwing,
                                     CodeInsnBuilderLike... methodBody) {
-        CompleteMethodDefinition<?, ?> definition = new CompleteMethodDefinition<>(DefinitionBuilders.type(ThisClass.class), modifiers, name, returnType, parameters, throwing);
+        CompleteMethodDefinition definition = new CompleteMethodDefinition(type(ThisClass.class), modifiers, name, returnType, parameters, throwing);
         return new MethodNode(definition, methodBody);
     }
 }

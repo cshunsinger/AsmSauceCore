@@ -4,8 +4,8 @@ import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.IFEQ;
 import static org.objectweb.asm.Opcodes.IFNE;
@@ -40,7 +40,7 @@ public class BooleanCondition extends SingleOperandCondition {
         super.build(endLabel);
 
         //Make sure the stacked type is boolean in nature
-        new ImplicitConversionInsn(DefinitionBuilders.type(boolean.class)).build();
+        new ImplicitConversionInsn(type(boolean.class)).build();
 
         int opcode = super.conditionOp == Op.EQ ? IFEQ : IFNE;
         context().getMethodVisitor().visitJumpInsn(opcode, endLabel);

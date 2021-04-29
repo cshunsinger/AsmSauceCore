@@ -3,17 +3,16 @@ package io.github.cshunsinger.asmsauce.code.field;
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
-import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicStatic;
 import static java.util.Collections.singletonList;
@@ -34,22 +33,20 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void illegalArgumentException_nonStaticField() {
-        when(mockFieldDefinition.getFieldName()).thenReturn(DefinitionBuilders.name("testField"));
+        when(mockFieldDefinition.getFieldName()).thenReturn(name("testField"));
         when(mockFieldDefinition.getAccessModifiers()).thenReturn(publicOnly());
-        when(mockFieldDefinition.getFieldType()).thenReturn((TypeDefinition) DefinitionBuilders.type(String.class));
+        when(mockFieldDefinition.getFieldType()).thenReturn(type(String.class));
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> new GetStaticFieldInsn(mockFieldDefinition));
         assertThat(ex, hasProperty("message", is("This instruction only handles getting static fields. Field 'java.lang.String.testField' is not static.")));
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void illegalStateException_attemptingToGetStaticFieldFromPrimitiveType() {
         when(mockFieldDefinition.getAccessModifiers()).thenReturn(publicStatic());
-        when(mockFieldDefinition.getFieldOwner()).thenReturn((TypeDefinition) DefinitionBuilders.type(int.class));
-        when(mockFieldDefinition.completeDefinition(null, DefinitionBuilders.type(int.class))).thenReturn(mockFieldDefinition);
+        when(mockFieldDefinition.getFieldOwner()).thenReturn(type(int.class));
+        when(mockFieldDefinition.completeDefinition()).thenReturn(mockFieldDefinition);
 
         new MethodBuildingContext(null, null, null, new ArrayList<>());
 
@@ -59,10 +56,9 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void illegalStateException_attemptingToGetStaticFieldFromArrayType() {
         when(mockFieldDefinition.getAccessModifiers()).thenReturn(publicStatic());
-        when(mockFieldDefinition.getFieldOwner()).thenReturn((TypeDefinition) DefinitionBuilders.type(int[].class));
+        when(mockFieldDefinition.getFieldOwner()).thenReturn(type(int[].class));
 
         new MethodBuildingContext(null, null, null, new ArrayList<>());
 
@@ -89,13 +85,13 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
     @Test
     public void successfullyAccessStaticField() {
         AsmClassBuilder<StaticFieldsTestInterface> builder = new AsmClassBuilder<>(StaticFieldsTestInterface.class, Object.class, singletonList(StaticFieldsTestInterface.class), publicOnly())
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("getStringValue"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(String.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.getStatic(DefinitionBuilders.type(TestStaticFieldClass.class), DefinitionBuilders.name("ACCESSIBLE_STRING"), DefinitionBuilders.type(String.class))
+            .withMethod(method(publicOnly(), name("getStringValue"), noParameters(), type(String.class),
+                returnValue(
+                    getStatic(type(TestStaticFieldClass.class), name("ACCESSIBLE_STRING"), type(String.class))
                 )
             ));
 
@@ -106,13 +102,13 @@ class GetStaticFieldInsnTest extends BaseUnitTest {
     @Test
     public void accessStaticFieldWithImplicitFieldInformation() {
         AsmClassBuilder<StaticFieldsTestInterface> builder = new AsmClassBuilder<>(StaticFieldsTestInterface.class, Object.class, singletonList(StaticFieldsTestInterface.class), publicOnly())
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(Object.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("getStringValue"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(String.class),
-                CodeBuilders.returnValue(
-                    CodeBuilders.getStatic(MoreStaticFieldsInterface.class, "OUTSIDE_STRING")
+            .withMethod(method(publicOnly(), name("getStringValue"), noParameters(), type(String.class),
+                returnValue(
+                    getStatic(MoreStaticFieldsInterface.class, "OUTSIDE_STRING")
                 )
             ));
 

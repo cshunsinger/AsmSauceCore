@@ -12,7 +12,8 @@ import java.util.stream.Stream;
 @Getter
 public class ParametersDefinition {
     /**
-     * @return The list of parameters defined in this parameter set.
+     * The list of parameters defined in this parameter set.
+     * @return The list of parameters.
      */
     private final List<ParamDefinition> params;
 
@@ -21,7 +22,7 @@ public class ParametersDefinition {
      * unnamed and will have to be referenced as unnamed local variables.
      * @param paramTypes A list of type definitions. One type definition to represent each parameter.
      */
-    public ParametersDefinition(TypeDefinition<?>... paramTypes) {
+    public ParametersDefinition(TypeDefinition... paramTypes) {
         this(Stream.of(paramTypes).map(ParamDefinition::new).toArray(ParamDefinition[]::new));
     }
 
@@ -47,7 +48,7 @@ public class ParametersDefinition {
      * @param index The index of the parameter in the list to fetch the type.
      * @return The parameter type at the given index.
      */
-    public TypeDefinition<?> get(int index) {
+    public TypeDefinition get(int index) {
         return params.get(index).getParamType();
     }
 
@@ -55,9 +56,38 @@ public class ParametersDefinition {
      * Gets a list of parameter types for the defined parameters.
      * @return A list of parameter types.
      */
-    public List<TypeDefinition<?>> getParamTypes() {
+    public List<TypeDefinition> getParamTypes() {
         return params.stream()
             .map(ParamDefinition::getParamType)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * Gets whether another set of parameters match these parameters.
+     * Another set of parameters will match these parameters if the other parameter set has the same count of
+     * parameters as this set, and if all of the parameters in the other set are assignable to their adjacent
+     * parameter type in this set.
+     * @param other The other parameter set to test against this one.
+     * @return True if the other parameters match these, else false.
+     * @throws NullPointerException if 'other' is null.
+     */
+    public boolean matches(ParametersDefinition other) {
+        //If counts are different then no match
+        int count = this.count();
+        if(count != other.count())
+            return false;
+
+        //If any parameter type from the other set is not assignable to the adjacent parameter in this set
+        //then no match.
+        for(int i = 0; i < count; i++) {
+            TypeDefinition declared = this.get(i);
+            TypeDefinition actual = other.get(i);
+
+            if(!declared.isAssignableFrom(actual))
+                return false;
+        }
+
+        //The other parameter set matches this one
+        return true;
     }
 }

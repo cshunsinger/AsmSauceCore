@@ -12,12 +12,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.FieldNode.field;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.privateOnly;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -46,9 +47,9 @@ public class AsmClassBuilderTest extends BaseUnitTest {
 
         Constructor<AsmTestBaseType> baseConstructor = AsmTestBaseType.class.getConstructor(String.class);
 
-        asmClassBuilder.withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(String.class), //public AsmTestBaseType(String str1)
-            superConstructor(baseConstructor, CodeBuilders.getVar(1)), //super(str1);
-            CodeBuilders.returnVoid() //return;
+        asmClassBuilder.withConstructor(constructor(publicOnly(), parameters(String.class), //public AsmTestBaseType(String str1)
+            superConstructor(baseConstructor, getVar(1)), //super(str1);
+            returnVoid() //return;
         ));
 
         AsmTestBaseType instance = asmClassBuilder.buildInstance("Test String");
@@ -63,13 +64,13 @@ public class AsmClassBuilderTest extends BaseUnitTest {
         Constructor<AsmTestBaseType> baseConstructor = AsmTestBaseType.class.getConstructor(String.class);
 
         asmClassBuilder
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(String.class), //public AsmTestBaseType(String str1)
-                superConstructor(baseConstructor, CodeBuilders.getVar(1)), //super(str1);
-                CodeBuilders.returnVoid() //return;
+            .withConstructor(constructor(publicOnly(), parameters(String.class), //public AsmTestBaseType(String str1)
+                superConstructor(baseConstructor, getVar(1)), //super(str1);
+                returnVoid() //return;
             ))
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(), //public AsmTestBaseType()
-                thisConstructor(DefinitionBuilders.parameters(String.class), CodeBuilders.literalObj("Look ma! No hands!!")), //this("Look ma! No hands!!");
-                CodeBuilders.returnVoid() //return;
+            .withConstructor(constructor(publicOnly(), noParameters(), //public AsmTestBaseType()
+                thisConstructor(parameters(String.class), literalObj("Look ma! No hands!!")), //this("Look ma! No hands!!");
+                returnVoid() //return;
             ));
 
         AsmTestBaseType instanceArgs = asmClassBuilder.buildInstance("Testing With Constructor Params");
@@ -85,16 +86,16 @@ public class AsmClassBuilderTest extends BaseUnitTest {
         AsmClassBuilder<AsmTestBaseType> asmClassBuilder = new AsmClassBuilder<>(AsmTestBaseType.class);
 
         asmClassBuilder
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(String.class), //public AsmTestBaseType(String str1)
-                superConstructor(AsmTestBaseType.class, DefinitionBuilders.parameters(String.class), CodeBuilders.getVar(1)),  //super(str1);
-                CodeBuilders.returnVoid()                                                                               //return;
+            .withConstructor(constructor(publicOnly(), parameters(String.class), //public AsmTestBaseType(String str1)
+                superConstructor(AsmTestBaseType.class, parameters(String.class), getVar(1)),  //super(str1);
+                returnVoid()                                                                               //return;
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("getBaseString"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(String.class), //public String getBaseString()
-                CodeBuilders.returnValue( //return this.baseString.concat(this.baseString)
-                    CodeBuilders.this_()
-                        .getField(DefinitionBuilders.type(AsmTestBaseType.class), DefinitionBuilders.name("baseString"), DefinitionBuilders.type(String.class))
+            .withMethod(method(publicOnly(), name("getBaseString"), noParameters(), type(String.class), //public String getBaseString()
+                returnValue( //return this.baseString.concat(this.baseString)
+                    this_()
+                        .getField(type(AsmTestBaseType.class), name("baseString"), type(String.class))
                         .invoke(String.class, MethodUtils.getAccessibleMethod(String.class, "concat", String.class),
-                            CodeBuilders.this_().getField(DefinitionBuilders.type(AsmTestBaseType.class), DefinitionBuilders.name("baseString"), DefinitionBuilders.type(String.class))
+                            this_().getField(type(AsmTestBaseType.class), name("baseString"), type(String.class))
                         )
                 )
             ));
@@ -109,52 +110,52 @@ public class AsmClassBuilderTest extends BaseUnitTest {
         AsmClassBuilder<AsmTestInterface> asmClassBuilder = new AsmClassBuilder<>(
             AsmTestInterface.class, //The reference type used by the builder
             Object.class, //Generated class extends from Object.class
-            asList(AsmTestInterface.class), //Generate class implementing this interface
+            singletonList(AsmTestInterface.class), //Generate class implementing this interface
             publicOnly() //Generate public class
         );
 
         asmClassBuilder
-            .withField(field(privateOnly(), DefinitionBuilders.type(int.class), DefinitionBuilders.name("firstOperand")))
-            .withField(field(privateOnly(), DefinitionBuilders.type(int.class), DefinitionBuilders.name("secondOperand")))
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(), //public Constructor()
-                CodeBuilders.thisConstructor(DefinitionBuilders.parameters(int.class, int.class), //this(0, 0);
-                    CodeBuilders.literal(0),
-                    CodeBuilders.literal(0)
+            .withField(field(privateOnly(), type(int.class), name("firstOperand")))
+            .withField(field(privateOnly(), type(int.class), name("secondOperand")))
+            .withConstructor(constructor(publicOnly(), noParameters(), //public Constructor()
+                CodeBuilders.thisConstructor(parameters(int.class, int.class), //this(0, 0);
+                    literal(0),
+                    literal(0)
                 ),
-                CodeBuilders.returnVoid() //return;
+                returnVoid() //return;
             ))
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(int.class, int.class), //public Constructor(int first, int second)
-                CodeBuilders.superConstructor(Object.class, DefinitionBuilders.noParameters()), //super();
-                CodeBuilders.this_() //this.firstOperand = first;
-                    .assignField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("firstOperand"), DefinitionBuilders.type(int.class),
-                        CodeBuilders.getVar(1)
+            .withConstructor(constructor(publicOnly(), parameters(int.class, int.class), //public Constructor(int first, int second)
+                superConstructor(Object.class, noParameters()), //super();
+                this_() //this.firstOperand = first;
+                    .assignField(type(ThisClass.class), name("firstOperand"), type(int.class),
+                        getVar(1)
                     ),
-                CodeBuilders.this_() //this.secondOperand = second;
-                    .assignField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("secondOperand"), DefinitionBuilders.type(int.class),
-                        CodeBuilders.getVar(2)
+                this_() //this.secondOperand = second;
+                    .assignField(type(ThisClass.class), name("secondOperand"), type(int.class),
+                        getVar(2)
                     ),
-                CodeBuilders.returnVoid() //return;
+                returnVoid() //return;
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("setFirstOperand"), DefinitionBuilders.parameters(int.class), //public void setFirstOperand(int i)
-                CodeBuilders.this_() //this.firstOperand = i;
-                    .assignField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("firstOperand"), DefinitionBuilders.type(int.class),
-                        CodeBuilders.getVar(1)
+            .withMethod(method(publicOnly(), name("setFirstOperand"), parameters(int.class), //public void setFirstOperand(int i)
+                this_() //this.firstOperand = i;
+                    .assignField(type(ThisClass.class), name("firstOperand"), type(int.class),
+                        getVar(1)
                     ),
-                CodeBuilders.returnVoid() //return;
+                returnVoid() //return;
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("setSecondOperand"), DefinitionBuilders.parameters(int.class), //public void setSecondOperand(int i)
-                CodeBuilders.this_() //this.secondOperand = i;
-                    .assignField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("secondOperand"), DefinitionBuilders.type(int.class),
-                        CodeBuilders.getVar(1)
+            .withMethod(method(publicOnly(), name("setSecondOperand"), parameters(int.class), //public void setSecondOperand(int i)
+                this_() //this.secondOperand = i;
+                    .assignField(type(ThisClass.class), name("secondOperand"), type(int.class),
+                        getVar(1)
                     ),
-                CodeBuilders.returnVoid() //return;
+                returnVoid() //return;
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("getSum"), DefinitionBuilders.noParameters(), DefinitionBuilders.type(int.class),
-                CodeBuilders.returnValue( //return this.firstOperand + this.secondOperand;
-                    CodeBuilders.this_()
-                        .getField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("firstOperand"), DefinitionBuilders.type(int.class))
-                        .add(CodeBuilders.this_()
-                            .getField(DefinitionBuilders.type(ThisClass.class), DefinitionBuilders.name("secondOperand"), DefinitionBuilders.type(int.class))
+            .withMethod(method(publicOnly(), name("getSum"), noParameters(), type(int.class),
+                returnValue( //return this.firstOperand + this.secondOperand;
+                    this_()
+                        .getField(type(ThisClass.class), name("firstOperand"), type(int.class))
+                        .add(this_()
+                            .getField(type(ThisClass.class), name("secondOperand"), type(int.class))
                         )
                 )
             ));
@@ -186,9 +187,9 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     @DisplayName("Throw IllegalArgumentException if no constructor found in the generated class when instantiating.")
     public void throwExceptionWhenNoConstructorFoundForParameters() {
         AsmClassBuilder<AsmTestBaseType> builder = new AsmClassBuilder<>(AsmTestBaseType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(), //public NewAsmTestBaseType()
-                superConstructor(AsmTestBaseType.class, DefinitionBuilders.parameters(String.class), CodeBuilders.literalObj("Str")), //super("Str");
-                CodeBuilders.returnVoid() //return;
+            .withConstructor(constructor(publicOnly(), noParameters(), //public NewAsmTestBaseType()
+                superConstructor(AsmTestBaseType.class, parameters(String.class), literalObj("Str")), //super("Str");
+                returnVoid() //return;
             ));
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> builder.buildInstance("Parameter1", "Parameter2", "Parameter3"));
@@ -207,19 +208,19 @@ public class AsmClassBuilderTest extends BaseUnitTest {
         Method printlnMethod = MethodUtils.getAccessibleMethod(PrintStream.class, "println", String.class);
 
         AsmClassBuilder<StaticsTestType> builder = new AsmClassBuilder<>(StaticsTestType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(StaticsTestType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(StaticsTestType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("printText"), DefinitionBuilders.parameters(String.class),
-                CodeBuilders.getStatic(DefinitionBuilders.type(System.class), DefinitionBuilders.name("out"), DefinitionBuilders.type(PrintStream.class))
+            .withMethod(method(publicOnly(), name("printText"), parameters(String.class),
+                getStatic(type(System.class), name("out"), type(PrintStream.class))
                     .invoke(PrintStream.class, printlnMethod,
-                        CodeBuilders.getVar(1)
+                        getVar(1)
                     ),
-                CodeBuilders.setStatic(DefinitionBuilders.type(StaticsTestType.class), DefinitionBuilders.name("LAST_PRINTED"), DefinitionBuilders.type(String.class),
-                    CodeBuilders.getVar(1)
+                CodeBuilders.setStatic(type(StaticsTestType.class), name("LAST_PRINTED"), type(String.class),
+                    getVar(1)
                 ),
-                CodeBuilders.returnVoid()
+                returnVoid()
             ));
 
         StaticsTestType instance = builder.buildInstance();

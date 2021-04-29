@@ -5,8 +5,8 @@ import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.FieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.NameDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.name;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
 /**
@@ -20,7 +20,7 @@ public interface FieldAccessibleInstance extends CodeInsnBuilderLike {
      * @param fieldType The type of the field to access.
      * @return A code builder to generate the bytecode to access the value of a field of an instance on the jvm stack.
      */
-    default GetInstanceFieldInsn getField(TypeDefinition<?> fieldOwner, NameDefinition fieldName, TypeDefinition<?> fieldType) {
+    default GetInstanceFieldInsn getField(TypeDefinition fieldOwner, NameDefinition fieldName, TypeDefinition fieldType) {
         //access modifiers are irrelevant here
         GetInstanceFieldInsn f = new GetInstanceFieldInsn(new CompleteFieldDefinition(customAccess(0), fieldOwner, fieldName, fieldType));
         this.setNext(f);
@@ -46,6 +46,6 @@ public interface FieldAccessibleInstance extends CodeInsnBuilderLike {
      * @return A code builder to generate the bytecode to access the value of a field of an instance on the jvm stack.
      */
     default GetInstanceFieldInsn getField(String fieldName) {
-        return getField(DefinitionBuilders.name(fieldName));
+        return getField(name(fieldName));
     }
 }

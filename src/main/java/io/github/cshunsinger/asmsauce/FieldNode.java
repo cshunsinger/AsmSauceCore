@@ -9,6 +9,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.ClassUtils;
 
 import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static java.util.Arrays.asList;
 
 /**
@@ -87,8 +88,8 @@ public class FieldNode {
      * @see ClassBuildingContext
      */
     public void build() {
-        TypeDefinition<ThisClass> updatedOwnerType = TypeDefinition.fromCustomJvmName(context().getJvmTypeName());
-        TypeDefinition<?> updatedFieldType = fieldDefinition.getFieldType().getType() == ThisClass.class ?
+        TypeDefinition updatedOwnerType = TypeDefinition.fromClass(ThisClass.class);
+        TypeDefinition updatedFieldType = fieldDefinition.getFieldType().getType() == ThisClass.class ?
             updatedOwnerType :
             fieldDefinition.getFieldType();
 
@@ -121,9 +122,9 @@ public class FieldNode {
      * @return A new field node.
      */
     public static FieldNode field(AccessModifiers accessModifiers,
-                                  TypeDefinition<?> type,
+                                  TypeDefinition type,
                                   NameDefinition name) {
-        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers, DefinitionBuilders.type(ThisClass.class), name, type);
+        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers, type(ThisClass.class), name, type);
         return new FieldNode(fd);
     }
 
@@ -137,7 +138,7 @@ public class FieldNode {
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   int initialValue) {
-        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), DefinitionBuilders.type(ThisClass.class), name, DefinitionBuilders.type(int.class));
+        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), type(ThisClass.class), name, type(int.class));
         return new FieldNode(fd, initialValue);
     }
 
@@ -151,7 +152,7 @@ public class FieldNode {
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   long initialValue) {
-        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), DefinitionBuilders.type(ThisClass.class), name, DefinitionBuilders.type(long.class));
+        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), type(ThisClass.class), name, type(long.class));
         return new FieldNode(fd, initialValue);
     }
 
@@ -165,7 +166,7 @@ public class FieldNode {
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   float initialValue) {
-        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), DefinitionBuilders.type(ThisClass.class), name, DefinitionBuilders.type(float.class));
+        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), type(ThisClass.class), name, type(float.class));
         return new FieldNode(fd, initialValue);
     }
 
@@ -179,7 +180,7 @@ public class FieldNode {
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   double initialValue) {
-        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), DefinitionBuilders.type(ThisClass.class), name, DefinitionBuilders.type(double.class));
+        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), type(ThisClass.class), name, type(double.class));
         return new FieldNode(fd, initialValue);
     }
 
@@ -193,7 +194,7 @@ public class FieldNode {
     public static FieldNode field(AccessModifiers accessModifiers,
                                   NameDefinition name,
                                   String initialValue) {
-        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), DefinitionBuilders.type(ThisClass.class), name, DefinitionBuilders.type(String.class));
+        CompleteFieldDefinition fd = new CompleteFieldDefinition(accessModifiers.withStatic(), type(ThisClass.class), name, type(String.class));
         return new FieldNode(fd, initialValue);
     }
 }

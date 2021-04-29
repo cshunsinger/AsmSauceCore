@@ -4,13 +4,12 @@ import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
-import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicStatic;
@@ -41,11 +40,10 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void illegalArgumentException_instanceField() {
         when(mockFieldDefinition.getAccessModifiers()).thenReturn(publicOnly());
-        when(mockFieldDefinition.getFieldType()).thenReturn((TypeDefinition) DefinitionBuilders.type(String.class));
-        when(mockFieldDefinition.getFieldName()).thenReturn(DefinitionBuilders.name("FieldName"));
+        when(mockFieldDefinition.getFieldType()).thenReturn(type(String.class));
+        when(mockFieldDefinition.getFieldName()).thenReturn(name("FieldName"));
 
         test_illegalArgumentException_base(mockFieldDefinition, mockCodeBuilder,
             "This instruction only handles assigning static fields. Field 'java.lang.String.FieldName' is not static."
@@ -60,13 +58,11 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public void illegalStateException_codeBuilderDoesNotPlaceExactlyOneElementOntoTheStack() {
         MethodBuildingContext methodContext = new MethodBuildingContext(null, null, null, emptyList());
-        methodContext.pushStack(DefinitionBuilders.type(Object.class));
+        methodContext.pushStack(type(Object.class));
 
         when(mockFieldDefinition.getAccessModifiers()).thenReturn(publicStatic());
-        when(mockFieldDefinition.getFieldOwner()).thenReturn((TypeDefinition) DefinitionBuilders.type(String.class));
         when(mockCodeBuilder.getFirstInStack()).thenReturn(mockCodeBuilder);
         doAnswer(i -> null).when(mockCodeBuilder).build();
 
@@ -77,17 +73,12 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_attemptingToAccessStaticFieldOfAnArray() {
-        AsmClassBuilder<Object> builder = new AsmClassBuilder<>(Object.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                superConstructor(DefinitionBuilders.type(Object.class), DefinitionBuilders.noParameters()),
-                setStatic(DefinitionBuilders.type(int[].class), DefinitionBuilders.name("length"), DefinitionBuilders.type(int.class),
-                    literal(123)
-                ),
-                returnVoid()
-            ));
-
-        IllegalStateException ex = assertThrows(IllegalStateException.class, builder::build);
-        assertThat(ex, hasProperty("message", is("Cannot access static field from array type int[].")));
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
+            setStatic(type(int[].class), name("length"), type(int.class),
+                literal(123)
+            )
+        );
+        assertThat(ex, hasProperty("message", is("Field owner cannot be void, primitive, or an array type.")));
     }
 
     public static class TestStaticFieldsModifiable {
@@ -97,9 +88,9 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
     @Test
     public void successfullyAssignStaticField() {
         AsmClassBuilder<TestStaticFieldsModifiable> builder = new AsmClassBuilder<>(TestStaticFieldsModifiable.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(String.class),
-                superConstructor(DefinitionBuilders.type(TestStaticFieldsModifiable.class), DefinitionBuilders.noParameters()),
-                setStatic(DefinitionBuilders.type(TestStaticFieldsModifiable.class), DefinitionBuilders.name("MODIFIABLE_STRING"), DefinitionBuilders.type(String.class),
+            .withConstructor(constructor(publicOnly(), parameters(String.class),
+                superConstructor(type(TestStaticFieldsModifiable.class), noParameters()),
+                setStatic(type(TestStaticFieldsModifiable.class), name("MODIFIABLE_STRING"), type(String.class),
                     getVar(1)
                 ),
                 returnVoid()
@@ -113,8 +104,8 @@ class AssignStaticFieldInsnTest extends BaseUnitTest {
     @Test
     public void successfullyAssignStaticField_implicitFieldData() {
         AsmClassBuilder<TestStaticFieldsModifiable> builder = new AsmClassBuilder<>(TestStaticFieldsModifiable.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.parameters(String.class),
-                superConstructor(DefinitionBuilders.type(TestStaticFieldsModifiable.class), DefinitionBuilders.noParameters()),
+            .withConstructor(constructor(publicOnly(), parameters(String.class),
+                superConstructor(type(TestStaticFieldsModifiable.class), noParameters()),
                 setStatic(TestStaticFieldsModifiable.class, "MODIFIABLE_STRING",
                     getVar(1)
                 ),

@@ -153,7 +153,7 @@ public class AsmClassBuilder<T> {
             new DynamicClassLoader(parentClassLoader),
             new ClassWriter(COMPUTE_FRAMES | COMPUTE_MAXS),
             instanceType,
-            interfaces,
+            interfaces == null ? emptyList() : interfaces,
             superclass,
             classModifiers
         );

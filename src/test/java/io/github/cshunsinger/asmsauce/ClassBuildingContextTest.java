@@ -2,6 +2,7 @@ package io.github.cshunsinger.asmsauce;
 
 import org.junit.jupiter.api.Test;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -18,7 +19,7 @@ class ClassBuildingContextTest {
 
     @Test
     public void accessClassBuildingContext_whenOneExistsAndIsActive() {
-        ClassBuildingContext context = new ClassBuildingContext(null, null, null, null, null, null, null);
+        ClassBuildingContext context = new ClassBuildingContext(null, null, null, emptyList(), null, null, null);
         assertThat(ClassBuildingContext.context(), is(context));
         ClassBuildingContext.reset();
     }

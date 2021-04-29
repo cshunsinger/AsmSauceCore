@@ -7,7 +7,6 @@ import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,6 +15,7 @@ import org.mockito.Mock;
 
 import java.util.stream.Stream;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static org.objectweb.asm.Opcodes.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static java.util.Collections.emptyList;
@@ -29,13 +29,13 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
     @Mock
     private MethodVisitor mockMethodVisitor;
 
-    private static final CompleteMethodDefinition<?, ?> methodDefinition = new CompleteMethodDefinition<>(
-        DefinitionBuilders.type(ThisClass.class),
+    private static final CompleteMethodDefinition methodDefinition = new CompleteMethodDefinition(
+        type(ThisClass.class),
         publicOnly(),
-        DefinitionBuilders.name("newMethodName"),
-        DefinitionBuilders.voidType(),
-        DefinitionBuilders.noParameters(),
-        DefinitionBuilders.noThrows()
+        name("newMethodName"),
+        voidType(),
+        noParameters(),
+        noThrows()
     );
 
     @Test
@@ -46,7 +46,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
 
     @Test
     public void illegalStateException_nothingOnStackToImplicitlyConvert() {
-        ImplicitConversionInsn insn = new ImplicitConversionInsn(DefinitionBuilders.type(String.class));
+        ImplicitConversionInsn insn = new ImplicitConversionInsn(type(String.class));
 
         new MethodBuildingContext(null, null, null, emptyList());
 
@@ -57,12 +57,12 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
 
     @Test
     public void success_implicitConversionToAssignableType() {
-        TypeDefinition<?> testToType = DefinitionBuilders.type(Object.class);
+        TypeDefinition testToType = type(Object.class);
         ImplicitConversionInsn insn = new ImplicitConversionInsn(testToType);
 
-        ClassBuildingContext classContext = new ClassBuildingContext(null, null, null, null, null, null, null);
+        ClassBuildingContext classContext = new ClassBuildingContext(null, null, null, emptyList(), null, null, null);
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, methodDefinition, classContext, emptyList());
-        methodContext.pushStack(DefinitionBuilders.type(String.class));
+        methodContext.pushStack(type(String.class));
 
         insn.build();
 
@@ -74,11 +74,11 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
 
     @Test
     public void success_noCastRequired() {
-        TypeDefinition<?> testToType = DefinitionBuilders.type(Object.class);
+        TypeDefinition testToType = type(Object.class);
         ImplicitConversionInsn insn = new ImplicitConversionInsn(testToType);
 
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
-        methodContext.pushStack(DefinitionBuilders.type(Object.class));
+        methodContext.pushStack(type(Object.class));
 
         insn.build();
 
@@ -88,7 +88,7 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
 
     @ParameterizedTest
     @MethodSource("illegalStateException_cannotImplicitlyConvertReferenceType_testArguments")
-    public void illegalStateException_cannotImplicitlyConvertReferenceTypes(TypeDefinition<?> testFromType, TypeDefinition<?> testToType) {
+    public void illegalStateException_cannotImplicitlyConvertReferenceTypes(TypeDefinition testFromType, TypeDefinition testToType) {
         ImplicitConversionInsn insn = new ImplicitConversionInsn(testToType);
 
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, null, null, emptyList());
@@ -102,20 +102,20 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
 
     private static Stream<Arguments> illegalStateException_cannotImplicitlyConvertReferenceType_testArguments() {
         return Stream.of(
-            Arguments.of(DefinitionBuilders.type(Object.class), DefinitionBuilders.type(String.class)),
-            Arguments.of(DefinitionBuilders.type(int.class), DefinitionBuilders.type(Float.class)),
-            Arguments.of(DefinitionBuilders.type(double.class), DefinitionBuilders.type(float.class)),
-            Arguments.of(DefinitionBuilders.type(float.class), DefinitionBuilders.type(byte.class))
+            Arguments.of(type(Object.class), type(String.class)),
+            Arguments.of(type(int.class), type(Float.class)),
+            Arguments.of(type(double.class), type(float.class)),
+            Arguments.of(type(float.class), type(byte.class))
         );
     }
 
     @Test
     public void success_implicitAutoBoxingPrimitiveToWrapper() {
-        TypeDefinition<?> testToType = DefinitionBuilders.type(Integer.class);
+        TypeDefinition testToType = type(Integer.class);
         ImplicitConversionInsn insn = new ImplicitConversionInsn(testToType);
 
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, methodDefinition, null, emptyList());
-        methodContext.pushStack(DefinitionBuilders.type(int.class));
+        methodContext.pushStack(type(int.class));
 
         insn.build();
 
@@ -133,8 +133,8 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
 
     @Test
     public void success_implicitAutoUnboxingWrapperToPrimitive() {
-        TypeDefinition<?> testToType = DefinitionBuilders.type(int.class);
-        TypeDefinition<?> testFromType = DefinitionBuilders.type(Integer.class);
+        TypeDefinition testToType = type(int.class);
+        TypeDefinition testFromType = type(Integer.class);
         ImplicitConversionInsn insn = new ImplicitConversionInsn(testToType);
 
         MethodBuildingContext methodContext = new MethodBuildingContext(mockMethodVisitor, methodDefinition, null, emptyList());
@@ -156,8 +156,8 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
 
     @ParameterizedTest
     @MethodSource("success_implicitWideningCastOfPrimitiveToPrimitive_testArguments")
-    public void success_implicitWideningCastOfPrimitiveToPrimitive(TypeDefinition<?> testFromType,
-                                                                   TypeDefinition<?> testToType,
+    public void success_implicitWideningCastOfPrimitiveToPrimitive(TypeDefinition testFromType,
+                                                                   TypeDefinition testToType,
                                                                    Integer expectedInstruction) {
         ImplicitConversionInsn insn = new ImplicitConversionInsn(testToType);
 
@@ -176,41 +176,41 @@ class ImplicitConversionInsnTest extends BaseUnitTest {
     private static Stream<Arguments> success_implicitWideningCastOfPrimitiveToPrimitive_testArguments() {
         return Stream.of(
             //From byte
-            Arguments.of(DefinitionBuilders.type(byte.class), DefinitionBuilders.type(byte.class), null),
-            Arguments.of(DefinitionBuilders.type(byte.class), DefinitionBuilders.type(short.class), null),
-            Arguments.of(DefinitionBuilders.type(byte.class), DefinitionBuilders.type(char.class), null),
-            Arguments.of(DefinitionBuilders.type(byte.class), DefinitionBuilders.type(int.class), null),
-            Arguments.of(DefinitionBuilders.type(byte.class), DefinitionBuilders.type(long.class), I2L),
-            Arguments.of(DefinitionBuilders.type(byte.class), DefinitionBuilders.type(float.class), I2F),
-            Arguments.of(DefinitionBuilders.type(byte.class), DefinitionBuilders.type(double.class), I2D),
+            Arguments.of(type(byte.class), type(byte.class), null),
+            Arguments.of(type(byte.class), type(short.class), null),
+            Arguments.of(type(byte.class), type(char.class), null),
+            Arguments.of(type(byte.class), type(int.class), null),
+            Arguments.of(type(byte.class), type(long.class), I2L),
+            Arguments.of(type(byte.class), type(float.class), I2F),
+            Arguments.of(type(byte.class), type(double.class), I2D),
             //From short
-            Arguments.of(DefinitionBuilders.type(short.class), DefinitionBuilders.type(short.class), null),
-            Arguments.of(DefinitionBuilders.type(short.class), DefinitionBuilders.type(char.class), null),
-            Arguments.of(DefinitionBuilders.type(short.class), DefinitionBuilders.type(int.class), null),
-            Arguments.of(DefinitionBuilders.type(short.class), DefinitionBuilders.type(long.class), I2L),
-            Arguments.of(DefinitionBuilders.type(short.class), DefinitionBuilders.type(float.class), I2F),
-            Arguments.of(DefinitionBuilders.type(short.class), DefinitionBuilders.type(double.class), I2D),
+            Arguments.of(type(short.class), type(short.class), null),
+            Arguments.of(type(short.class), type(char.class), null),
+            Arguments.of(type(short.class), type(int.class), null),
+            Arguments.of(type(short.class), type(long.class), I2L),
+            Arguments.of(type(short.class), type(float.class), I2F),
+            Arguments.of(type(short.class), type(double.class), I2D),
             //From char
-            Arguments.of(DefinitionBuilders.type(char.class), DefinitionBuilders.type(short.class), null),
-            Arguments.of(DefinitionBuilders.type(char.class), DefinitionBuilders.type(char.class), null),
-            Arguments.of(DefinitionBuilders.type(char.class), DefinitionBuilders.type(int.class), null),
-            Arguments.of(DefinitionBuilders.type(char.class), DefinitionBuilders.type(long.class), I2L),
-            Arguments.of(DefinitionBuilders.type(char.class), DefinitionBuilders.type(float.class), I2F),
-            Arguments.of(DefinitionBuilders.type(char.class), DefinitionBuilders.type(double.class), I2D),
+            Arguments.of(type(char.class), type(short.class), null),
+            Arguments.of(type(char.class), type(char.class), null),
+            Arguments.of(type(char.class), type(int.class), null),
+            Arguments.of(type(char.class), type(long.class), I2L),
+            Arguments.of(type(char.class), type(float.class), I2F),
+            Arguments.of(type(char.class), type(double.class), I2D),
             //From int
-            Arguments.of(DefinitionBuilders.type(int.class), DefinitionBuilders.type(int.class), null),
-            Arguments.of(DefinitionBuilders.type(int.class), DefinitionBuilders.type(long.class), I2L),
-            Arguments.of(DefinitionBuilders.type(int.class), DefinitionBuilders.type(float.class), I2F),
-            Arguments.of(DefinitionBuilders.type(int.class), DefinitionBuilders.type(double.class), I2D),
+            Arguments.of(type(int.class), type(int.class), null),
+            Arguments.of(type(int.class), type(long.class), I2L),
+            Arguments.of(type(int.class), type(float.class), I2F),
+            Arguments.of(type(int.class), type(double.class), I2D),
             //From long
-            Arguments.of(DefinitionBuilders.type(long.class), DefinitionBuilders.type(long.class), null),
-            Arguments.of(DefinitionBuilders.type(long.class), DefinitionBuilders.type(float.class), L2F),
-            Arguments.of(DefinitionBuilders.type(long.class), DefinitionBuilders.type(double.class), L2D),
+            Arguments.of(type(long.class), type(long.class), null),
+            Arguments.of(type(long.class), type(float.class), L2F),
+            Arguments.of(type(long.class), type(double.class), L2D),
             //From float
-            Arguments.of(DefinitionBuilders.type(float.class), DefinitionBuilders.type(float.class), null),
-            Arguments.of(DefinitionBuilders.type(float.class), DefinitionBuilders.type(double.class), F2D),
+            Arguments.of(type(float.class), type(float.class), null),
+            Arguments.of(type(float.class), type(double.class), F2D),
             //From double
-            Arguments.of(DefinitionBuilders.type(double.class), DefinitionBuilders.type(double.class), null)
+            Arguments.of(type(double.class), type(double.class), null)
         );
     }
 }

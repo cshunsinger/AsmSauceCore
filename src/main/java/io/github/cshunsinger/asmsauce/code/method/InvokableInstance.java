@@ -2,9 +2,11 @@ package io.github.cshunsinger.asmsauce.code.method;
 
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.NameDefinition;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
 import java.lang.reflect.Method;
+
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.name;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 
 /**
  * Interface representing any code builder which is capable of stacking a reference value which can have an instance
@@ -19,7 +21,7 @@ public interface InvokableInstance extends CodeInsnBuilderLike {
      * @return A code builder which generates bytecode to invoke a method against an object instance.
      */
     default InvokeInstanceMethodInsn invoke(Class<?> thisType, Method method, CodeInsnBuilderLike... codeBuilders) {
-        InvokeInstanceMethodInsn i = new InvokeInstanceMethodInsn(DefinitionBuilders.type(thisType), method, codeBuilders);
+        InvokeInstanceMethodInsn i = new InvokeInstanceMethodInsn(type(thisType), method, codeBuilders);
         this.setNext(i);
         i.setPrev(this);
         return i;
@@ -45,6 +47,6 @@ public interface InvokableInstance extends CodeInsnBuilderLike {
      * @return A code builder which generates bytecode to invoke a method against an object instance.
      */
     default InvokeInstanceMethodInsn invoke(String methodName, CodeInsnBuilderLike... codeBuilders) {
-        return invoke(DefinitionBuilders.name(methodName), codeBuilders);
+        return invoke(name(methodName), codeBuilders);
     }
 }

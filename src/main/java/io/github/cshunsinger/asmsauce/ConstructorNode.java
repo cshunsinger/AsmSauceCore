@@ -9,22 +9,24 @@ import io.github.cshunsinger.asmsauce.definitions.ThrowsDefinition;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import org.apache.commons.lang3.ArrayUtils;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
+
 /**
  * Represents a constructor being built on a new class.
  * This class defines the constructor parameters as well as the code body of the constructor in the class being generated.
  */
 public class ConstructorNode extends MethodNode {
     private ConstructorNode(AccessModifiers modifiers,
-                           ParametersDefinition parameters,
-                           ThrowsDefinition throwsDefinition,
-                           InvokeBaseConstructorInsn superInvoker,
-                           CodeInsnBuilderLike... constructorBody) {
+                            ParametersDefinition parameters,
+                            ThrowsDefinition throwsDefinition,
+                            InvokeBaseConstructorInsn superInvoker,
+                            CodeInsnBuilderLike... constructorBody) {
         super(
-            new CompleteMethodDefinition<>(
-                DefinitionBuilders.type(ThisClass.class),
+            new CompleteMethodDefinition(
+                type(ThisClass.class),
                 validateModifiers(modifiers),
-                DefinitionBuilders.name("<init>"),
-                DefinitionBuilders.voidType(),
+                name("<init>"),
+                voidType(),
                 parameters,
                 throwsDefinition
             ),
@@ -60,7 +62,7 @@ public class ConstructorNode extends MethodNode {
                                               ParametersDefinition parameters,
                                               InvokeBaseConstructorInsn superInvoker,
                                               CodeInsnBuilder... constructorBody) {
-        return constructor(modifiers, parameters, DefinitionBuilders.noThrows(), superInvoker, constructorBody);
+        return constructor(modifiers, parameters, noThrows(), superInvoker, constructorBody);
     }
 
     /**

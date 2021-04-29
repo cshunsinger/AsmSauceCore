@@ -11,10 +11,10 @@ import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import io.github.cshunsinger.asmsauce.definitions.MethodDefinition;
 import io.github.cshunsinger.asmsauce.definitions.NameDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 
 import java.lang.reflect.Method;
 
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 
 /**
@@ -30,15 +30,14 @@ public class InvokeInstanceMethodInsn extends InvocationInsn implements
      * @param method The method to call.
      * @param codeBuilders The code builders to stack the values to pass as parameters to the method.
      */
-    @SuppressWarnings("unchecked")
-    public InvokeInstanceMethodInsn(TypeDefinition<?> thisType, Method method, CodeInsnBuilderLike... codeBuilders) {
-        super(new CompleteMethodDefinition<>(
+    public InvokeInstanceMethodInsn(TypeDefinition thisType, Method method, CodeInsnBuilderLike... codeBuilders) {
+        super(new CompleteMethodDefinition(
             thisType,
             customAccess(validateMethod(method).getModifiers()),
-            DefinitionBuilders.name(method.getName()),
-            DefinitionBuilders.type(method.getReturnType()),
-            DefinitionBuilders.parameters(method.getParameterTypes()),
-            DefinitionBuilders.throwing((Class<? extends Exception>[])method.getExceptionTypes())
+            name(method.getName()),
+            type(method.getReturnType()),
+            parameters(method.getParameterTypes()),
+            throwing(method.getExceptionTypes())
         ), codeBuilders);
     }
 
@@ -48,7 +47,7 @@ public class InvokeInstanceMethodInsn extends InvocationInsn implements
      * @param codeBuilders The code builders to stack the values to pass as parameters to the method.
      */
     public InvokeInstanceMethodInsn(NameDefinition methodName, CodeInsnBuilderLike... codeBuilders) {
-        super(new MethodDefinition<>(null, null, methodName, null, null, null), codeBuilders);
+        super(new MethodDefinition(null, null, methodName, null, null, null), codeBuilders);
     }
 
     private static Method validateMethod(Method method) {

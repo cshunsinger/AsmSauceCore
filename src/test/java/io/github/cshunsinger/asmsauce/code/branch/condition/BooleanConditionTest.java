@@ -2,12 +2,12 @@ package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
@@ -22,15 +22,15 @@ public class BooleanConditionTest extends BaseUnitTest {
     @Test
     public void booleanIfTrueCondition() {
         AsmClassBuilder<TestWithBooleansType> builder = new AsmClassBuilder<>(TestWithBooleansType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestWithBooleansType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestWithBooleansType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("caseString"), DefinitionBuilders.parameters(DefinitionBuilders.p("inputString", String.class), DefinitionBuilders.p("lowercase", boolean.class)), DefinitionBuilders.type(String.class),
-                CodeBuilders.if_(CodeBuilders.getVar("lowercase").isTrue()).then(
-                    CodeBuilders.returnValue(CodeBuilders.getVar("inputString").invoke("toLowerCase"))
+            .withMethod(method(publicOnly(), name("caseString"), parameters(p("inputString", String.class), p("lowercase", boolean.class)), type(String.class),
+                if_(getVar("lowercase").isTrue()).then(
+                    returnValue(getVar("inputString").invoke("toLowerCase"))
                 ),
-                CodeBuilders.returnValue(CodeBuilders.getVar("inputString"))
+                returnValue(getVar("inputString"))
             ));
 
         TestWithBooleansType instance = builder.buildInstance();
@@ -41,15 +41,15 @@ public class BooleanConditionTest extends BaseUnitTest {
     @Test
     public void booleanIfFalseCondition() {
         AsmClassBuilder<TestWithBooleansType> builder = new AsmClassBuilder<>(TestWithBooleansType.class)
-            .withConstructor(constructor(publicOnly(), DefinitionBuilders.noParameters(),
-                CodeBuilders.superConstructor(TestWithBooleansType.class, DefinitionBuilders.noParameters()),
-                CodeBuilders.returnVoid()
+            .withConstructor(constructor(publicOnly(), noParameters(),
+                superConstructor(TestWithBooleansType.class, noParameters()),
+                returnVoid()
             ))
-            .withMethod(method(publicOnly(), DefinitionBuilders.name("caseString"), DefinitionBuilders.parameters(DefinitionBuilders.p("inputString", String.class), DefinitionBuilders.p("uppercase", boolean.class)), DefinitionBuilders.type(String.class),
-                CodeBuilders.if_(CodeBuilders.getVar("uppercase").isFalse()).then(
-                    CodeBuilders.returnValue(CodeBuilders.getVar("inputString"))
+            .withMethod(method(publicOnly(), name("caseString"), parameters(p("inputString", String.class), p("uppercase", boolean.class)), type(String.class),
+                if_(getVar("uppercase").isFalse()).then(
+                    returnValue(getVar("inputString"))
                 ),
-                CodeBuilders.returnValue(CodeBuilders.getVar("inputString").invoke("toUpperCase"))
+                returnValue(getVar("inputString").invoke("toUpperCase"))
             ));
 
         TestWithBooleansType instance = builder.buildInstance();

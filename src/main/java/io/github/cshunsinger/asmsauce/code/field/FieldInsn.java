@@ -41,7 +41,7 @@ public abstract class FieldInsn extends CodeInsnBuilder {
      */
     protected void generateBytecode() {
         //pop instance from the stack before fetching the field
-        TypeDefinition<?> fieldContainerType = determineFieldOwner(context().getTypeStack());
+        TypeDefinition fieldContainerType = determineFieldOwner(context().getTypeStack());
 
         Class<?> fieldContainerClass = fieldContainerType.getType();
         if(fieldContainerClass.isPrimitive()) {
@@ -79,7 +79,7 @@ public abstract class FieldInsn extends CodeInsnBuilder {
      * bytecode operations being generated.
      * @param typeStack The type stack to be updated.
      */
-    protected abstract void performTypeStackChanges(Stack<TypeDefinition<?>> typeStack);
+    protected abstract void performTypeStackChanges(Stack<TypeDefinition> typeStack);
 
     /**
      * Gets the opcode to use for accessing a field.
@@ -92,5 +92,5 @@ public abstract class FieldInsn extends CodeInsnBuilder {
      * @param typeStack A type stack.
      * @return The type definition of the instance type that owns the field being used.
      */
-    protected abstract TypeDefinition<?> determineFieldOwner(Stack<TypeDefinition<?>> typeStack);
+    protected abstract TypeDefinition determineFieldOwner(Stack<TypeDefinition> typeStack);
 }

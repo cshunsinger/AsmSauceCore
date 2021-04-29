@@ -16,15 +16,15 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefinitionBuilders {
-    private static final TypeDefinition<?>[] NO_TYPES = new TypeDefinition<?>[] {};
+    private static final TypeDefinition[] NO_TYPES = new TypeDefinition[] {};
     @SuppressWarnings("unchecked")
-    private static final TypeDefinition<? extends Exception>[] NO_EXCEPTION_TYPES = new TypeDefinition[] {};
+    private static final TypeDefinition[] NO_EXCEPTION_TYPES = new TypeDefinition[] {};
 
     /**
      * Creates a name definition with a given String as the name.
      * @param name The String to create a name definition for.
      * @return A new name definition containing the String name provided.
-     * @see NameDefinition {@link NameDefinition}
+     * @see NameDefinition
      */
     public static NameDefinition name(String name) {
         return new NameDefinition(name);
@@ -35,9 +35,9 @@ public class DefinitionBuilders {
      * @param name The name of the parameter to define.
      * @param type The class type of the parameter to define.
      * @return A new parameter definition containing the parameter name and type.
-     * @see ParamDefinition {@link ParamDefinition}
-     * @see ParametersDefinition {@link ParametersDefinition}
-     * @see #p(String, TypeDefinition) {@link #p(String, TypeDefinition)} Called by this method.
+     * @see ParamDefinition
+     * @see ParametersDefinition
+     * @see #p(String, TypeDefinition)
      */
     public static ParamDefinition p(String name, Class<?> type) {
         return p(name, type(type));
@@ -48,11 +48,11 @@ public class DefinitionBuilders {
      * @param name The name of the parameter to define.
      * @param type The type definition of the parameter to define.
      * @return A new parameter definition containing the parameter name and type.
-     * @see ParamDefinition {@link ParamDefinition}
-     * @see ParametersDefinition {@link ParametersDefinition}
-     * @see #p(String, Class) {@link #p(String, Class)} Overload which takes a Class instead of a TypeDefinition.
+     * @see ParamDefinition
+     * @see ParametersDefinition
+     * @see #p(String, Class)
      */
-    public static ParamDefinition p(String name, TypeDefinition<?> type) {
+    public static ParamDefinition p(String name, TypeDefinition type) {
         return new ParamDefinition(name, type);
     }
 
@@ -60,11 +60,11 @@ public class DefinitionBuilders {
      * Creates a parameters definition, which defines the parameters for a method being generated or called explicitly.
      * @param params The parameter definitions of the parameters being defined.
      * @return A definition of all the listed parameters.
-     * @see ParamDefinition {@link ParamDefinition}
-     * @see ParametersDefinition {@link ParametersDefinition}
-     * @see #parameters(Class...) {@link #parameters(Class...)} To define unnamed parameters from classes.
-     * @see #parameters(TypeDefinition...) {@link #parameters(TypeDefinition...)} To define unnamed parameters from type definitions.
-     * @see #noParameters() {@link #noParameters()} To define an empty parameter set. Useful for methods that contain no parameters.
+     * @see ParamDefinition
+     * @see ParametersDefinition
+     * @see #parameters(Class...)
+     * @see #parameters(TypeDefinition...)
+     * @see #noParameters()
      */
     public static ParametersDefinition parameters(ParamDefinition... params) {
         return new ParametersDefinition(params);
@@ -77,13 +77,13 @@ public class DefinitionBuilders {
      * defined for a method being invoked in the bytecode, but can matter for a method being generated.
      * @param paramTypes The type definitions of the parameters being defined.
      * @return A definition defining a list of nameless parameters.
-     * @see ParamDefinition {@link ParamDefinition}
-     * @see ParametersDefinition {@link ParametersDefinition}
-     * @see #parameters(Class...) {@link #parameters(Class...)} To define unnamed parameters from classes.
-     * @see #parameters(ParamDefinition...) {@link #parameters(ParamDefinition...)} To define named parameters.
-     * @see #noParameters() {@link #noParameters()} To define an empty parameter set. Useful for methods that contain no parameters.
+     * @see ParamDefinition
+     * @see ParametersDefinition
+     * @see #parameters(Class...)
+     * @see #parameters(ParamDefinition...)
+     * @see #noParameters()
      */
-    public static ParametersDefinition parameters(TypeDefinition<?>... paramTypes) {
+    public static ParametersDefinition parameters(TypeDefinition... paramTypes) {
         return new ParametersDefinition(paramTypes);
     }
 
@@ -94,11 +94,11 @@ public class DefinitionBuilders {
      * defined for a method being invoked in the bytecode, but can matter for a method being generated.
      * @param paramTypes The classes of the parameters being defined.
      * @return A definition defining a list of nameless parameters.
-     * @see ParamDefinition {@link ParamDefinition}
-     * @see ParametersDefinition {@link ParametersDefinition}
-     * @see #parameters(TypeDefinition...) {@link #parameters(TypeDefinition...)} To define unnamed parameters from type definitions.
-     * @see #parameters(ParamDefinition...) {@link #parameters(ParamDefinition...)} To define named parameters.
-     * @see #noParameters() {@link #noParameters()} To define an empty parameter set. Useful for methods that contain no parameters.
+     * @see ParamDefinition
+     * @see ParametersDefinition
+     * @see #parameters(TypeDefinition...)
+     * @see #parameters(ParamDefinition...)
+     * @see #noParameters()
      */
     public static ParametersDefinition parameters(Class<?>... paramTypes) {
         return parameters(TypeDefinition.typesFromClasses(paramTypes));
@@ -107,11 +107,11 @@ public class DefinitionBuilders {
     /**
      * Defines an empty parameter set. That is: a parameters definition containing no parameters.
      * @return An empty parameters definition.
-     * @see ParamDefinition {@link ParamDefinition}
-     * @see ParametersDefinition {@link ParametersDefinition}
-     * @see #parameters(ParamDefinition...) {@link #parameters(ParamDefinition...)} To define named parameters.
-     * @see #parameters(Class...) {@link #parameters(Class...)} To define unnamed parameters from classes.
-     * @see #parameters(TypeDefinition...) {@link #parameters(TypeDefinition...)} To define unnamed parameters from type definitions.
+     * @see ParamDefinition
+     * @see ParametersDefinition
+     * @see #parameters(ParamDefinition...)
+     * @see #parameters(Class...)
+     * @see #parameters(TypeDefinition...)
      */
     public static ParametersDefinition noParameters() {
         return parameters(NO_TYPES);
@@ -122,20 +122,20 @@ public class DefinitionBuilders {
      * @param type The class to define as a type.
      * @param <T> The type being defined.
      * @return A type definition created from the given class.
-     * @see TypeDefinition {@link TypeDefinition}
-     * @see #voidType() {@link #voidType()} To define a void type.
+     * @see TypeDefinition
+     * @see #voidType()
      */
-    public static <T> TypeDefinition<T> type(Class<T> type) {
-        return new TypeDefinition<>(type);
+    public static <T> TypeDefinition type(Class<T> type) {
+        return TypeDefinition.fromClass(type);
     }
 
     /**
      * Defines a {@link TypeDefinition} representing 'void'.
      * @return A type definition representing 'void'.
-     * @see TypeDefinition {@link TypeDefinition}
-     * @see #type(Class) {@link #type(Class)} To define a type for a given class.
+     * @see TypeDefinition
+     * @see #type(Class)
      */
-    public static TypeDefinition<Void> voidType() {
+    public static TypeDefinition voidType() {
         return type(void.class);
     }
 
@@ -144,12 +144,11 @@ public class DefinitionBuilders {
      * to the 'throws' clause of a method header in Java source code.
      * @param types The types that could be thrown by the method being generated.
      * @return A definition of exception types representing the 'throws' clause of a generated method.
-     * @see ThrowsDefinition {@link ThrowsDefinition}
-     * @see #throwing(Class...) {@link #throwing(Class...)} To define the exception types being thrown from classes.
-     * @see #noThrows() {@link #noThrows()} To define no exceptions being thrown.
+     * @see ThrowsDefinition
+     * @see #throwing(Class...)
+     * @see #noThrows()
      */
-    @SafeVarargs
-    public static ThrowsDefinition throwing(TypeDefinition<? extends Exception>... types) {
+    public static ThrowsDefinition throwing(TypeDefinition... types) {
         return new ThrowsDefinition(types);
     }
 
@@ -158,22 +157,21 @@ public class DefinitionBuilders {
      * to the 'throws' clause of a method header in Java source code.
      * @param classes The types that could be thrown by the method being generated.
      * @return A definition of exception types representing the 'throws' clause of a generated method.
-     * @see ThrowsDefinition {@link ThrowsDefinition}
-     * @see #throwing(TypeDefinition...) {@link #throwing(TypeDefinition...)} To define the exception types being thrown from type definitions.
-     * @see #noThrows() {@link #noThrows()} To define no exceptions being thrown.
+     * @see ThrowsDefinition
+     * @see #throwing(TypeDefinition...)
+     * @see #noThrows()
      */
-    @SuppressWarnings("unchecked")
-    public static ThrowsDefinition throwing(Class<? extends Throwable>... classes) {
-        return throwing((TypeDefinition<? extends Exception>[])TypeDefinition.typesFromClasses(classes));
+    public static ThrowsDefinition throwing(Class<?>... classes) {
+        return throwing(TypeDefinition.typesFromClasses(classes));
     }
 
     /**
      * Defines an empty 'throws' clause for a method. That means the method does not define itself as throwing any exceptions.
      * This is the equivalent to omitting a throws clause in a method header in Java source code.
      * @return A throws definition which defines no exceptions being thrown.
-     * @see ThrowsDefinition {@link ThrowsDefinition}
-     * @see #throwing(Class...) {@link #throwing(Class...)} To define the exception types being thrown from classes.
-     * @see #throwing(TypeDefinition...) {@link #throwing(TypeDefinition...)} To define the exception types being thrown from type definitions.
+     * @see ThrowsDefinition
+     * @see #throwing(Class...)
+     * @see #throwing(TypeDefinition...)
      */
     public static ThrowsDefinition noThrows() {
         return throwing(NO_EXCEPTION_TYPES);

@@ -50,7 +50,7 @@ public class StackLocalVariableInsn extends CodeInsnBuilder implements
 
     @Override
     public void build() {
-        TypeDefinition<?> typeDefinition;
+        TypeDefinition typeDefinition;
 
         int index;
         if(localName != null) {

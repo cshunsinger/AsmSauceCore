@@ -1,19 +1,14 @@
 package io.github.cshunsinger.asmsauce.definitions;
 
-import io.github.cshunsinger.asmsauce.ClassBuildingContext;
-import io.github.cshunsinger.asmsauce.FieldNode;
+import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
-import io.github.cshunsinger.asmsauce.DefinitionBuilders;
 import lombok.Getter;
-import org.apache.commons.lang3.reflect.FieldUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
-import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 
 /**
  * Represents a defined field. This field definition may potentially be considered "incomplete" as it may lack some of
@@ -30,7 +25,7 @@ public class FieldDefinition {
      * The owner type of this defined field.
      * @return The type.
      */
-    protected final TypeDefinition<?> fieldOwner;
+    protected final TypeDefinition fieldOwner;
     /**
      * The name of this defined field.
      * @return The name.
@@ -40,7 +35,7 @@ public class FieldDefinition {
      * The type of this defined field.
      * @return The type.
      */
-    protected final TypeDefinition<?> fieldType;
+    protected final TypeDefinition fieldType;
 
     /**
      * Defines a field by its metadata.
@@ -49,10 +44,19 @@ public class FieldDefinition {
      * @param fieldName The name of the field.
      * @param fieldType The type of the field.
      * @throws IllegalArgumentException If the field name is null.
+     * @throws IllegalArgumentException If the field owner is null, and the access modifiers indicate that the field is static.
+     * @throws IllegalArgumentException If the field owner is not null and is an array, void, or primitive type.
      */
-    public FieldDefinition(AccessModifiers accessModifiers, TypeDefinition<?> fieldOwner, NameDefinition fieldName, TypeDefinition<?> fieldType) {
+    public FieldDefinition(AccessModifiers accessModifiers, TypeDefinition fieldOwner, NameDefinition fieldName, TypeDefinition fieldType) {
         if(fieldName == null)
             throw new IllegalArgumentException("Field name cannot be null.");
+
+        if(fieldOwner == null) {
+            if(accessModifiers != null && accessModifiers.isStatic())
+                throw new IllegalArgumentException("Field owner cannot be null when referring to a static field.");
+        }
+        else if(!fieldOwner.canHaveMembers())
+            throw new IllegalArgumentException("Field owner cannot be void, primitive, or an array type.");
 
         this.accessModifiers = accessModifiers;
         this.fieldOwner = fieldOwner;
@@ -69,66 +73,47 @@ public class FieldDefinition {
      * @throws IllegalStateException If no field can be found matching the incomplete details of this field definition.
      */
     public CompleteFieldDefinition completeDefinition() {
-        Optional<CompleteFieldDefinition> fdOpt = context().getFields()
-            .stream()
-            .map(FieldNode::getFieldDefinition)
-            .filter(fieldDefinition -> fieldDefinition.fieldName.equals(this.fieldName))
-            .findFirst();
+        TypeDefinition fieldOwner = this.fieldOwner == null ?
+            MethodBuildingContext.context().peekStack() :
+            this.fieldOwner;
+        AccessModifiers accessModifiers = this.accessModifiers;
+        TypeDefinition fieldType = this.fieldType;
 
-        if(fdOpt.isPresent())
-            return fdOpt.get();
+        if(accessModifiers == null || fieldType == null) {
+            Optional<CompleteFieldDefinition> foundFieldOpt = fieldOwner.flatHierarchy()
+                .stream()
+                .map(type -> type.getDeclaredField(this.fieldName))
+                .filter(Objects::nonNull)
+                .filter(field -> field.getFieldName().equals(this.fieldName))
+                .filter(field -> AccessModifiers.isAccessible(
+                    type(ThisClass.class),
+                    field.getFieldOwner(),
+                    field.getAccessModifiers()
+                ))
+                .findFirst();
 
-        //If field was not found, iterate through the superclass and interface types of the class being built
-        List<Class<?>> otherTypes = new ArrayList<>();
-        otherTypes.add(context().getSuperclass());
-        otherTypes.addAll(context().getInterfaces());
+            if(foundFieldOpt.isEmpty())
+                throw createFieldNotFoundException();
 
-        for(Class<?> otherType: otherTypes) {
-            fdOpt = attemptCompletion(otherType);
-            if(fdOpt.isPresent()) {
-                FieldDefinition fd = fdOpt.get();
-                if(AccessModifiers.isAccessible(context(), ThisClass.class, fd.getFieldOwner().getType(), fd.getAccessModifiers()))
-                    return fdOpt.get();
-            }
+            CompleteFieldDefinition foundField = foundFieldOpt.get();
+
+            if(accessModifiers == null)
+                accessModifiers = foundField.getAccessModifiers();
+            if(fieldType == null)
+                fieldType = foundField.getFieldType();
         }
 
-        throw createFieldNotFoundException(context().getClassName());
+        return new CompleteFieldDefinition(
+            accessModifiers,
+            fieldOwner,
+            this.fieldName,
+            fieldType
+        );
     }
 
-    /**
-     * Generates a completed field definition using the existing information in this "incomplete" field definition, and
-     * using the class building context and other reflections information to fill in the missing details.
-     * This method attempts to complete this field definition when the field might exist in some given owner type, or one
-     * of the parent types or interface types of the owner type.
-     * @param buildingContext The class building context containing the details about this class being generated.
-     * @param fieldOwnerType The owner type to search for an existing field within.
-     * @return A completed field definition which can be used for bytecode generation.
-     * @throws IllegalStateException If no field can be found matching the incomplete details of this field definition.
-     */
-    public CompleteFieldDefinition completeDefinition(ClassBuildingContext buildingContext, TypeDefinition<?> fieldOwnerType) {
-        Optional<CompleteFieldDefinition> fdOpt = attemptCompletion(fieldOwnerType.getType());
-        if(fdOpt.isPresent()) {
-            CompleteFieldDefinition fd = fdOpt.get();
-            if(AccessModifiers.isAccessible(buildingContext, ThisClass.class, fieldOwnerType.getType(), fd.getAccessModifiers()))
-                return fd;
-        }
-
-        throw createFieldNotFoundException(buildingContext.getClassName());
-    }
-
-    private Optional<CompleteFieldDefinition> attemptCompletion(Class<?> fieldDeclaringClass) {
-        return Optional.ofNullable(FieldUtils.getField(fieldDeclaringClass, fieldName.getName(), true))
-            .map(field -> new CompleteFieldDefinition(
-                customAccess(field.getModifiers()),
-                DefinitionBuilders.type(field.getDeclaringClass()),
-                fieldName,
-                DefinitionBuilders.type(field.getType())
-            ));
-    }
-
-    private IllegalStateException createFieldNotFoundException(String fieldClassName) {
+    private IllegalStateException createFieldNotFoundException() {
         return new IllegalStateException(
-            "No field named %s found accessible from class %s.".formatted(fieldName.getName(), fieldClassName)
+            "No field named %s found accessible from class %s.".formatted(fieldName.getName(), type(ThisClass.class).getClassName())
         );
     }
 }

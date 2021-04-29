@@ -3,10 +3,10 @@ package io.github.cshunsinger.asmsauce.code.stack;
 import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static org.objectweb.asm.Opcodes.ICONST_0;
 import static org.objectweb.asm.Opcodes.ICONST_1;
 import static java.util.Collections.emptyList;
@@ -23,55 +23,55 @@ class StackPrimitiveLiteralInsnTest extends BaseUnitTest {
 
     @Test
     public void stackPrimitiveByte() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.literal((byte)nextInt());
+        StackPrimitiveLiteralInsn insn = literal((byte)nextInt());
         testBuild(insn, byte.class);
     }
 
     @Test
     public void stackPrimitiveShort() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.literal((short)nextInt());
+        StackPrimitiveLiteralInsn insn = literal((short)nextInt());
         testBuild(insn, short.class);
     }
 
     @Test
     public void stackPrimitiveChar() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.literal((char)nextInt());
+        StackPrimitiveLiteralInsn insn = literal((char)nextInt());
         testBuild(insn, char.class);
     }
 
     @Test
     public void stackPrimitiveInt() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.literal(nextInt());
+        StackPrimitiveLiteralInsn insn = literal(nextInt());
         testBuild(insn, int.class);
     }
 
     @Test
     public void stackPrimitiveLong() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.literal(nextLong());
+        StackPrimitiveLiteralInsn insn = literal(nextLong());
         testBuild(insn, long.class);
     }
 
     @Test
     public void stackPrimitiveFloat() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.literal(nextFloat());
+        StackPrimitiveLiteralInsn insn = literal(nextFloat());
         testBuild(insn, float.class);
     }
 
     @Test
     public void stackPrimitiveDouble() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.literal(nextDouble());
+        StackPrimitiveLiteralInsn insn = literal(nextDouble());
         testBuild(insn, double.class);
     }
 
     @Test
     public void stackPrimitiveBooleanTrue() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.true_();
+        StackPrimitiveLiteralInsn insn = true_();
         testBooleanBuild(insn, true);
     }
 
     @Test
     public void stackPrimitiveBooleanFalse() {
-        StackPrimitiveLiteralInsn insn = CodeBuilders.false_();
+        StackPrimitiveLiteralInsn insn = false_();
         testBooleanBuild(insn, false);
     }
 
