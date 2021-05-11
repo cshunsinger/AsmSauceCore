@@ -87,6 +87,17 @@ public class ThisTypeDefinition extends TypeDefinition {
             .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean isAssignableFrom(TypeDefinition other) {
+        if(other.equals(this))
+            return true;
+
+        //If the other type is assignable to the supertype of this type OR one of the interfaces
+        //of this type then the other type is assignable to this type.
+        return getSupertype().isAssignableFrom(other) ||
+            super.recursiveInterfaces().stream().anyMatch(type -> type.isAssignableFrom(other));
+    }
+
     /**
      * Determines equality.
      * @param other The object to compare to this one.

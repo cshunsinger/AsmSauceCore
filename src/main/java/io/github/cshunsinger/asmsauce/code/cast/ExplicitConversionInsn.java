@@ -101,7 +101,7 @@ public class ExplicitConversionInsn extends CodeInsnBuilder implements
                 }
                 else {
                     //Both values are reference types
-                    context().getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName(context().getClassContext().getJvmTypeName()));
+                    context().getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName());
                 }
 
                 context().pushStack(toType); //Push the new type from the cast onto the stack

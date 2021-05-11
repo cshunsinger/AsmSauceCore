@@ -18,27 +18,33 @@ import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 @Getter
 public class MethodDefinition {
     /**
-     * @return The type which owns this defined method.
+     * The type which owns this defined method.
+     * @return The method owner type.
      */
     protected final TypeDefinition owner;
     /**
-     * @return The access modifiers of this defined method.
+     * The access modifiers of this defined method.
+     * @return The access modifiers.
      */
     protected final AccessModifiers modifiers;
     /**
-     * @return The name of this defined method.
+     * The name of this defined method.
+     * @return The name.
      */
     protected final NameDefinition name;
     /**
-     * @return The set of parameters of this defined method.
+     * The set of parameters of this defined method.
+     * @return The set of parameters.
      */
     protected final ParametersDefinition parameters;
     /**
-     * @return The return type of this defined method.
+     * The return type of this defined method.
+     * @return The return type.
      */
     protected final TypeDefinition returnType;
     /**
-     * @return The definition of exceptions thrown by this method.
+     * The definition of exceptions thrown by this method.
+     * @return This method's thrown exceptions.
      */
     protected final ThrowsDefinition throwing;
 

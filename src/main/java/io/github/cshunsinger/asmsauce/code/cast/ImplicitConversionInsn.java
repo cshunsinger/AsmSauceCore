@@ -65,7 +65,7 @@ public class ImplicitConversionInsn extends CodeInsnBuilder {
         }
         else {
             //Implicit casting will occur (ToType)fromTypeValue where ToType.isAssignableFrom(FromType)
-            context().getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName(context().getClassContext().getJvmTypeName()));
+            context().getMethodVisitor().visitTypeInsn(CHECKCAST, toType.getJvmTypeName());
             context().popStack();
             context().pushStack(toType);
         }

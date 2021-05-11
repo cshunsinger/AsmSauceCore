@@ -53,8 +53,7 @@ public abstract class FieldInsn extends CodeInsnBuilder {
         fieldDefinition = fieldDefinition.completeDefinition();
 
         //Load a value from class field onto the stack
-        String newClassJvmName = context().getClassContext().getJvmTypeName();
-        callMethodVisitor(context().getMethodVisitor(), newClassJvmName);
+        callMethodVisitor(context().getMethodVisitor());
         performTypeStackChanges(context().getTypeStack());
 
         super.build();
@@ -63,14 +62,13 @@ public abstract class FieldInsn extends CodeInsnBuilder {
     /**
      * Calls the MethodVisitor to generate the bytecode for accessing or assigning a field.
      * @param methodVisitor The method visitor writing the bytecode of this class.
-     * @param newClassJvmName The JVM name of the class being generated.
      */
-    protected void callMethodVisitor(MethodVisitor methodVisitor, String newClassJvmName) {
+    protected void callMethodVisitor(MethodVisitor methodVisitor) {
         methodVisitor.visitFieldInsn(
             instruction(),
-            fieldDefinition.getFieldOwner().getJvmTypeName(newClassJvmName),
+            fieldDefinition.getFieldOwner().getJvmTypeName(),
             fieldDefinition.getFieldName().getName(),
-            fieldDefinition.getFieldType().getJvmTypeDefinition(newClassJvmName)
+            fieldDefinition.getFieldType().getJvmTypeDefinition()
         );
     }
 

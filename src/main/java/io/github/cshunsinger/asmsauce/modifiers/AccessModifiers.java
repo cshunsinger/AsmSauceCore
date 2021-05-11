@@ -163,6 +163,14 @@ public class AccessModifiers {
     }
 
     /**
+     * Creates an instance representing private and final access. Equivalent to defining something as 'private final'
+     * @return A new access modifiers instance.
+     */
+    public static AccessModifiers privateFinal() {
+        return customAccess(ACC_PRIVATE | ACC_FINAL);
+    }
+
+    /**
      * Creates an instance representing package-private final access. Equivalent to defining something as 'final'
      * @return A new access modifiers instance.
      */
@@ -255,5 +263,10 @@ public class AccessModifiers {
 
         //A class is allowed to access package-private members declared in a class located within the same package
         return samePackage;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof AccessModifiers && ((AccessModifiers)other).jvmModifiers == this.jvmModifiers;
     }
 }

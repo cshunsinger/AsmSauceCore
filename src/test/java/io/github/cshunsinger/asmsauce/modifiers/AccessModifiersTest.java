@@ -9,11 +9,10 @@ import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static java.util.Collections.emptyList;
+import static org.hamcrest.Matchers.*;
 import static org.objectweb.asm.Opcodes.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AccessModifiersTest extends BaseUnitTest {
@@ -78,6 +77,7 @@ class AccessModifiersTest extends BaseUnitTest {
         validateModifiers(packageStatic(), ACC_STATIC);
         validateModifiers(protectedStatic(), ACC_PROTECTED | ACC_STATIC);
         validateModifiers(publicStatic(), ACC_PUBLIC | ACC_STATIC);
+        validateModifiers(privateFinal(), ACC_PRIVATE | ACC_FINAL);
         validateModifiers(packageFinal(), ACC_FINAL);
         validateModifiers(protectedFinal(), ACC_FINAL | ACC_PROTECTED);
         validateModifiers(publicFinal(), ACC_FINAL | ACC_PUBLIC);
@@ -88,5 +88,12 @@ class AccessModifiersTest extends BaseUnitTest {
 
     private void validateModifiers(AccessModifiers modifiers, int access) {
         assertThat(modifiers, hasProperty("jvmModifiers", is(access)));
+    }
+
+    @Test
+    @SuppressWarnings("ConstantConditions")
+    public void accessModifiersEquality() {
+        assertThat(publicOnly(), is(publicOnly()));
+        assertThat(publicOnly().equals(null), is(false));
     }
 }

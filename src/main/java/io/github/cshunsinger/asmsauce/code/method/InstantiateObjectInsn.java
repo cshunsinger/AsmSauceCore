@@ -62,7 +62,7 @@ public class InstantiateObjectInsn extends InvocationInsn implements InvokableIn
     public void build() {
         //The base class will stack parameters and invoke the constructor
         //but first the type must be created and stacked
-        String jvmType = method.getOwner().getJvmTypeName(context().getClassContext().getJvmTypeName());
+        String jvmType = method.getOwner().getJvmTypeName();
 
         //Create a new typed reference and place it onto the stack
         context().getMethodVisitor().visitTypeInsn(NEW, jvmType);

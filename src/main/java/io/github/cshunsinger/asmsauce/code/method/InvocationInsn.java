@@ -89,7 +89,7 @@ public abstract class InvocationInsn extends CodeInsnBuilder {
             isInterface = true;
         }
 
-        String ownerTypeName = method.getOwner().getJvmTypeName(context().getClassContext().getJvmTypeName());
+        String ownerTypeName = method.getOwner().getJvmTypeName();
         String methodName = method.getName().getName();
         String methodSignature = method.jvmMethodSignature();
 

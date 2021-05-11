@@ -53,7 +53,7 @@ public class TypeDefinition {
      */
     TypeDefinition(Class<?> type) {
         if(type == null)
-            throw new IllegalArgumentException("Field type cannot be null.");
+            throw new IllegalArgumentException("Type cannot be null.");
 
         this.type = type;
         this.jvmTypeName = jvmClassname(type);
@@ -96,6 +96,7 @@ public class TypeDefinition {
      * @param in The wrapper type to convert into a primitive type.
      * @return The provided input type if it is already a primitive, the matching primitive type if the input type is
      * a wrapper type, or null if the input type is neither a primitive type nor a wrapper type.
+     * @throws NullPointerException If 'in' is null.
      */
     public static TypeDefinition wrapperToPrimitiveType(TypeDefinition in) {
         if(in.isPrimitiveWrapper())
@@ -111,6 +112,7 @@ public class TypeDefinition {
      * @param in The primitive type to convert into a wrapper type.
      * @return The provided input type if it is already a wrapper, the matching wrapper type if the input type is
      * a primitive type, or null if the input type is neither a primitive type nor wrapper type.
+     * @throws NullPointerException If 'in' is null.
      */
     public static TypeDefinition primitiveToWrapperType(TypeDefinition in) {
         if(in.isPrimitive())
@@ -119,20 +121,6 @@ public class TypeDefinition {
             return in;
         else
             return null;
-    }
-
-    /**
-     * Gets the JVM classname of this type. If this type represents the type of 'this' inside of a class that is being
-     * constructed, then this will return the provided JVM classname override.
-     * @param newJvmClassname The JVM classname to return instead of this type's JVM classname.
-     * @return Returns the JVM classname of this defined type if this defined type does not represent 'this' type. Otherwise
-     * the specified 'newJvmClassname' value is returned instead.
-     */
-    public String getJvmTypeName(String newJvmClassname) {
-        if(type == ThisClass.class)
-            return newJvmClassname;
-        else
-            return getJvmTypeName();
     }
 
     /**
@@ -145,20 +133,6 @@ public class TypeDefinition {
             return getJvmTypeName().replace('/', '.');
         else
             return type.getName();
-    }
-
-    /**
-     * Get the JVM type definition String for this type. If this type definition represents the type of 'this' inside
-     * a class being built, then the specified 'newJvmClassname' will be used to build the JVM type instead.
-     * @param newJvmClassname The JVM classname to override with if this type defines the type of 'this'.
-     * @return The JVM type as a String.
-     * @see io.github.cshunsinger.asmsauce.util.AsmUtils#jvmTypeDefinition(Class)
-     */
-    public String getJvmTypeDefinition(String newJvmClassname) {
-        if(type == ThisClass.class)
-            return "L" + newJvmClassname + ";";
-        else
-            return getJvmTypeDefinition();
     }
 
     /**
@@ -346,7 +320,7 @@ public class TypeDefinition {
      * Recursively obtains every interface type of this type, which includes interfaces of interfaces spanning into infinity
      * @return A list of all interfaces implemented by this type, recursively scanning interfaces.
      */
-    private List<TypeDefinition> recursiveInterfaces() {
+    protected List<TypeDefinition> recursiveInterfaces() {
         List<TypeDefinition> interfaces = this.getInterfaces();
         if(interfaces.isEmpty())
             return interfaces;
@@ -366,7 +340,6 @@ public class TypeDefinition {
      * @return Returns true if this type is an object type, returns false if this type is a primitive type,
      * void type, or array type.
      */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean canHaveMembers() {
         return !isPrimitive() && !isVoid() && !isArray();
     }
@@ -387,7 +360,7 @@ public class TypeDefinition {
         //then it can only be assignable to this type if it's supertype or one of it's interface types are assignable
         //to this type
         if(other instanceof ThisTypeDefinition)
-            return this.isAssignableFrom(other.getSupertype()) || other.getInterfaces().stream().anyMatch(this::isAssignableFrom);
+            return this.isAssignableFrom(other.getSupertype()) || other.recursiveInterfaces().stream().anyMatch(this::isAssignableFrom);
         else //Else just check if the other type's underlying class is assignable to this type's underlying class.
             return this.type.isAssignableFrom(other.type);
     }
@@ -398,7 +371,7 @@ public class TypeDefinition {
      */
     public String getSimpleClassName() {
         String fullName = getClassName();
-        return fullName.substring(fullName.lastIndexOf('.'));
+        return fullName.substring(fullName.lastIndexOf('.') + 1);
     }
 
     /**
