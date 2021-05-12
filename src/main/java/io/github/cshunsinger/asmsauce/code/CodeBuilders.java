@@ -2,6 +2,7 @@ package io.github.cshunsinger.asmsauce.code;
 
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.branch.IfBranch;
+import io.github.cshunsinger.asmsauce.code.branch.WhileLoop;
 import io.github.cshunsinger.asmsauce.code.branch.condition.Condition;
 import io.github.cshunsinger.asmsauce.code.cast.ExplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.code.field.GetStaticFieldInsn;
@@ -674,6 +675,16 @@ public class CodeBuilders {
      */
     public static IfBranch.IfBuilder if_(Condition condition) {
         return new IfBranch.IfBuilder(condition);
+    }
+
+    /**
+     * Begins the building of a while-loop.
+     * @param condition A truth condition.
+     * @return A WhileLoop builder which will allow the while-loop to be completed with a body.
+     * The built while loop will execute that code body until the provided truth condition becomes false.
+     */
+    public static WhileLoop.WhileBuilder while_(Condition condition) {
+        return new WhileLoop.WhileBuilder(condition);
     }
 
     /**
