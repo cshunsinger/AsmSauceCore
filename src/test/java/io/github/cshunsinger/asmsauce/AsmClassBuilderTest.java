@@ -102,7 +102,10 @@ public class AsmClassBuilderTest extends BaseUnitTest {
 
     @Test
     public void createClassWithFieldsThatImplementsAnInterface() {
+        String newClassName = AsmTestInterface.class.getName() + "Impl";
+
         AsmClassBuilder<AsmTestInterface> asmClassBuilder = new AsmClassBuilder<>(
+            newClassName,
             AsmTestInterface.class, //The reference type used by the builder
             Object.class, //Generated class extends from Object.class
             singletonList(AsmTestInterface.class), //Generate class implementing this interface
