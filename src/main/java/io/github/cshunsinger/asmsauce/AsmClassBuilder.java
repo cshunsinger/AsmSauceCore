@@ -1,5 +1,7 @@
 package io.github.cshunsinger.asmsauce;
 
+import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
+import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import org.objectweb.asm.ClassWriter;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import io.github.cshunsinger.asmsauce.util.AsmUtils;
@@ -12,7 +14,14 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
+import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.noParameters;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.returnVoid;
+import static io.github.cshunsinger.asmsauce.code.CodeBuilders.superConstructor;
 import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
 import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 import static org.objectweb.asm.Opcodes.V15;
@@ -224,9 +233,6 @@ public class AsmClassBuilder<T> {
 
     @SuppressWarnings("unchecked")
     private void internalBuildClass() {
-        if(constructors.isEmpty())
-            throw new IllegalStateException("Newly built class must be supplied at least 1 constructor.");
-
         //Create jvm names out of all of the interfaces this class is supposed to implement
         String[] interfaceJvmNames = interfaces == null || interfaces.isEmpty() ?
             null :
@@ -246,7 +252,7 @@ public class AsmClassBuilder<T> {
         );
 
         //Start the class building context for this thread
-        new ClassBuildingContext(
+        ClassBuildingContext context = new ClassBuildingContext(
             classWriter,
             newJvmClassname,
             superclass,
@@ -259,8 +265,29 @@ public class AsmClassBuilder<T> {
         //Build each field onto the new class
         fields.forEach(FieldNode::build);
 
-        //Build each constructor onto the new class
-        constructors.forEach(MethodNode::build);
+        if(constructors.isEmpty()) {
+            //Determine if a no-args super constructor exists which is accessible from this class being built
+            boolean noArgsSuperConstructorExists = type(superclass).findDeclaredMatchingConstructors(noParameters())
+                .stream()
+                .anyMatch(superConstructor ->
+                    AccessModifiers.isAccessible(type(ThisClass.class), type(superclass), superConstructor.getModifiers())
+                );
+
+            if(noArgsSuperConstructorExists) {
+                //Generate bytecode for an empty no-args constructor if the superclass has an accessible no-args constructor.
+                ConstructorNode defaultConstructor = constructor(publicOnly(), noParameters(),
+                    superConstructor(superclass, noParameters()),
+                    returnVoid()
+                );
+                defaultConstructor.build();
+            }
+            else
+                throw new IllegalStateException("Newly built class must be supplied at least 1 constructor.");
+        }
+        else {
+            //Build each constructor onto the new class
+            constructors.forEach(MethodNode::build);
+        }
 
         //Build each method onto the new class
         methods.forEach(MethodNode::build);

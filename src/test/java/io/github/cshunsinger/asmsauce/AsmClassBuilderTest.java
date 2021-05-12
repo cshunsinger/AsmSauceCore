@@ -4,7 +4,6 @@ import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.PrintStream;
@@ -41,7 +40,6 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     }
 
     @Test
-    @DisplayName("Create a new class using asm tools which has an empty constructor.")
     public void createBasicInheritingClassWithMinimalConstructor() throws NoSuchMethodException {
         AsmClassBuilder<AsmTestBaseType> asmClassBuilder = new AsmClassBuilder<>(AsmTestBaseType.class, publicOnly());
 
@@ -57,7 +55,6 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     }
 
     @Test
-    @DisplayName("Create a new class with multiple constructors which uses a default String value in the no-args constructor.")
     public void createBasicInheritingClassWithMultipleImplementedConstructors() throws NoSuchMethodException {
         AsmClassBuilder<AsmTestBaseType> asmClassBuilder = new AsmClassBuilder<>(AsmTestBaseType.class, publicOnly());
 
@@ -81,7 +78,6 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     }
 
     @Test
-    @DisplayName("Create a new class with pass-through constructor and overridden method.")
     public void createInheritingClassWithConstructorAndMethodOverride() {
         AsmClassBuilder<AsmTestBaseType> asmClassBuilder = new AsmClassBuilder<>(AsmTestBaseType.class);
 
@@ -105,7 +101,6 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     }
 
     @Test
-    @DisplayName("Implement an interface with a class that has fields.")
     public void createClassWithFieldsThatImplementsAnInterface() {
         AsmClassBuilder<AsmTestInterface> asmClassBuilder = new AsmClassBuilder<>(
             AsmTestInterface.class, //The reference type used by the builder
@@ -176,15 +171,13 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     }
 
     @Test
-    @DisplayName("Throw IllegalStateException when class to be built has no constructor defined.")
     public void throwExceptionWhenClassHasNoConstructor() {
-        AsmClassBuilder<Object> asmClassBuilder = new AsmClassBuilder<>(Object.class);
+        AsmClassBuilder<AsmTestBaseType> asmClassBuilder = new AsmClassBuilder<>(AsmTestBaseType.class);
         IllegalStateException ex = assertThrows(IllegalStateException.class, asmClassBuilder::build);
         assertThat(ex, hasProperty("message", is("Newly built class must be supplied at least 1 constructor.")));
     }
 
     @Test
-    @DisplayName("Throw IllegalArgumentException if no constructor found in the generated class when instantiating.")
     public void throwExceptionWhenNoConstructorFoundForParameters() {
         AsmClassBuilder<AsmTestBaseType> builder = new AsmClassBuilder<>(AsmTestBaseType.class)
             .withConstructor(constructor(publicOnly(), noParameters(), //public NewAsmTestBaseType()
@@ -203,15 +196,10 @@ public class AsmClassBuilderTest extends BaseUnitTest {
     }
 
     @Test
-    @DisplayName("Make System.out.println() call using code building.")
-    public void performSystemOutPrintCallUsingCodeBuilders() {
+    public void performSystemOutPrintCallUsingCodeBuilders_andAutomaticallyGeneratedEmptyConstructor() {
         Method printlnMethod = MethodUtils.getAccessibleMethod(PrintStream.class, "println", String.class);
 
         AsmClassBuilder<StaticsTestType> builder = new AsmClassBuilder<>(StaticsTestType.class)
-            .withConstructor(constructor(publicOnly(), noParameters(),
-                superConstructor(StaticsTestType.class, noParameters()),
-                returnVoid()
-            ))
             .withMethod(method(publicOnly(), name("printText"), parameters(String.class),
                 getStatic(type(System.class), name("out"), type(PrintStream.class))
                     .invoke(PrintStream.class, printlnMethod,
