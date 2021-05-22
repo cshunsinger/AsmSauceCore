@@ -1,5 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
+import io.github.cshunsinger.asmsauce.code.array.AccessibleArrayLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -16,8 +17,8 @@ import static org.objectweb.asm.Opcodes.GETSTATIC;
  * This is a code builder for generating bytecode to fetch a value from a static field.
  */
 public class GetStaticFieldInsn extends FieldInsn implements
-    InvokableInstance, FieldAccessibleInstance, MathOperandInstance,
-    ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike {
+    InvokableInstance, FieldAccessibleInstance, MathOperandInstance, ConditionBuilderLike,
+    BooleanConditionBuilderLike, NullConditionBuilderLike, AccessibleArrayLike {
 
     /**
      * Instantiates this code builder from a defined field.

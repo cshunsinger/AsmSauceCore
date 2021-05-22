@@ -1,12 +1,14 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
+import io.github.cshunsinger.asmsauce.code.array.AccessibleArrayLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.code.field.FieldAccessibleInstance;
 import io.github.cshunsinger.asmsauce.code.field.FieldAssignableInstance;
+import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import io.github.cshunsinger.asmsauce.definitions.MethodDefinition;
 import io.github.cshunsinger.asmsauce.definitions.NameDefinition;
@@ -21,8 +23,8 @@ import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAcc
  * Code builder for invoking an instance method on the instance at the top of the stack, with parameters.
  */
 public class InvokeInstanceMethodInsn extends InvocationInsn implements
-    InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance,
-    ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike {
+    InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance, MathOperandInstance,
+    ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike, AccessibleArrayLike {
 
     /**
      * Invoke instance method.

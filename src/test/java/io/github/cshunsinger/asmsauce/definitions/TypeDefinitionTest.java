@@ -238,4 +238,14 @@ class TypeDefinitionTest extends BaseUnitTest {
     public void nonArrayReferenceTypesCanHaveMembers() {
         assertThat(type(Object.class).canHaveMembers(), is(true));
     }
+
+    @Test
+    public void getComponentTypeWhenTypeIsArray() {
+        assertThat(type(int[].class).getComponentType(), is(TypeDefinition.INT));
+    }
+
+    @Test
+    public void getComponentTypeWhenTypeIsNotAnArray() {
+        assertThat(type(int.class).getComponentType(), nullValue());
+    }
 }

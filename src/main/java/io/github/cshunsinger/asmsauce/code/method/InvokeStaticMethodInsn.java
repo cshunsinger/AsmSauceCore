@@ -1,6 +1,7 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
+import io.github.cshunsinger.asmsauce.code.array.AccessibleArrayLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -16,7 +17,7 @@ import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAcc
  */
 public class InvokeStaticMethodInsn extends InvocationInsn implements
     InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance, MathOperandInstance,
-    ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike {
+    ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike, AccessibleArrayLike {
 
     /**
      * New code builder to invoke a static method.

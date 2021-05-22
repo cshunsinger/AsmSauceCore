@@ -1,6 +1,7 @@
 package io.github.cshunsinger.asmsauce.code;
 
 import io.github.cshunsinger.asmsauce.ThisClass;
+import io.github.cshunsinger.asmsauce.code.array.InstantiateArrayInsn;
 import io.github.cshunsinger.asmsauce.code.branch.IfBranch;
 import io.github.cshunsinger.asmsauce.code.branch.WhileLoop;
 import io.github.cshunsinger.asmsauce.code.branch.condition.Condition;
@@ -694,5 +695,13 @@ public class CodeBuilders {
      */
     public static Condition not(Condition condition) {
         return condition.invert();
+    }
+
+    public static InstantiateArrayInsn newArray(Class<?> componentType, CodeInsnBuilderLike length) {
+        return newArray(type(componentType), length);
+    }
+
+    public static InstantiateArrayInsn newArray(TypeDefinition componentType, CodeInsnBuilderLike length) {
+        return new InstantiateArrayInsn(componentType, length);
     }
 }

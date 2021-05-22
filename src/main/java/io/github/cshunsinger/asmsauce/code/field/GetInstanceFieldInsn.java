@@ -1,5 +1,6 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
+import io.github.cshunsinger.asmsauce.code.array.AccessibleArrayLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -17,8 +18,8 @@ import static org.objectweb.asm.Opcodes.GETFIELD;
  * This is a code builder for generating the bytecode to access an instance field.
  */
 public class GetInstanceFieldInsn extends FieldInsn implements
-    InvokableInstance, FieldAccessibleInstance, MathOperandInstance,
-    ConditionBuilderLike, BooleanConditionBuilderLike, NullConditionBuilderLike {
+    InvokableInstance, FieldAccessibleInstance, MathOperandInstance, ConditionBuilderLike,
+    BooleanConditionBuilderLike, NullConditionBuilderLike, AccessibleArrayLike {
     /**
      * Instantiates this code builder from a defined field.
      * @param fieldDefinition The defined field.

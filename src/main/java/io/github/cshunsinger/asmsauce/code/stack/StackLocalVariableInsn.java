@@ -1,6 +1,7 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
+import io.github.cshunsinger.asmsauce.code.array.AccessibleArrayLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -20,7 +21,7 @@ import static java.util.Arrays.asList;
  */
 public class StackLocalVariableInsn extends CodeInsnBuilder implements
     InvokableInstance, FieldAccessibleInstance, FieldAssignableInstance, MathOperandInstance,
-    ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike {
+    ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike, AccessibleArrayLike {
     private final int localIndex;
     private final String localName;
 

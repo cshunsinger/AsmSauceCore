@@ -2,6 +2,7 @@ package io.github.cshunsinger.asmsauce.code.cast;
 
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
+import io.github.cshunsinger.asmsauce.code.array.AccessibleArrayLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.BooleanConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.NullConditionBuilderLike;
@@ -19,7 +20,8 @@ import static org.objectweb.asm.Opcodes.*;
  * @see ImplicitConversionInsn
  */
 public class ExplicitConversionInsn extends CodeInsnBuilder implements
-    InvokableInstance, MathOperandInstance, ConditionBuilderLike, NullConditionBuilderLike, BooleanConditionBuilderLike {
+    InvokableInstance, MathOperandInstance, ConditionBuilderLike, NullConditionBuilderLike,
+    BooleanConditionBuilderLike, AccessibleArrayLike {
     private final TypeDefinition toType;
     private final CodeInsnBuilderLike valueBuilder;
 

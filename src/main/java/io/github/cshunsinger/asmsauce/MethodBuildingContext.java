@@ -39,7 +39,7 @@ public class MethodBuildingContext {
      * until a new context is started.
      * @see #context()
      */
-    static void reset() {
+    public static void reset() {
         CONTEXT.remove();
     }
 

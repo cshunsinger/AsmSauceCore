@@ -19,6 +19,15 @@ import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmTypeDefinition;
  */
 @ToString
 public class TypeDefinition {
+    public static final TypeDefinition BOOLEAN = fromClass(boolean.class);
+    public static final TypeDefinition BYTE = fromClass(byte.class);
+    public static final TypeDefinition CHAR = fromClass(char.class);
+    public static final TypeDefinition SHORT = fromClass(short.class);
+    public static final TypeDefinition INT = fromClass(int.class);
+    public static final TypeDefinition LONG = fromClass(long.class);
+    public static final TypeDefinition FLOAT = fromClass(float.class);
+    public static final TypeDefinition DOUBLE = fromClass(double.class);
+
     private static final List<Class<?>> PRIMITIVES = List.of(
         byte.class, char.class, short.class, int.class, long.class, float.class, double.class
     );
@@ -384,6 +393,26 @@ public class TypeDefinition {
     }
 
     /**
+     * If this is an array type, then this method returns the component type of the array.
+     * @return The component type of this type, or null if this type is not an array type.
+     */
+    public TypeDefinition getComponentType() {
+        Class<?> componentType = type.getComponentType();
+        if(componentType == null)
+            return null;
+        else
+            return fromClass(componentType);
+    }
+
+    /**
+     * Returns this type as an array type.
+     * @return A type definition representing an array type, where this type is the component type.
+     */
+    public TypeDefinition getArrayType() {
+        return fromClass(type.arrayType());
+    }
+
+    /**
      * Gets the "conversion distance" for converting this type into the other type. This distance is based on
      * how far away this type is from the other type in the other type's hierarchy.
      * This method assumes that this type is assignable to the other type. This method also assumes that if this
@@ -453,5 +482,10 @@ public class TypeDefinition {
             return otherDef.getType() == this.getType();
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return (getJvmTypeDefinition() + getJvmTypeName()).hashCode();
     }
 }

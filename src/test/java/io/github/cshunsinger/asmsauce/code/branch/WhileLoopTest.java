@@ -3,7 +3,9 @@ package io.github.cshunsinger.asmsauce.code.branch;
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
 import org.junit.jupiter.api.Test;
 
-import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
@@ -29,12 +31,8 @@ public class WhileLoopTest {
     }
 
     @Test
-    public void implementWorkingWhileLoop() {
+    public void implementWorkingWhileLoop_terribleMultiplicationAlgorithm() {
         AsmClassBuilder<TestMaths> builder = new AsmClassBuilder<>(TestMaths.class)
-            .withConstructor(constructor(publicOnly(), noParameters(),
-                superConstructor(TestMaths.class, noParameters()),
-                returnVoid()
-            ))
             .withMethod(method(publicOnly(), name("multiply"), parameters(p("first", int.class), p("second", int.class)), type(int.class),
                 //Yes, every developer knows you aren't supposed to perform multiplication using a while loop
                 //This is strictly to test out the bytecode generation abilities
@@ -58,5 +56,30 @@ public class WhileLoopTest {
         int first = nextInt(1, 100);
         int second = nextInt(1, 100);
         assertThat(instance.multiply(first, second), is(first * second));
+    }
+
+    public static abstract class TestCollections {
+        public abstract void countUp(List<Integer> list, int count);
+    }
+
+    @Test
+    public void implementWorkingWhileLoop_countUpInList() {
+        AsmClassBuilder<TestCollections> builder = new AsmClassBuilder<>(TestCollections.class)
+            .withMethod(method(publicOnly(), name("countUp"), parameters(p("list", List.class), p("count", int.class)),
+                setVar("index", literal(0)), //int index = 0;
+
+                while_(getVar("index").lt(getVar("count"))).do_( //while(index < count) {...}
+                    getVar("list").invoke("add", cast(Integer.class, getVar("index").add(literal(1)))), //list.add((Integer)(index+1));
+                    setVar("index", getVar("index").add(literal(1))) //index = index + 1;
+                ),
+
+                returnVoid()
+            ));
+
+        TestCollections instance = builder.buildInstance();
+        ArrayList<Integer> testList = new ArrayList<>();
+        instance.countUp(testList, 10);
+
+        assertThat(testList, hasItems(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     }
 }

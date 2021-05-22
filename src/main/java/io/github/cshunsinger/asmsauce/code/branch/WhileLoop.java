@@ -43,7 +43,7 @@ public class WhileLoop extends CodeInsnBuilder {
         condition.build(endLabel);
 
         //While-Body
-        body.forEach(CodeInsnBuilderLike::buildClean);
+        body.stream().map(CodeInsnBuilderLike::getFirstInStack).forEach(CodeInsnBuilderLike::buildClean);
 
         //Jump back to beginning
         new GotoInsn(startLabel).build();
