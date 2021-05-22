@@ -50,6 +50,11 @@ public class CompleteMethodDefinition extends MethodDefinition {
             throw new IllegalArgumentException("Throwing cannot be null.");
     }
 
+    /**
+     * Creates a method definition from an existing Java reflections Constructor/Method instance.
+     * @param executable The Java reflections Constructor/Method instance.
+     * @return A CompleteMethodDefinition instance created from details in the executable instance.
+     */
     public static CompleteMethodDefinition fromExecutable(Executable executable) {
         NameDefinition methodName = NameDefinition.CONSTRUCTOR_NAME_DEFINITION;
         TypeDefinition returnType = type(void.class);

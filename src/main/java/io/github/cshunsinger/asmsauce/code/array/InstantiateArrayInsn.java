@@ -16,6 +16,12 @@ public class InstantiateArrayInsn extends CodeInsnBuilder implements AccessibleA
     private final TypeDefinition componentType;
     private final CodeInsnBuilderLike lengthBuilder;
 
+    /**
+     * Creates a new instance for generating bytecode to instantiate a new array. The instantiated array will have the
+     * desired length and component type, and will have 1 dimension.
+     * @param componentType The component type of the array to instantiate.
+     * @param lengthBuilder Code builder which will stack an int value representing the length of the array to instantiate.
+     */
     public InstantiateArrayInsn(TypeDefinition componentType, CodeInsnBuilderLike lengthBuilder) {
         if(componentType == null)
             throw new IllegalArgumentException("Component type cannot be null.");

@@ -586,6 +586,8 @@ public class CodeBuilders {
      * @param toType The type to cast to.
      * @param valueBuilder Code builder which stacks a value to be cast.
      * @return A code builder which produces the bytecode to cast a value.
+     * @throws IllegalArgumentException If toType is null.
+     * @throws IllegalArgumentException If valueBuilder is null.
      * @see #cast(Class, CodeInsnBuilderLike)
      */
     public static ExplicitConversionInsn cast(TypeDefinition toType, CodeInsnBuilderLike valueBuilder) {
@@ -597,6 +599,8 @@ public class CodeBuilders {
      * @param toType The type to cast to.
      * @param valueBuilder Code builder which stacks a value to be cast.
      * @return A code builder which produces the bytecode to cast a value.
+     * @throws IllegalArgumentException If toType is null.
+     * @throws IllegalArgumentException If valueBuilder is null.
      * @see #cast(TypeDefinition, CodeInsnBuilderLike)
      */
     public static ExplicitConversionInsn cast(Class<?> toType, CodeInsnBuilderLike valueBuilder) {
@@ -609,6 +613,9 @@ public class CodeBuilders {
      * @param parameters List of parameters taken by the target constructor.
      * @param paramBuilders Code builders which stack values to pass as parameters to the invoked constructor.
      * @return A code builder which produces the bytecode to construct a new instance of a type.
+     * @throws IllegalArgumentException If type is null.
+     * @throws IllegalArgumentException If the parameters definition is null.
+     * @throws NullPointerException If any of the paramBuilders are null.
      * @see #instantiate(Class, CodeInsnBuilderLike...)
      * @see #instantiate(TypeDefinition, CodeInsnBuilderLike...)
      * @see #instantiate(Class, ParametersDefinition, CodeInsnBuilderLike...)
@@ -623,6 +630,9 @@ public class CodeBuilders {
      * @param parameters List of parameters taken by the target constructor.
      * @param paramBuilders Code builders which stack values to pass as parameters to the invoked constructor.
      * @return A code builder which produces the bytecode to construct a new instance of a type.
+     * @throws IllegalArgumentException If type is null.
+     * @throws IllegalArgumentException If the parameters definition is null.
+     * @throws NullPointerException If any of the paramBuilders are null.
      * @see #instantiate(Class, CodeInsnBuilderLike...)
      * @see #instantiate(TypeDefinition, CodeInsnBuilderLike...)
      * @see #instantiate(TypeDefinition, ParametersDefinition, CodeInsnBuilderLike...)
@@ -637,6 +647,8 @@ public class CodeBuilders {
      * @param type Class to instantiate.
      * @param paramBuilders Code builders which stack values to pass as parameters to the invoked constructor.
      * @return A code builder which produces the bytecode to construct a new instance of a type.
+     * @throws IllegalArgumentException If type is null.
+     * @throws NullPointerException If any of the paramBuilders are null.
      * @see #instantiate(Class, CodeInsnBuilderLike...)
      * @see #instantiate(Class, ParametersDefinition, CodeInsnBuilderLike...)
      * @see #instantiate(TypeDefinition, ParametersDefinition, CodeInsnBuilderLike...)
@@ -651,6 +663,8 @@ public class CodeBuilders {
      * @param type Class to instantiate.
      * @param paramBuilders Code builders which stack values to pass as parameters to the invoked constructor.
      * @return A code builder which produces the bytecode to construct a new instance of a type.
+     * @throws IllegalArgumentException If type is null.
+     * @throws NullPointerException If any of the paramBuilders are null.
      * @see #instantiate(TypeDefinition, CodeInsnBuilderLike...)
      * @see #instantiate(Class, ParametersDefinition, CodeInsnBuilderLike...)
      * @see #instantiate(TypeDefinition, ParametersDefinition, CodeInsnBuilderLike...)
@@ -664,6 +678,7 @@ public class CodeBuilders {
      * @param builders The code builders to put into a block.
      * @return A code block wrapping zero or more code builders. This code block will execute all of the code builders
      *         so all of their bytecode gets generated.
+     * @throws NullPointerException If any of the builders are null.
      */
     public static CodeBlock block(CodeInsnBuilderLike... builders) {
         return new CodeBlock(builders);
@@ -673,6 +688,7 @@ public class CodeBuilders {
      * Begins the building of an if-statement.
      * @param condition A truth condition.
      * @return An IfBranch builder which will allow the if-statement to be completed with a body and else block if desired.
+     * @throws IllegalArgumentException If condition is null.
      */
     public static IfBranch.IfBuilder if_(Condition condition) {
         return new IfBranch.IfBuilder(condition);
@@ -683,6 +699,7 @@ public class CodeBuilders {
      * @param condition A truth condition.
      * @return A WhileLoop builder which will allow the while-loop to be completed with a body.
      * The built while loop will execute that code body until the provided truth condition becomes false.
+     * @throws IllegalArgumentException If condition is null.
      */
     public static WhileLoop.WhileBuilder while_(Condition condition) {
         return new WhileLoop.WhileBuilder(condition);
@@ -691,16 +708,37 @@ public class CodeBuilders {
     /**
      * Inverts a condition. This is the equivalent of !condition.
      * @param condition The condition to invert.
+     * @throws NullPointerException If condition is null.
      * @return The inverted condition.
      */
     public static Condition not(Condition condition) {
         return condition.invert();
     }
 
+    /**
+     * Creates a code builder for producing a new array instance with 1 dimension.
+     * The new array instance will have the desired component type and desired length.
+     * @param componentType The component type for the new array.
+     * @param length The length of the new array.
+     * @return A code builder which will generate bytecode that creates a new 1-dimensional array of desired length.
+     * @throws IllegalStateException If componentType is null.
+     * @throws IllegalStateException If length is null.
+     * @see #newArray(TypeDefinition, CodeInsnBuilderLike)
+     */
     public static InstantiateArrayInsn newArray(Class<?> componentType, CodeInsnBuilderLike length) {
         return newArray(type(componentType), length);
     }
 
+    /**
+     * Creates a code builder for producing a new array instance with 1 dimension.
+     * The new array instance will have the desired component type and desired length.
+     * @param componentType The component type for the new array.
+     * @param length The length of the new array.
+     * @return A code builder which will generate bytecode that creates a new 1-dimensional array of desired length.
+     * @throws IllegalStateException If componentType is null.
+     * @throws IllegalStateException If length is null.
+     * @see #newArray(Class, CodeInsnBuilderLike)
+     */
     public static InstantiateArrayInsn newArray(TypeDefinition componentType, CodeInsnBuilderLike length) {
         return new InstantiateArrayInsn(componentType, length);
     }

@@ -19,13 +19,37 @@ import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmTypeDefinition;
  */
 @ToString
 public class TypeDefinition {
+    /**
+     * Type definition wrapping the native boolean class.
+     */
     public static final TypeDefinition BOOLEAN = fromClass(boolean.class);
+    /**
+     * Type definition wrapping the native byte class.
+     */
     public static final TypeDefinition BYTE = fromClass(byte.class);
+    /**
+     * Type definition wrapping the native char class.
+     */
     public static final TypeDefinition CHAR = fromClass(char.class);
+    /**
+     * Type definition wrapping the native short class.
+     */
     public static final TypeDefinition SHORT = fromClass(short.class);
+    /**
+     * Type definition wrapping the native int class.
+     */
     public static final TypeDefinition INT = fromClass(int.class);
+    /**
+     * Type definition wrapping the native long class.
+     */
     public static final TypeDefinition LONG = fromClass(long.class);
+    /**
+     * Type definition wrapping the native float class.
+     */
     public static final TypeDefinition FLOAT = fromClass(float.class);
+    /**
+     * Type definition wrapping the native double class.
+     */
     public static final TypeDefinition DOUBLE = fromClass(double.class);
 
     private static final List<Class<?>> PRIMITIVES = List.of(

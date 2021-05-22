@@ -13,7 +13,7 @@ import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
  * for storing elements into an array and retrieving elements from an array will inherit this class.
  */
 public abstract class ArrayAccessInsn extends CodeInsnBuilder {
-    protected final CodeInsnBuilderLike arrayIndexCode;
+    private final CodeInsnBuilderLike arrayIndexCode;
 
     /**
      * Creates a new code builder which will access an array at a given index.
@@ -55,8 +55,18 @@ public abstract class ArrayAccessInsn extends CodeInsnBuilder {
         super.build();
     }
 
+    /**
+     * Generates the bytecode to get/set a value at an array index. This method is called by the #build() method after
+     * it validates that an array type was stacked and successfully loads the array index onto the stack.
+     * @param arrayType The type definition of the array on the stack.
+     */
     protected abstract void buildArrayInsn(TypeDefinition arrayType);
 
+    /**
+     * Verifies that the type of value at the top of the stack is any array type.
+     * @throws IllegalStateException If the value placed on the top of the stack is not any array type.
+     * @throws java.util.EmptyStackException If the type stack is empty.
+     */
     static void validateArrayTypeStacked() {
         TypeDefinition stackedType = context().peekStack();
         if(!stackedType.isArray())
