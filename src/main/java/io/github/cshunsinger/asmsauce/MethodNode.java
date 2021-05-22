@@ -1,10 +1,10 @@
 package io.github.cshunsinger.asmsauce;
 
-import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.*;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import lombok.Getter;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.ArrayList;
 import java.util.List;

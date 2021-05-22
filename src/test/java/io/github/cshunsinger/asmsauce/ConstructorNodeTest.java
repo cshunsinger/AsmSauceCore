@@ -3,14 +3,14 @@ package io.github.cshunsinger.asmsauce;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.objectweb.asm.Opcodes.ACC_FINAL;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.objectweb.asm.Opcodes.ACC_FINAL;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
 
 class ConstructorNodeTest extends BaseUnitTest {
     @ParameterizedTest

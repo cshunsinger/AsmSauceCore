@@ -3,9 +3,10 @@ package io.github.cshunsinger.asmsauce;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ClassBuildingContextTest {
     @Test

@@ -1,17 +1,18 @@
 package io.github.cshunsinger.asmsauce.code.math;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
-import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
-import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
+import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.privateStatic;
+import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;

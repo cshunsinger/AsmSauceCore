@@ -1,6 +1,6 @@
 package io.github.cshunsinger.asmsauce.definitions;
 
-import io.github.cshunsinger.asmsauce.*;
+import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.parameters;
+import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 
 /**

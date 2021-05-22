@@ -1,10 +1,10 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import io.github.cshunsinger.asmsauce.definitions.ParametersDefinition;
-import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.ClassUtils;
 import org.junit.jupiter.api.Test;

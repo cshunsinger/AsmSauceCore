@@ -1,6 +1,9 @@
 package io.github.cshunsinger.asmsauce.definitions;
 
-import io.github.cshunsinger.asmsauce.*;
+import io.github.cshunsinger.asmsauce.ClassBuildingContext;
+import io.github.cshunsinger.asmsauce.FieldNode;
+import io.github.cshunsinger.asmsauce.MethodNode;
+import io.github.cshunsinger.asmsauce.ThisClass;
 
 import java.util.List;
 import java.util.stream.Collectors;

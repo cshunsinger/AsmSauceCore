@@ -1,9 +1,9 @@
 package io.github.cshunsinger.asmsauce.code.cast;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

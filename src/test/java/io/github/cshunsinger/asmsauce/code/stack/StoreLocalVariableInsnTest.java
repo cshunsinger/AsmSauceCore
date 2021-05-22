@@ -1,26 +1,26 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import org.objectweb.asm.MethodVisitor;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
-import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.setVar;
-import static org.objectweb.asm.Opcodes.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static org.objectweb.asm.Opcodes.*;
 
 class StoreLocalVariableInsnTest extends BaseUnitTest {
     @Mock

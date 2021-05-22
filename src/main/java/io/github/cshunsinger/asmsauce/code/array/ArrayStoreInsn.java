@@ -7,10 +7,10 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import java.util.Map;
 
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
-import static io.github.cshunsinger.asmsauce.definitions.TypeDefinition.*;
 import static io.github.cshunsinger.asmsauce.definitions.TypeDefinition.DOUBLE;
 import static io.github.cshunsinger.asmsauce.definitions.TypeDefinition.FLOAT;
 import static io.github.cshunsinger.asmsauce.definitions.TypeDefinition.LONG;
+import static io.github.cshunsinger.asmsauce.definitions.TypeDefinition.*;
 import static org.objectweb.asm.Opcodes.*;
 
 /**

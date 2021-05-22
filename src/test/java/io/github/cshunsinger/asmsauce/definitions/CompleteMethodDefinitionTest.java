@@ -1,9 +1,9 @@
 package io.github.cshunsinger.asmsauce.definitions;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
-import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

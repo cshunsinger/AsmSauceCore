@@ -1,8 +1,8 @@
 package io.github.cshunsinger.asmsauce.code.branch;
 
-import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.condition.Condition;
+import org.objectweb.asm.Label;
 
 /**
  * This code builder makes up the if-portion of an if or if-else statement.

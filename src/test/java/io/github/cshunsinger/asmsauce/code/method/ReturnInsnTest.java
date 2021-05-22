@@ -1,11 +1,11 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import org.objectweb.asm.MethodVisitor;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
-import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.objectweb.asm.MethodVisitor;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static java.util.Collections.emptyList;

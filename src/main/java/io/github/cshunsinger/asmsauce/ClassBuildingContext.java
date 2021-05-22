@@ -1,8 +1,8 @@
 package io.github.cshunsinger.asmsauce;
 
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import org.objectweb.asm.ClassWriter;
 import lombok.Getter;
+import org.objectweb.asm.ClassWriter;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -13,8 +13,8 @@ import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
-import static org.objectweb.asm.Opcodes.*;
 import static java.util.Arrays.asList;
+import static org.objectweb.asm.Opcodes.*;
 
 /**
  * Asm bytecode builder instruction which generates bytecode to place a local variable onto the jvm stack.

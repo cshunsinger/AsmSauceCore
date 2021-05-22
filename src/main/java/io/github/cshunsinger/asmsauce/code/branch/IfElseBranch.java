@@ -1,8 +1,8 @@
 package io.github.cshunsinger.asmsauce.code.branch;
 
-import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
+import org.objectweb.asm.Label;
 
 import java.util.List;
 import java.util.stream.Collectors;

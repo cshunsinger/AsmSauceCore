@@ -1,8 +1,8 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
-import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.code.CodeBuilders;
 import org.junit.jupiter.api.Test;
 
 import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;

@@ -1,12 +1,12 @@
 package io.github.cshunsinger.asmsauce;
 
-import org.objectweb.asm.FieldVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteFieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.NameDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import lombok.Getter;
 import org.apache.commons.lang3.ClassUtils;
+import org.objectweb.asm.FieldVisitor;
 
 import static io.github.cshunsinger.asmsauce.ClassBuildingContext.context;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;

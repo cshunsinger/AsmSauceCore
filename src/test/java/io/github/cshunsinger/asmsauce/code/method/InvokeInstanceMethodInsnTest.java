@@ -1,12 +1,11 @@
 package io.github.cshunsinger.asmsauce.code.method;
 
-import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.AsmClassBuilder;
+import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
-import io.github.cshunsinger.asmsauce.BaseUnitTest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
+import org.objectweb.asm.MethodVisitor;
 
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
@@ -27,7 +27,8 @@ import static io.github.cshunsinger.asmsauce.ConstructorNode.constructor;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.MethodNode.method;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
-import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
+import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.privateStatic;
+import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;

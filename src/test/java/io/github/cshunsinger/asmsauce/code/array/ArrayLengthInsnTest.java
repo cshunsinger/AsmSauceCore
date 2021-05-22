@@ -10,7 +10,7 @@ import static io.github.cshunsinger.asmsauce.code.CodeBuilders.returnValue;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 public class ArrayLengthInsnTest {
     public static abstract class TestBaseType {

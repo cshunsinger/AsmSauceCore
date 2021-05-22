@@ -1,12 +1,12 @@
 package io.github.cshunsinger.asmsauce;
 
-import org.junit.jupiter.api.AfterEach;
-import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.definitions.CompleteMethodDefinition;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.ArrayList;
 import java.util.EmptyStackException;

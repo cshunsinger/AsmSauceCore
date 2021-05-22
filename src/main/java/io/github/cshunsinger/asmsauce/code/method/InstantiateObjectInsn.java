@@ -8,9 +8,9 @@ import io.github.cshunsinger.asmsauce.definitions.*;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.noThrows;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.voidType;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
+import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static org.objectweb.asm.Opcodes.DUP;
 import static org.objectweb.asm.Opcodes.NEW;
-import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 
 /**
  * Code builder which generates the bytecode to invoke a constructor and instantiate a new object of a given type.

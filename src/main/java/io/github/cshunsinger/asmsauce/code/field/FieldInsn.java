@@ -1,9 +1,9 @@
 package io.github.cshunsinger.asmsauce.code.field;
 
-import org.objectweb.asm.MethodVisitor;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.definitions.FieldDefinition;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
+import org.objectweb.asm.MethodVisitor;
 
 import java.util.Stack;
 

@@ -1,12 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.branch.condition;
 
-import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import io.github.cshunsinger.asmsauce.code.branch.Op;
 import io.github.cshunsinger.asmsauce.code.cast.ImplicitConversionInsn;
 import io.github.cshunsinger.asmsauce.definitions.TypeDefinition;
 import lombok.Getter;
 import org.apache.commons.lang3.ClassUtils;
+import org.objectweb.asm.Label;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;

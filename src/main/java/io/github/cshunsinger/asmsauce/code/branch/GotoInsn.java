@@ -1,9 +1,9 @@
 package io.github.cshunsinger.asmsauce.code.branch;
 
-import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.objectweb.asm.Label;
 
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
 import static org.objectweb.asm.Opcodes.GOTO;

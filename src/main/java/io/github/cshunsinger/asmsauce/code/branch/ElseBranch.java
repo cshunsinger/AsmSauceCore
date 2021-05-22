@@ -1,7 +1,7 @@
 package io.github.cshunsinger.asmsauce.code.branch;
 
-import org.objectweb.asm.Label;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
+import org.objectweb.asm.Label;
 
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.block;
 

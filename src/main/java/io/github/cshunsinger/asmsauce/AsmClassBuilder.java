@@ -1,10 +1,10 @@
 package io.github.cshunsinger.asmsauce;
 
-import org.objectweb.asm.ClassWriter;
 import io.github.cshunsinger.asmsauce.modifiers.AccessModifiers;
 import io.github.cshunsinger.asmsauce.util.AsmUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.ConstructorUtils;
+import org.objectweb.asm.ClassWriter;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -16,13 +16,13 @@ import static io.github.cshunsinger.asmsauce.DefinitionBuilders.noParameters;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.type;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.returnVoid;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.superConstructor;
-import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
-import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
-import static org.objectweb.asm.Opcodes.V15;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.publicOnly;
 import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmClassname;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
+import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
+import static org.objectweb.asm.Opcodes.V15;
 
 /**
  * This class is the entrypoint to generating a new class at runtime. This class builder contains all of the

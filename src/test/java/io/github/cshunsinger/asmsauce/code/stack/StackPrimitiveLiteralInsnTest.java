@@ -1,14 +1,12 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import org.objectweb.asm.MethodVisitor;
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.objectweb.asm.MethodVisitor;
 
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_1;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.RandomUtils.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,6 +14,8 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_1;
 
 class StackPrimitiveLiteralInsnTest extends BaseUnitTest {
     @Mock

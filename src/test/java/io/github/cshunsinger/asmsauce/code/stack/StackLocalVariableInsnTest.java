@@ -1,7 +1,7 @@
 package io.github.cshunsinger.asmsauce.code.stack;
 
-import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import io.github.cshunsinger.asmsauce.BaseUnitTest;
+import io.github.cshunsinger.asmsauce.MethodBuildingContext;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.emptyList;
