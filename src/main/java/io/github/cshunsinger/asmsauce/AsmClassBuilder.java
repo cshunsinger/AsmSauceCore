@@ -42,6 +42,7 @@ public class AsmClassBuilder<T> {
     private final String newClassName;
 
     private Class<? extends T> builtClass;
+    private byte[] builtClassBytes;
 
     private final List<FieldNode> fields = new ArrayList<>();
     private final List<ConstructorNode> constructors = new ArrayList<>();
@@ -346,8 +347,15 @@ public class AsmClassBuilder<T> {
         return builtClass;
     }
 
-    @SuppressWarnings("unchecked")
-    private void internalBuildClass() {
+    /**
+     * Builds the array of bytes containing the data for the new class. If the class data has already been created then
+     * it will not be created again.
+     * @return A byte array containing the data for the new class.
+     */
+    public byte[] buildBytes() {
+        if(builtClassBytes != null)
+            return builtClassBytes;
+
         //Create jvm names out of all of the interfaces this class is supposed to implement
         String[] interfaceJvmNames = interfaces == null || interfaces.isEmpty() ?
             null :
@@ -413,7 +421,12 @@ public class AsmClassBuilder<T> {
         //End the class building context for this thread
         ClassBuildingContext.reset();
 
+        return classWriter.toByteArray();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void internalBuildClass() {
         //Construct the class
-        builtClass = (Class<? extends T>)dynamicClassLoader.defineClass(newJvmClassname.replace('/', '.'), classWriter.toByteArray());
+        builtClass = (Class<? extends T>)dynamicClassLoader.defineClass(newClassName, buildBytes());
     }
 }

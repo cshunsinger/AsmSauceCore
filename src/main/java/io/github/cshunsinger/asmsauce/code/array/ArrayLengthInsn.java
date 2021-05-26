@@ -1,6 +1,7 @@
 package io.github.cshunsinger.asmsauce.code.array;
 
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
+import io.github.cshunsinger.asmsauce.code.branch.condition.ConditionBuilderLike;
 import io.github.cshunsinger.asmsauce.code.math.MathOperandInstance;
 
 import static io.github.cshunsinger.asmsauce.MethodBuildingContext.context;
@@ -12,7 +13,7 @@ import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
  * bytecode which will consume an array reference off of the JVM stack, then place an integer representing the length
  * of that array onto the stack.
  */
-public class ArrayLengthInsn extends CodeInsnBuilder implements MathOperandInstance {
+public class ArrayLengthInsn extends CodeInsnBuilder implements MathOperandInstance, ConditionBuilderLike {
     /**
      * Creates a new code builder for generating bytecode which will get the length of an array reference.
      */

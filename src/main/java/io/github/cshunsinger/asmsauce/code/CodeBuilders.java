@@ -3,6 +3,7 @@ package io.github.cshunsinger.asmsauce.code;
 import io.github.cshunsinger.asmsauce.ThisClass;
 import io.github.cshunsinger.asmsauce.code.array.InstantiateArrayInsn;
 import io.github.cshunsinger.asmsauce.code.branch.IfBranch;
+import io.github.cshunsinger.asmsauce.code.branch.TernaryIfElse;
 import io.github.cshunsinger.asmsauce.code.branch.WhileLoop;
 import io.github.cshunsinger.asmsauce.code.branch.condition.Condition;
 import io.github.cshunsinger.asmsauce.code.cast.ExplicitConversionInsn;
@@ -692,6 +693,18 @@ public class CodeBuilders {
      */
     public static IfBranch.IfBuilder if_(Condition condition) {
         return new IfBranch.IfBuilder(condition);
+    }
+
+    /**
+     * Begins the building of a ternary if-statement.
+     * Unlike an ordinary if-else statement, a ternary statement will result in exactly 1 value being placed back onto
+     * the stack, either from the 'if' branch or the 'else' branch.
+     * @param condition A truth condition.
+     * @return A new TernaryIfElse builder which can be used to complete the construction of the ternary statement.
+     * @throws IllegalArgumentException If condition is null.
+     */
+    public static TernaryIfElse.TernaryConditionBuilder ternary(Condition condition) {
+        return new TernaryIfElse.TernaryConditionBuilder(condition);
     }
 
     /**
