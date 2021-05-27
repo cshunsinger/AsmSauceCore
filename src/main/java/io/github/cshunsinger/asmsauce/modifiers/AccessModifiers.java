@@ -59,6 +59,14 @@ public class AccessModifiers {
     }
 
     /**
+     * Gets whether or not the jvm modifier flags represented by this instance contain the abstract flag.
+     * @return True if this instance contains the 'abstract' flag, else false.
+     */
+    public boolean isAbstract() {
+        return (jvmModifiers & ACC_ABSTRACT) > 0;
+    }
+
+    /**
      * Creates a copy of these modifiers with the public flag set.
      * @return A new instance with the public flag added.
      */
@@ -96,6 +104,14 @@ public class AccessModifiers {
      */
     public AccessModifiers withFinal() {
         return customAccess(jvmModifiers | ACC_FINAL);
+    }
+
+    /**
+     * Creates a copy of these modifiers with the abstract flag set.
+     * @return A new instance with the abstract flag added.
+     */
+    public AccessModifiers withAbstract() {
+        return customAccess(jvmModifiers | ACC_ABSTRACT);
     }
 
     /**

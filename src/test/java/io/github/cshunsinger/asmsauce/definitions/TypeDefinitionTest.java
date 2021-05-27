@@ -6,8 +6,16 @@ import io.github.cshunsinger.asmsauce.code.CodeBlock;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilder;
 import io.github.cshunsinger.asmsauce.code.CodeInsnBuilderLike;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.AbstractList;
+import java.util.Collection;
+import java.util.stream.Stream;
 
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
+import static io.github.cshunsinger.asmsauce.definitions.TypeDefinition.INT;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -240,11 +248,38 @@ class TypeDefinitionTest extends BaseUnitTest {
 
     @Test
     public void getComponentTypeWhenTypeIsArray() {
-        assertThat(type(int[].class).getComponentType(), is(TypeDefinition.INT));
+        assertThat(type(int[].class).getComponentType(), is(INT));
     }
 
     @Test
     public void getComponentTypeWhenTypeIsNotAnArray() {
         assertThat(type(int.class).getComponentType(), nullValue());
+    }
+
+    @ParameterizedTest
+    @MethodSource("determineIfTypeIsInterfaceOrAbstractClass_testCases")
+    public void determineIfTypeIsInterfaceAbstractOrConcrete(TypeDefinition type,
+                                                          boolean expectedInterface,
+                                                          boolean expectedAbstract,
+                                                          boolean expectedConcrete) {
+        assertThat(type.isInterface(), is(expectedInterface));
+        assertThat(type.isAbstractClass(), is(expectedAbstract));
+        assertThat(type.isConcreteClass(), is(expectedConcrete));
+    }
+
+    private static Stream<Arguments> determineIfTypeIsInterfaceOrAbstractClass_testCases() {
+        return Stream.of(
+            //Arguments: type,                           interface, abstract, concrete
+            Arguments.of(INT,                            false,     false,    false), //Primitive type
+            Arguments.of(type(Collection.class),         true,      false,    false), //Interface type
+            Arguments.of(type(TypeDefinitionTest.class), false,     false,    true), //Non-abstract type
+            Arguments.of(type(AbstractList.class),       false,     true,     false)   //Abstract class
+        );
+    }
+
+    @Test
+    public void getSimpleNameOfDefinedType() {
+        assertThat(INT.getSimpleClassName(), is("int"));
+        assertThat(type(Collection.class).getSimpleClassName(), is("Collection"));
     }
 }

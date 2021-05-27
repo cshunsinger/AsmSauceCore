@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import static io.github.cshunsinger.asmsauce.DefinitionBuilders.*;
 import static io.github.cshunsinger.asmsauce.code.CodeBuilders.*;
 import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.*;
+import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -167,5 +168,12 @@ class ThisTypeDefinitionTest {
     @Test
     public void thisTypeIsAlwaysAssignableFromItself() {
         assertThat(typeDefinition.isAssignableFrom(new ThisTypeDefinition()), is(true));
+    }
+
+    @Test
+    public void determineIfTypeIsInterfaceAbstractOrConcrete() {
+        assertThat(typeDefinition.isInterface(), is(false));
+        assertThat(typeDefinition.isAbstractClass(), is(false));
+        assertThat(typeDefinition.isConcreteClass(), is(true));
     }
 }

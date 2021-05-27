@@ -47,16 +47,20 @@ public class TernaryIfElse extends CodeInsnBuilder implements
         condition.build(endIfBodyLabel);
 
         //build the "then" bytecode
+        context().beginScope();
         trueBody.buildClean();
         stackSingleValue(trueReturn);
         TypeDefinition trueType = context().popStack();
         new GotoInsn(endElseBodyLabel).build();
+        context().endScope();
         context().getMethodVisitor().visitLabel(endIfBodyLabel);
 
         //Build the "else" bytecode
+        context().beginScope();
         falseBody.buildClean();
         stackSingleValue(falseReturn);
         TypeDefinition falseType = context().peekStack();
+        context().endScope();
         context().getMethodVisitor().visitLabel(endElseBodyLabel);
 
         //Make sure the two types are compatible

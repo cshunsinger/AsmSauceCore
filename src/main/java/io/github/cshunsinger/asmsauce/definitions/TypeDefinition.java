@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.ClassUtils;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.github.cshunsinger.asmsauce.modifiers.AccessModifiers.customAccess;
 import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmClassname;
 import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmTypeDefinition;
 
@@ -18,7 +20,7 @@ import static io.github.cshunsinger.asmsauce.util.AsmUtils.jvmTypeDefinition;
  * Defines a single type. A type definition is defined by a Java class.
  */
 @ToString
-public class TypeDefinition {
+public class TypeDefinition implements Type {
     /**
      * Type definition wrapping the native boolean class.
      */
@@ -434,6 +436,37 @@ public class TypeDefinition {
      */
     public TypeDefinition getArrayType() {
         return fromClass(type.arrayType());
+    }
+
+    /**
+     * Gets whether or not this type defines an interface type.
+     * @return True if this type defines an interface type, otherwise false.
+     */
+    public boolean isInterface() {
+        return type.isInterface();
+    }
+
+    /**
+     * Gets whether or not this type defines an abstract class.
+     * In this context, an "abstract class" means the class is not a primitive nor an interface, and the class possesses
+     * the "abstract" modifier flag.
+     * @return True if this type defines an abstract class, otherwise false.
+     */
+    public boolean isAbstractClass() {
+        if(isInterface())
+            return false;
+        else if(isPrimitive())
+            return false;
+        else
+            return !isConcreteClass();
+    }
+
+    /**
+     * Gets whether or not this type defines a non-abstract class.
+     * @return True if this type defines a class that is not abstract.
+     */
+    public boolean isConcreteClass() {
+        return !customAccess(getType().getModifiers()).isAbstract();
     }
 
     /**

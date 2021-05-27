@@ -75,6 +75,7 @@ class AccessModifiersTest extends BaseUnitTest {
         validateModifiers(packageOnly().withPrivate(), ACC_PRIVATE);
         validateModifiers(packageOnly().withStatic(), ACC_STATIC);
         validateModifiers(packageOnly().withFinal(), ACC_FINAL);
+        validateModifiers(packageOnly().withAbstract(), ACC_ABSTRACT);
         validateModifiers(privateStatic(), ACC_PRIVATE | ACC_STATIC);
         validateModifiers(packageStatic(), ACC_STATIC);
         validateModifiers(protectedStatic(), ACC_PROTECTED | ACC_STATIC);
@@ -86,6 +87,12 @@ class AccessModifiersTest extends BaseUnitTest {
         validateModifiers(packageStaticFinal(), ACC_STATIC | ACC_FINAL);
         validateModifiers(protectedStaticFinal(), ACC_STATIC | ACC_PROTECTED | ACC_FINAL);
         validateModifiers(publicStaticFinal(), ACC_STATIC | ACC_PUBLIC | ACC_FINAL);
+    }
+
+    @Test
+    public void determineIfModifiersIncludeTheAbstractFlag() {
+        AccessModifiers access = packageOnly().withAbstract();
+        assertThat(access, hasProperty("abstract", is(true)));
     }
 
     private void validateModifiers(AccessModifiers modifiers, int access) {
