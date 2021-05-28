@@ -4,7 +4,7 @@
 gpg --fast-import --no-tty --batch --yes secret-keys.gpg
 
 #Publish and provide necessary details
-gradle publishToMavenLocal \
+gradle clean test publishToMavenLocal \
 -Pversion=dev \
 -PsonatypeUsername=${sonatype_username} \
 -PsonatypePassword=${sonatype_password} \
