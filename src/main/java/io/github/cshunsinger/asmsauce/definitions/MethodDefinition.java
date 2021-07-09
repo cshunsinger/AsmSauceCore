@@ -136,7 +136,7 @@ public class MethodDefinition {
         //Resolve the method parameter types if the parameter types weren't specified
         if(parameters == null) {
             TypeDefinition[] paramTypes = new TypeDefinition[numParameters];
-            for(int i = 0, j = stackSize - 1; i < numParameters; i++, j--) {
+            for(int i = 0, j = stackSize - numParameters; i < numParameters; i++, j++) {
                 paramTypes[i] = context().getTypeStack().get(j);
             }
             parameters = parameters(paramTypes);
